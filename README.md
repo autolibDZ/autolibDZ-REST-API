@@ -1,7 +1,5 @@
 # This is AutolibDZ REST API made by solveIT 
 
-> A curated list of awesome READMEs
-
 
 This is the initialized repository from the blog post ['Bulletproof node.js project architecture'](https://bezkoder.com/node-js-express-sequelize-mysql/)
 
