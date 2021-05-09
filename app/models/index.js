@@ -23,12 +23,15 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-/* To test the database connection 
+//To test the database connection 
 try {
    sequelize.authenticate();
    console.log('Connection has been established successfully.');
  } catch (error) {
    console.error('Unable to connect to the database:', error);
  }
-*/
+
+ db.tutorials = require("./tutorial")(sequelize, Sequelize);
+
+
 module.exports = db;

@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import db from './models/index'
+import router from './routes/tutorial'
 dotenv.config()
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(bodyParser.json());
 
 
 db.sequelize.sync();
+app.use('/api/tutorials', router);
 
 //Home
 app.use((req, res) => {
