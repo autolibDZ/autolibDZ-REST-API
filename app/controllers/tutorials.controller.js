@@ -1,6 +1,5 @@
 const db = require("../models");
 const Tutorial = db.tutorials;
-const Op = db.Sequelize.Op;
 
 // Create and Save a new Tutorial
 const createTutorial = async (req, res) => {
@@ -21,7 +20,7 @@ const createTutorial = async (req, res) => {
   
     // Save Tutorial in the database
     try{
-     await Tutorial.create(tutorial)
+     data = await Tutorial.create(tutorial)
      res.send(data);
 
     }
@@ -35,5 +34,4 @@ const createTutorial = async (req, res) => {
 
   export default {
     createTutorial
-    
   }

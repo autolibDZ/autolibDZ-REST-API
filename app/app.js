@@ -1,9 +1,11 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import cors from 'cors';
-import bodyParser from 'body-parser';
+import express from 'express'
+import dotenv from 'dotenv'
+import cors from 'cors'
+import bodyParser from 'body-parser'
 import db from './models/index'
-import router from './routes/tutorial'
+import router from './routes/tutorial.route'
+
+
 dotenv.config()
 const app = express();
 
@@ -15,10 +17,8 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-
-
-
 db.sequelize.sync();
+
 app.use('/api/tutorials', router);
 
 //Home

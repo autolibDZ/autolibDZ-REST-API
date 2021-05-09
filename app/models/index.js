@@ -31,7 +31,7 @@ try {
    console.error('Unable to connect to the database:', error);
  }
 
- db.tutorials = require("./tutorial")(sequelize, Sequelize);
+ db.tutorials = require("./tutorial.model")(sequelize, Sequelize);
 
 
 module.exports = db;
