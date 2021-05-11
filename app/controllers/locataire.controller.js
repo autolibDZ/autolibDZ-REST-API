@@ -1,3 +1,4 @@
+const { Sequelize } = require('../models');
 const db = require('../models');
 const Locataire = db.locataires;
 const Op = db.Sequelize.Op;
@@ -114,3 +115,29 @@ exports.delete = (req, res) => {
 };
 
 // Block or Unblock a locataire
+exports.block = (req, res) => {
+  const id = req.params.id;
+  Locataire.update({
+    Active: Sequelize.literal('not "Active"')
+    // Active: true
+  }, {
+    where: {
+      IdUtilisateur: id
+    }
+  }).then(num => {
+    if (num == 1) {
+      res.send({
+        message: "Locataire was updated successfully."
+      });
+    } else {
+      res.send({
+        message: `Cannot update Locataire with id=${id}. Maybe Locataire was not found or req.body is empty!`
+      });
+    }
+  })
+  .catch(err => {
+    res.status(500).send({
+      message: "Error updating Locataire with id=" + id
+    });
+  });
+};
