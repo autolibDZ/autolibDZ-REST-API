@@ -23,7 +23,10 @@ db.sequelize.sync();
 app.use('/api/tutorials', router);
 
 // Vehicule Route
-app.use('/vehicules', vehiculesRouter);
+app.use('/api/vehicules', vehiculesRouter);
+
+// Vehicule Route Of A Given Agent
+app.use('/api/vehicules/agaents/:id', vehiculesRouter);
 
 //Home
 app.use((req, res) => {

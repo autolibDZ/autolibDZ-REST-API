@@ -45,6 +45,9 @@ module.exports = function (sequelize, Sequelize) {
 			limiteurVitesse: {
 				type: Sequelize.INTEGER,
 			},
+			id_agent_maintenance: {
+				type: Sequelize.INTEGER,
+			},
 		},
 		{
 			timestamps: true,

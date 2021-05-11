@@ -13,6 +13,25 @@ const selectVehicues = async (req, res) => {
 	}
 };
 
+const selectVehicuesOfAGivenAgent = async (req, res) => {
+	try {
+		const vehicules = await Vehicule.findAll({
+			where: {
+				id_agent_maintenance: +req.params.id,
+			},
+		});
+		res.status(200).send(vehicules);
+	} catch (err) {
+		res.status(500).send({
+			error:
+				err.message ||
+				'Some error occured while retreiving vehicules agent id: ' +
+					req.params.id,
+		});
+	}
+};
+
 export default {
 	selectVehicues,
+	selectVehicuesOfAGivenAgent,
 };
