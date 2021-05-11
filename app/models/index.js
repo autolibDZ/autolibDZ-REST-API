@@ -32,6 +32,6 @@ try {
  }
 
  db.tutorials = require("./tutorial.model")(sequelize, Sequelize);
-
+ db.abonnement = require("./abonnement.model")(sequelize, Sequelize);
 
 module.exports = db;
