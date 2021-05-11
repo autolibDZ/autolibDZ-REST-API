@@ -1,6 +1,6 @@
 module.exports = function (sequelize, Sequelize) {
 	const Vehicule = sequelize.define(
-		'vehicules',
+		'vehicule',
 		{
 			numChassis: {
 				type: Sequelize.INTEGER,
@@ -50,6 +50,8 @@ module.exports = function (sequelize, Sequelize) {
 			},
 		},
 		{
+			freezeTableName: true,
+			tableName: 'vehicule',
 			timestamps: true,
 		}
 	);
