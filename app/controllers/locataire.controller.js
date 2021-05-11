@@ -51,7 +51,17 @@ exports.findAll = (req, res) => {
 
 // Find a single Locataire with an id
 exports.findOne = (req, res) => {
-  
+  const id = req.params.id;
+
+    Locataire.findByPk(id)
+      .then(data => {
+        res.send(data);
+      })
+      .catch(err => {
+        res.status(500).send({
+          message: "Error retrieving Tutorial with id=" + id
+        });
+      });
 };
 
 // Update a Locataire by the id in the request
