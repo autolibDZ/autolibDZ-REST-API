@@ -18,7 +18,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 //migrate database tables
 const db = require("./app/models");
-db.sequelize.sync({force: true});
+// db.sequelize.sync({force: true});
+db.sequelize.sync();
 
 // simple route
 app.get("/", (req, res) => {

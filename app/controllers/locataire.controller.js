@@ -12,7 +12,7 @@ exports.create = (req, res) => {
     return;
   }
 
-  // Create a Tutorial
+  // Create a Locataire
   const locataire = {
     Nom: req.body.nom,
     Prenom: req.body.prenom,
@@ -21,7 +21,7 @@ exports.create = (req, res) => {
     Active: req.body.activ ? req.body.activ : false
   };
 
-  // Save Tutorial in the database
+  // Save Locataire in the database
   Locataire.create(locataire)
     .then(data => {
       res.send(data);
@@ -29,7 +29,7 @@ exports.create = (req, res) => {
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while creating the Tutorial."
+          err.message || "Some error occurred while creating the Locataire."
       });
     });
 };
@@ -59,17 +59,38 @@ exports.findOne = (req, res) => {
       })
       .catch(err => {
         res.status(500).send({
-          message: "Error retrieving Tutorial with id=" + id
+          message: "Error retrieving Locataire with id=" + id
         });
       });
 };
 
 // Update a Locataire by the id in the request
 exports.update = (req, res) => {
-  
+  const id = req.params.id;
+    Locataire.update(req.body, {
+      where: { IdUtilisateur: id }
+    })
+      .then(num => {
+        if (num == 1) {
+          res.send({
+            message: "Locataire was updated successfully."
+          });
+        } else {
+          res.send({
+            message: `Cannot update Locataire with id=${id}. Maybe Locataire was not found or req.body is empty!`
+          });
+        }
+      })
+      .catch(err => {
+        res.status(500).send({
+          message: "Error updating Locataire with id=" + id
+        });
+      });
 };
 
 // Delete a Locataire with the specified id in the request
 exports.delete = (req, res) => {
   
 };
+
+// Block or Unblock a locataire
