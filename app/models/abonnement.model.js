@@ -3,10 +3,6 @@ module.exports = function(sequelize, Sequelize) {
       balance: {
         type: Sequelize.DOUBLE
       },
-      dateRecharge: {
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW
-      },
       idLocataire: {
         type: Sequelize.INTEGER
       }
