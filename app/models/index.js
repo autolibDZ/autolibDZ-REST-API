@@ -30,8 +30,10 @@ try {
  } catch (error) {
    console.error('Unable to connect to the database:', error);
  }
-
- db.tutorials = require("./tutorial.model")(sequelize, Sequelize);
+ db.administrateurs = require("./administrateur.model")(sequelize, Sequelize);
+ db.agents = require("./agent.model")(sequelize, Sequelize);
+ db.operateurs = require("./operateur.model")(sequelize, Sequelize);
+ db.dirigeants = require("./dirigeant.model")(sequelize, Sequelize);
 
 
 module.exports = db;

@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 import bodyParser from 'body-parser'
 import db from './models/index'
-import router from './routes/tutorial.route'
+import router from './routes/employe.route'
 
 
 dotenv.config()
@@ -19,7 +19,10 @@ app.use(bodyParser.json());
 
 db.sequelize.sync();
 
-app.use('/api/tutorials', router);
+app.use('/administrateurs',require('./routes/employe.route'))
+app.use('/agents',require('./routes/employe.route'))
+app.use('/operateurs',require('./routes/employe.route'))
+app.use('/dirigeants',require('./routes/employe.route'))
 
 //Home
 app.use((req, res) => {
