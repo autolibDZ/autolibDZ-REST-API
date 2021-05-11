@@ -90,7 +90,27 @@ exports.update = (req, res) => {
 
 // Delete a Locataire with the specified id in the request
 exports.delete = (req, res) => {
-  
+  const id = req.params.id;
+
+    Locataire.destroy({
+      where: { IdUtilisateur: id }
+    })
+      .then(num => {
+        if (num == 1) {
+          res.send({
+            message: "Locataire was deleted successfully!"
+          });
+        } else {
+          res.send({
+            message: `Cannot delete Locataire with id=${id}. Maybe Locataire was not found!`
+          });
+        }
+      })
+      .catch(err => {
+        res.status(500).send({
+          message: "Could not delete Locataire with id=" + id
+        });
+      });
 };
 
 // Block or Unblock a locataire
