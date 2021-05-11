@@ -1,15 +1,11 @@
-import {Sequelize} from "sequelize"; 
-import dbConfig from "../../config/config";
+const dbConfig = require("../config/db.config.js");
 
+const Sequelize = require("sequelize");
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   host: dbConfig.HOST,
   dialect: dbConfig.dialect,
-  dialectOptions: {
-    ssl: {
-      require: true,
-      rejectUnauthorized: false 
-    }
-  }, 
+  operatorsAliases: false,
+
   pool: {
     max: dbConfig.pool.max,
     min: dbConfig.pool.min,
@@ -23,15 +19,7 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-//To test the database connection 
-try {
-   sequelize.authenticate();
-   console.log('Connection has been established successfully.');
- } catch (error) {
-   console.error('Unable to connect to the database:', error);
- }
-
- db.tutorials = require("./tutorial.model")(sequelize, Sequelize);
-
+// db.tutorials = require("./tutorial.model.js")(sequelize, Sequelize);
+db.locataires = require("./locataire.model.js")(sequelize, Sequelize);
 
 module.exports = db;
