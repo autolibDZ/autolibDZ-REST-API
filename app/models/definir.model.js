@@ -1,26 +1,23 @@
 module.exports = function(sequelize, Sequelize) {
-    const Identite = sequelize.define("identite", {
-        numeroPermis: {
-            type: Sequelize.DOUBLE,
+    const Definir = sequelize.define("definir", {
+        idAgent: {
+            type: Sequelize.INTEGER,
             primaryKey: true,
         },
-        photo: {
-            type: Sequelize.STRING(255)
-        },
-        idLocataire: {
+        NumChassis: {
             type: Sequelize.INTEGER,
-
+            primaryKey: true,
         },
-        idOperateur: {
+        idPlan: {
             type: Sequelize.INTEGER,
+            primaryKey: true,
         }
     }, {
         freezeTableName: true,
-        tableName: 'identite',
+        tableName: 'definir',
         createdAt: false,
         updatedAt: false
     });
 
-
-    return Identite;
+    return Definir;
 };
