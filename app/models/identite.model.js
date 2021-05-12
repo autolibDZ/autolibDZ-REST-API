@@ -1,5 +1,5 @@
 module.exports = function(sequelize, Sequelize) {
-    const Locataire = sequelize.define("locataire", {
+    const Identite = sequelize.define("identite", {
         nom: {
             type: Sequelize.STRING(50)
         },
@@ -14,7 +14,7 @@ module.exports = function(sequelize, Sequelize) {
         }
     }, {
         freezeTableName: true,
-        tableName: 'locataire',
+        tableName: 'operateur',
         createdAt: false,
         updatedAt: false
     });

@@ -3,8 +3,8 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 import bodyParser from 'body-parser'
 import db from './models/index'
-import router from './routes/locataire.route'
-//import router from './routes/tutorial.route'
+import locataireRouter from './routes/locataire.route'
+import router from './routes/tutorial.route'
 
 
 // Vehicule Router
@@ -22,7 +22,8 @@ app.use(bodyParser.json());
 
 db.sequelize.sync();
 
-app.use('/api/locataire', router);
+// locataire route
+app.use('/api/locataire', locataireRouter);
 
 // Vehicule Route
 app.use('/api/vehicules', vehiculesRouter);
