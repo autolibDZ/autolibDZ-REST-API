@@ -31,7 +31,9 @@ const createVehicule = async (req, res) => {
     // Save Vehicule in the database
     try{
      data = await Vehicule.create(vehicule)
-     res.send(data);
+     .then(data => {
+      res.send(data);
+     }); 
     }
     catch(err){
         res.status(500).send({

@@ -59,10 +59,18 @@
         allowNull: false
       }, 
       
-      // Ajouter les clèes étrangères
-
       }); 
+/*
+  //  Déclaration des clès étrangères     
+  vehicule.associate = function (models){
+    vehciule.belongsTo(models.utilisateur, {
+      foreignKey:'idUtilisateur',
+    });
 
+    vehciule.belongsTo(models.borne, {
+      foreignKey:'idBorne',
+    });
+  }*/ 
       return Vehicule; 
   }
 

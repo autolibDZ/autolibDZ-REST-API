@@ -4,7 +4,7 @@ import cors from 'cors'
 import bodyParser from 'body-parser'
 import db from './models/index'
 //import router from './routes/tutorial.route'
-import router from './routes/vehicule.route'
+import vehiculeRouter from './routes/vehicule.route'
 
 
 dotenv.config()
@@ -20,7 +20,7 @@ app.use(bodyParser.json());
 db.sequelize.sync();
 
 //app.use('/api/tutorials', router);
-app.use('/api/vehicules',router); 
+app.use('/api/vehicules',vehiculeRouter); 
 
 //Home
 app.use((req, res) => {
