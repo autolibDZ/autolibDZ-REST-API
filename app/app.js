@@ -25,9 +25,6 @@ app.use('/api/tutorials', router);
 // Vehicule Route
 app.use('/api/vehicules', vehiculesRouter);
 
-// Vehicule Route Of A Given Agent
-app.use('/api/vehicules/agaents/:id', vehiculesRouter);
-
 //Home
 app.use((req, res) => {
 	res.send('<h1>Welcome to AutolibDZ REST API</h1>');
