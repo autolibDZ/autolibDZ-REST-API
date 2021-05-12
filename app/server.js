@@ -8,13 +8,13 @@ const normalizePort = val => {
 
   if (isNaN(port)) {
     return val;
-  } 
+  }
   if (port >= 0) {
     return port;
   }
   return false;
 };
-const port = normalizePort(process.env.PORT || '3000');
+const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 const errorHandler = error => {

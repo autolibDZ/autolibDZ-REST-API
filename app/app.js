@@ -4,7 +4,7 @@ import cors from 'cors'
 import bodyParser from 'body-parser'
 import db from './models/index'
 import router from './routes/tutorial.route'
-
+import borneRoute from './routes/borne.route'
 
 dotenv.config()
 const app = express();
@@ -20,7 +20,7 @@ app.use(bodyParser.json());
 db.sequelize.sync();
 
 app.use('/api/tutorials', router);
-
+app.use('/api/bornes', borneRoute);
 //Home
 app.use((req, res) => {
    res.send("<h1>Welcome to AutolibDZ REST API</h1>");
