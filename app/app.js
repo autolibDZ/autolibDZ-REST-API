@@ -3,10 +3,8 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 import bodyParser from 'body-parser'
 import db from './models/index'
-import router from './routes/tutorial.route'
-import abonnement from './routes/abonnement.route'
-import router from './routes/locataire.route'
-// Vehicule Router
+import abonnementRouter from './routes/abonnement.route'
+import locataireRouter from './routes/locataire.route'
 import vehiculesRouter from './routes/vehicule.route';
 
 dotenv.config();
@@ -23,14 +21,14 @@ db.sequelize.sync();
 
 
 app.use('/api/tutorials', router);
-app.use('/api/abonnement', abonnement);
-app.use('/api/locataire', router);
+app.use('/api/abonnement', abonnementRouter);
+app.use('/api/locataire', locataireRouter);
 
 // Vehicule Route
 app.use('/api/vehicules', vehiculesRouter);
 
 // Vehicule Route Of A Given Agent
-app.use('/api/vehicules/agaents/:id', vehiculesRouter);
+app.use('/api/vehicules/agents/:id', vehiculesRouter);
 
 
 //Home
