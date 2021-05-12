@@ -18,9 +18,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 db.sequelize.sync();
-
-
-app.use('/api/tutorials', router);
+ 
 app.use('/api/abonnement', abonnementRouter);
 app.use('/api/locataire', locataireRouter);
 
