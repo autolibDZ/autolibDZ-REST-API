@@ -32,6 +32,6 @@ try {
  }
 
  db.tutorials = require("./tutorial.model")(sequelize, Sequelize);
-
+ db.vehicules = require("./vehicule.model")(sequelize, Sequelize);
 
 module.exports = db;
