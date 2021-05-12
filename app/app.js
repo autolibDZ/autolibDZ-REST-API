@@ -4,7 +4,7 @@ import cors from 'cors'
 import bodyParser from 'body-parser'
 import db from './models/index'
 import router from './routes/locataire.route'
-import router from './routes/tutorial.route'
+//import router from './routes/tutorial.route'
 
 
 // Vehicule Router
