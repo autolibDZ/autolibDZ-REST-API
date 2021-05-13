@@ -1,12 +1,10 @@
-import express from 'express'
-import dotenv from 'dotenv'
-import cors from 'cors'
-import bodyParser from 'body-parser'
-import db from './models/index'
-
-import abonnementRouter from './routes/abonnement.route'
-import locataireRouter from './routes/locataire.route'
-
+import express from 'express';
+import dotenv from 'dotenv';
+import cors from 'cors';
+import bodyParser from 'body-parser';
+import db from './models/index';
+import abonnementRouter from './routes/abonnement.route';
+import locataireRouter from './routes/locataire.route';
 import vehiculesRouter from './routes/vehicule.route';
 
 dotenv.config();
@@ -38,6 +36,7 @@ app.use('/api/vehicules/agents/:id', vehiculesRouter);
 //Home
 app.use((req, res) => {
     res.send('<h1>Welcome to AutolibDZ REST API</h1>');
+
 });
 
 module.exports = app;
