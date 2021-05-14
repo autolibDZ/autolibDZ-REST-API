@@ -17,14 +17,15 @@ const createLocataire = async(req, res) => {
         nom: req.body.nom,
         prenom: req.body.prenom,
         email: req.body.email,
-        motdepasse: req.body.motdepasse
+        motDePasse: req.body.motdepasse
 
     };
 
+ 
     // Enregistrer le locataire dans la BDD
     try {
-        data = await Locataire.create(locataire)
-        res.send(data);
+        const data = await Locataire.create(locataire)
+        res.send({success: true});
 
     } catch (err) {
         res.status(500).send({
@@ -49,7 +50,21 @@ const findAll = (req, res) => {
         });
 };
 
+const  findOne = async(req, res) => {
+
+    Locataire.findOne({ where: {idLocataire: req.params.id} })
+        .then(data => {
+            res.send(data);
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: err.message || "Some error occurred while retrieving locataire."
+            }); 
+        });
+};
+
 export default {
     createLocataire,
-    findAll
+    findAll,
+    findOne
 }
