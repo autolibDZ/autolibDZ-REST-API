@@ -13,8 +13,8 @@ module.exports = function(sequelize, Sequelize) {
         email: {
             type: Sequelize.STRING
         },
-        mdp: {
-            type: Sequelize.STRING
+        motDePasse: {
+            type: Sequelize.STRING(255)
         },
         salaire: {
             type: Sequelize.DOUBLE

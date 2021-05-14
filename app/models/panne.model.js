@@ -1,4 +1,4 @@
-module.exports = function (sequelize, Sequelize) {
+module.exports = function(sequelize, Sequelize) {
 
     const Panne = sequelize.define("panne", {
         idPanne: {
@@ -12,13 +12,11 @@ module.exports = function (sequelize, Sequelize) {
             type: Sequelize.STRING(30)
         },
 
-    },
-        {
-            freezeTableName: true,
-            tableName: 'panne',
-            createdAt: false,
-            updatedAt: false
-        });
+    }, {
+        freezeTableName: true,
+        tableName: 'panne',
+        createdAt: false,
+        updatedAt: false
+    });
     return Panne
 };
-
