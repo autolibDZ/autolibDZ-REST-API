@@ -4,7 +4,7 @@
   "description": "autolibDZ back-end",
   "main": "app/app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jasmine",
     "start": "nodemon --exec babel-node app/server.js"
   },
   "author": "",
