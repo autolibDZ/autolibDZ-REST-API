@@ -1,5 +1,6 @@
 const db = require("../models");
 const bcrypt = require('bcryptjs');
+var jwt = require("jsonwebtoken");
 const Locataire = db.locataire;
 const Agent= db.agent;
 const Administrateur =db.administrateur;
@@ -12,7 +13,7 @@ const loginLocataire = async(req, res, next ) => {
             res.status(400).send({success: false, error: "Please provide and email and password"})
         }
         // check for user
-        const locataire = await Locataire.findOne({email : email})
+        const locataire = await Locataire.findOne({where: {email : email}})
         if (!locataire ) {
             res.status(401).send({success: false, error: "Invalid credentials"})
         }
@@ -24,7 +25,7 @@ const loginLocataire = async(req, res, next ) => {
 
         }
 
-        const token = locataire.getSignedJwtToken();
+        const token = jwt.sign({ id: locataire.idLocataire, role: "locataire"},process.env.JWT_SECRET) ;
         res.send({success: true, token: token });
 
 }
@@ -50,7 +51,7 @@ const loginAgent = async(req, res, next ) => {
 
     }
 
-    const token = agent.getSignedJwtToken();
+    const token = jwt.sign({ id: this.idAgentMaintenance, role: "AgentMaintenance"},process.env.JWT_SECRET) ;
     res.send({success: true, token: token });
 
 }
@@ -76,7 +77,7 @@ const loginAgent = async(req, res, next ) => {
 
     }
 
-    const token = admin.getSignedJwtToken();
+    const token = jwt.sign({ id: admin.idAdministrateur, role: "administrateur"},process.env.JWT_SECRET) ;
     res.send({success: true, token: token });
 
 }
