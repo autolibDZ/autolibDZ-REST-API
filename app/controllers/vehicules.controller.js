@@ -26,7 +26,7 @@ const selectVehicuesOfAGivenAgent = async (req, res) => {
 	try {
 		const vehicules = await Vehicule.findAll({
 			where: {
-				id_agent_maintenance: +req.params.id,
+				idAgentMaintenance: +req.params.id,
 			},
 		});
 		if (vehicules.length === 0) {
