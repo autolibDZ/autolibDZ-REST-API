@@ -1,5 +1,9 @@
 module.exports = function(sequelize, Sequelize) {
     const Locataire = sequelize.define("locataire", {
+        idLocataire: {
+            type: Sequelize.INTEGER,
+            primaryKey: true,
+        },
         nom: {
             type: Sequelize.STRING(50)
         },
@@ -9,9 +13,12 @@ module.exports = function(sequelize, Sequelize) {
         email: {
             type: Sequelize.STRING(50)
         },
-        motdepasse: {
-            type: Sequelize.STRING(50)
-        }
+        motDePasse: {
+            type: Sequelize.STRING(255)
+        },
+        Active: {
+            type: Sequelize.BOOLEAN
+        },
     }, {
         freezeTableName: true,
         tableName: 'locataire',
@@ -19,5 +26,10 @@ module.exports = function(sequelize, Sequelize) {
         updatedAt: false
     });
 
+    Locataire.associate = (models) => {
+        Locataire.hasMany(models.Abonnement, {
+            foreignKey: 'idLocataire'
+        });
+    };
     return Locataire;
 };

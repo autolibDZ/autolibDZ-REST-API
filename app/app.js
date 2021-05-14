@@ -25,9 +25,13 @@ app.use('/api/locataire', locataireRouter);
 // Vehicule Route
 app.use('/api/vehicules', vehiculesRouter);
 
+// Vehicule Route Of A Given Agent
+app.use('/api/vehicules/agents/:id', vehiculesRouter);
+
 //Home
 app.use((req, res) => {
-	res.send('<h1>Welcome to AutolibDZ REST API</h1>');
+    res.send('<h1>Welcome to AutolibDZ REST API</h1>');
+
 });
 
 module.exports = app;
