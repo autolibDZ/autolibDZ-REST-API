@@ -1,4 +1,5 @@
 const db = require("../models");
+const bcrypt = require("bcryptjs")
 const Locataire = db.locataire;
 
 // La creation d'un locataire (lors de l'inscription)
@@ -12,12 +13,17 @@ const createLocataire = async(req, res) => {
     }
 
 
+    
+           
+    const salt = await bcrypt.genSalt(10);
+    const mdp = await bcrypt.hash(req.body.motdepasse,salt);  
+        
     const locataire = {
 
         nom: req.body.nom,
         prenom: req.body.prenom,
         email: req.body.email,
-        motDePasse: req.body.motdepasse
+        motDePasse: mdp
 
     };
 
