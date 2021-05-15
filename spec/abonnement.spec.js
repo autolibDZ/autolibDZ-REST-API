@@ -74,6 +74,60 @@ describe('Abonnement route test', () => {
       
     });
 
+    it('returns 400 bad request when sending a negative number', (done) => {
+      request
+        .post('/1')
+        .send({
+          prix : -0.5
+        })
+        .expect(400)
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .end((err, res) => {
+            if (err) done(err);
+
+            expect(res.body.message == "body 'prix' element must be a positive number").toBe(true)
+            
+            done();
+          });
+      
+    });
+
+    it('returns 400 bad request when sending a string value for prix', (done) => {
+      request
+        .post('/1')
+        .send({
+          prix : "-0.5llk"
+        })
+        .expect(400)
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .end((err, res) => {
+            if (err) done(err);
+
+            expect(res.body.message == "body 'prix' element must be a number").toBe(true)
+            
+            done();
+          });
+      
+    });
+
+    it('returns 500 server error when the prix is greater than the user balance', (done) => {
+      request
+        .post('/1')
+        .send({
+          prix : 100000
+        })
+        .expect(500)
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .end((err, res) => {
+            if (err) done(err);
+
+            expect(res.body.error == "user does not have enough funds to pay").toBe(true)
+            
+            done();
+          });
+      
+    });
+
 
     it('returns 404 Not found when using an non exesting id 13', (done) => {
         request
@@ -104,7 +158,7 @@ describe('Abonnement route test', () => {
           .end((err, res) => {
               if (err) done(err);
               
-              expect(res.body.error != null).toBe(false)
+              expect(res.body.error != null).toBe(true)
               
               done();
             });
