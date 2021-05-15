@@ -20,10 +20,23 @@ const createTransaction = async (req, res) => {
           dateTransaction: req.body.dateTransaction ? req.body.dateTransaction : Date.now(),
      };
 
+
+
      // Save Transaction in the database
      try {
-          let data = await Transaction.create(transaction)
-          res.status(201).send(data);
+          let reseravation = await Transaction.findAll({
+               where: {
+                    idReservation: req.body.idReservation
+               }
+          })
+          if (reseravation.length>0) {
+               res.status(404).send({
+                    error: "Reservation already paid."
+               });
+          } else {
+               let data = await Transaction.create(transaction)
+               res.status(201).send(data);
+          }
      }
      catch (err) {
           res.status(500).send({
@@ -54,8 +67,8 @@ const getUserTransactions = async (req, res) => {
           if (transactions.length > 0) {
                res.status(200).send(transactions)
           } else {
-               res.status(200).send({
-                    "message": "le locataire avec id " + id + " n'a pas encore de transactions"
+               res.status(404).send({
+                    "error": "le locataire avec id " + id + " n'a pas encore de transactions"
                })
           }
      }
