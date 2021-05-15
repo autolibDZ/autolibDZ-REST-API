@@ -39,6 +39,7 @@ const getUserBalance = async (req, res) => {
 
 const doPayment = async (req, res) => {
 	// Validate request
+
 	if (!req.params.id) {
 		res.status(400).send({
 			message: "params 'id' can not be empty!",
@@ -49,6 +50,20 @@ const doPayment = async (req, res) => {
 	if (!req.body.prix) {
 		res.status(400).send({
 			message: "body 'prix' element can not be empty!",
+		});
+		return;
+	}
+
+	if (isNaN(req.body.prix)) {
+		res.status(400).send({
+			message: "body 'prix' element must be a number",
+		});
+		return;
+	}
+
+	if (req.body.prix > 0) {
+		res.status(400).send({
+			message: "body 'prix' element must be a positive number",
 		});
 		return;
 	}
@@ -75,6 +90,8 @@ const doPayment = async (req, res) => {
 					"message" : "payment done"
 				});
 			})
+
+
 		}else{
 
 			res.status(404).send({
