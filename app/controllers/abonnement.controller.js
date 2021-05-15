@@ -53,7 +53,7 @@ const doPayment = async (req, res) => {
 		});
 		return;
 	}
-
+	
 	if (isNaN(req.body.prix)) {
 		res.status(400).send({
 			message: "body 'prix' element must be a number",
@@ -61,7 +61,7 @@ const doPayment = async (req, res) => {
 		return;
 	}
 
-	if (req.body.prix > 0) {
+	if (req.body.prix < 0) {
 		res.status(400).send({
 			message: "body 'prix' element must be a positive number",
 		});
@@ -81,15 +81,26 @@ const doPayment = async (req, res) => {
 
 		if(userAbonnement){
 			const newBalance = userAbonnement.balance - req.body.prix
-			userAbonnement.update({
-				balance : newBalance
-			}).then(()=>{
-				console.log("balance updated")
-				
-				res.send({
-					"message" : "payment done"
+
+			if(newBalance > 0){
+
+				userAbonnement.update({
+					balance : newBalance
+				}).then(()=>{
+					console.log("balance updated")
+					
+					res.send({
+						"message" : "payment done"
+					});
+				})
+
+			}else{
+
+				res.status(500).send({
+					error: 'user does not have enough funds to pay',
 				});
-			})
+			}
+			
 
 
 		}else{
