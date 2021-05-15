@@ -6,6 +6,7 @@ import db from './models/index';
 import abonnementRouter from './routes/abonnement.route';
 import locataireRouter from './routes/locataire.route';
 import vehiculesRouter from './routes/vehicule.route';
+import transactionRouter from './routes/transaction.route';
 
 dotenv.config();
 const app = express();
@@ -21,7 +22,7 @@ db.sequelize.sync();
 
 app.use('/api/abonnement', abonnementRouter);
 app.use('/api/locataire', locataireRouter);
-
+app.use('/api/transaction', transactionRouter);
 // Vehicule Route
 app.use('/api/vehicules', vehiculesRouter);
 
