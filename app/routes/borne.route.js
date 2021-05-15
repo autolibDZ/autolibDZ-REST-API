@@ -5,8 +5,8 @@ var router = require("express").Router();
     
 // Create a new Borne
 router.post("/", bornesCtrl.createBorne);
-router.post("/filter", bornesCtrl.listBorne);
-router.get("/:id",bornesCtrl.oneBorne);
+router.post("/filter", bornesCtrl.getFilteredBornes);
+router.get("/:id",bornesCtrl.getBorne);
 export default router;
 
 
