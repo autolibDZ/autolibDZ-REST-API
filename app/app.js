@@ -1,14 +1,15 @@
-import express from 'express'
-import dotenv from 'dotenv'
-import cors from 'cors'
-import bodyParser from 'body-parser'
-import db from './models/index'
-import router from './routes/employe.route'
+import express from 'express';
+import dotenv from 'dotenv';
+import cors from 'cors';
+import bodyParser from 'body-parser';
+import db from './models/index';
+import administrateurRouter from './routes/administrateur.route'
+import operateurRouter from './routes/operateur.route'
+import agentRouter from './routes/agent.route'
+import dirigeantRouter from './routes/dirigeant.route'
 
-
-dotenv.config()
+dotenv.config();
 const app = express();
-
 
 // Cross Origin Resources Sharing, Initially all whitelisted
 app.use(cors());
@@ -19,16 +20,16 @@ app.use(bodyParser.json());
 
 db.sequelize.sync();
 
-app.use('/administrateurs',require('./routes/employe.route'))
-app.use('/agents',require('./routes/employe.route'))
-app.use('/operateurs',require('./routes/employe.route'))
-app.use('/dirigeants',require('./routes/employe.route'))
+app.use('/api/administrateur',administrateurRouter)
+app.use('/api/agent',agentRouter)
+app.use('/api/operateur',operateurRouter)
+app.use('/api/dirigeant',dirigeantRouter)
+
 
 //Home
 app.use((req, res) => {
-   res.send("<h1>Welcome to AutolibDZ REST API</h1>");
+    res.send('<h1>Welcome to AutolibDZ REST API</h1>');
 
 });
-
 
 module.exports = app;

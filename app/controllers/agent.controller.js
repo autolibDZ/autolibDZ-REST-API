@@ -3,6 +3,8 @@ const Op = Sequelize.Op;
 const validator = require('validator');
 const passwordValidator = require('password-validator')
 const db = require("../models");
+const Agent = db.agent;
+
 
 var passwdValidator = new passwordValidator();
  
@@ -13,135 +15,95 @@ passwdValidator
 .has().uppercase()                              // Doit avoir des lettre en majuscules
 .has().lowercase()                              // Doit avoir des lettres en miniscules
 
-
-//Cette fonctionne permet de récupérer le type d'utilisateur
-//Elle retourne dans ce cas une valeur entre les 4 types suivants :
-//Administrateur, Operateur, Agent ou Dirigeant
-function getTypeUtilisateur(Url) {
-    Url = Url.substr(1)
-    var i = 0
-    var result = ""
-    while((Url[i]!=='/') && (Url[i]!==undefined ) && (Url[i]!=='?' )){
-        result = result+Url[i]
-        i++
-    }
-    return result
-}
-
-
-
-//Cette fonction permet d'appeler le model (du dossier models) correspondant
-function getModel(url){
-    var typeUtilisateur = getTypeUtilisateur(url)
-    var Utilisateur;
-    if(typeUtilisateur==='administrateurs'){
-        Utilisateur = db.administrateurs;
-    }else if(typeUtilisateur==='agents'){
-        Utilisateur = db.agents;
-    }else if(typeUtilisateur==='operateurs'){
-        Utilisateur = db.operateurs;
-    }else{
-        Utilisateur = db.dirigeants;
-    }  
-    return Utilisateur
-}
-
-// Récupérer un employé avec un id donné
+// Récupérer un Agent avec un id donné
 
 exports.findOne = (req, res) => {
 
-    //Récupérer le type d'employé à créer
-    const Employe = getModel(req.originalUrl)
-
-    //Récupérer l'id de l'employé à modifier de l'url
+    //Récupérer l'id de l'Agent à modifier de l'url
     const id = req.params.id;
   
-    Employe.findByPk(id)
+    Agent.findByPk(id)
     .then(data => {
         res.send(data);
     })
     .catch(err => {
         res.status(500).send({
-            message: "Erreur lors de la récupération de l'employé avec l'id=" + id
+            message: "Erreur lors de la récupération de l'Agent avec l'id=" + id
         });
     });
 };
 
-//Récupérer des employés avec une condition sur le nom (ou sans condition, dans ce cas retourne tout les employes)
+//Récupérer des Agents avec une condition sur le nom (ou sans condition, dans ce cas retourne tout les Agents)
 
 exports.findAll = (req, res) => {
-    
-    //Récupérer le type d'employé à créer
-    const Employe = getModel(req.originalUrl)
 
-    //Récupérer le nom de l'employé de l'url
+    //Récupérer le nom de l'Agent de l'url
     const nom = req.query.nom;
 
     //Créer la variable condition
     var condition = nom ? { nom: { [Op.like]: `%${nom}%` } } : null;
   
-    Employe.findAll({ where: condition })
+    Agent.findAll({ where: condition })
     .then(data => {
         res.send(data);
     })
     .catch(err => {
         res.status(500).send({
             message:
-                err.message || "Une erreur est survenue lors de la récupération des employés."
+                err.message || "Une erreur est survenue lors de la récupération des Agents."
         });
     });
 };
 
-//Création d'un employé
+//Création d'un Agent
 
 exports.create = (req, res) => {
-    //Récupérer le type d'employé à créer
-    const Employe = getModel(req.originalUrl)
           
-    //Initialiser les attributs de l'employé à créer
-    const employe = {
+    //Initialiser les attributs de l'Agent à créer
+    const agent = {
+        idAgentMaintenance:req.body.id,
         nom: req.body.nom,
         prenom: req.body.prenom,
         email: req.body.email,
-        mdp: req.body.mdp,
+        motDePasse: req.body.motDePasse,
         salaire: req.body.salaire   
     };
 
-    //Validation de l'email de l'employé à créer
-    if(validator.isEmail(employe.email)===false){
+    //Validation de l'email de l'Agent à créer
+    if(validator.isEmail(agent.email)===false){
         res.status(500).send({
             message:"L'email est non valide!"             
         });
         return;
     }else{
-        if(employe.nom==undefined || employe.prenom==undefined){
+        if(agent.nom==undefined || agent.prenom==undefined){
             res.status(500).send({
                 message:"Les champs nom et prénom sont requis!"             
             });
             return;
         }else{
             //Vérifier si les attributs 'nom' et 'prénom' ne sont pas vides
-            if((validator.isEmpty(employe.nom)) || (validator.isEmpty(employe.prenom))){
+            if((validator.isEmpty(agent.nom)) || (validator.isEmpty(agent.prenom))){
                 res.status(500).send({
                     message:"Le champ nom et prénom ne peuvent pas etre vides!"             
                 });
                 return;
             }else{
-                if(!passwdValidator.validate(employe.mdp)){
+                if(!passwdValidator.validate(agent.motDePasse)){
                     res.status(500).send({
                         message:"Mot de passe invalide!",
                     });
                     return;
                 }else{
-                    //Créer l'employé
-                    Employe.create(employe)
+                    //Créer l'Agent
+                    Agent.create(agent)
                     .then(data => {
-                        //Si la création réussit on affiche les champs de l'employé créé
+                        //Si la création réussit on affiche les champs de l'agent créé
                         res.send(data);
                     })
                     .catch(err => {
                         res.status(500).send({
-                            message: err.message || "Une erreur est survenue lors de la création de l'employé!"
+                            message: err.message || "Une erreur est survenue lors de la création de l'Agent!"
                         });
                     });
                 }
@@ -150,13 +112,11 @@ exports.create = (req, res) => {
     }     
 };
 
-//Modification d'un employé
+//Modification d'un Agent
 
 exports.update = (req, res) => {
-    //Récupérer le type d'employé à créer
-    const Employe = getModel(req.originalUrl)
 
-    //Récupérer l'id de l'employé à modifier de l'url
+    //Récupérer l'id de l'Agent à modifier de l'url
     const id = req.params.id;
   
     //Validation des données modifiées
@@ -170,8 +130,8 @@ exports.update = (req, res) => {
         }
     }
     //Mot de passe si modifié
-    if(req.body.mdp){
-        if(!passwdValidator.validate(req.body.mdp)){
+    if(req.body.motDePasse){
+        if(!passwdValidator.validate(req.body.motDePasse)){
             res.status(500).send({
                 message:"Mot de passe invalide!",
             });
@@ -197,71 +157,66 @@ exports.update = (req, res) => {
         }
     }
 
-    //Modifier l'employé
-    Employe.update(req.body, {
-        where: { id: id }
+    //Modifier l'Agent
+    Agent.update(req.body, {
+        where: { idAgentMaintenance: id }
     })
     .then(num => {
         if (num == 1) {
             res.send({
-                message: "L'employé a bien été modifié!"
+                message: "L'Agent a bien été modifié!"
             });
         }else{
             res.send({
-                message: `Employé avec id=${id} non modifié. Peut etre l'employé n'a pas été trouvé!`
+                message: `Agent avec id=${id} non modifié. Peut etre l'Agent n'a pas été trouvé!`
             });
         }
     })
     .catch(err => {
         res.status(500).send({
-            message: "Erreur lors de la modification de l'employé avec l'id=" + id
+            message: "Erreur lors de la modification de l'Agent avec l'id=" + id
         });
     });
 };
 
-//Supprimer un employé
+//Supprimer un Agent
 
 exports.delete = (req, res) => {
-     //Récupérer le type d'employé à créer
-    const Employe = getModel(req.originalUrl)
 
-    //Récupérer l'id de l'employé à modifier de l'url
+    //Récupérer l'id de l'Agent à modifier de l'url
     const id = req.params.id;
   
-    Employe.destroy({
-        where: { id: id }
+    Agent.destroy({
+        where: { idAgentMaintenance: id }
     })
     .then(num => {
         if (num == 1) {
             res.send({
-                message: "Employé a été supprimé!"
+                message: "Agent a été supprimé!"
             });
         }else{
             res.send({
-                message: `Employé avec id=${id} non supprimé. Peut etre l'employé n'a pas été trouvé!`
+                message: `Agent avec id=${id} non supprimé. Peut etre l'Agent n'a pas été trouvé!`
             });
         }
     })
     .catch(err => {
         res.status(500).send({
-            message: "Erreur lors de la suppression de l'employé avec l'id=" + id
+            message: "Erreur lors de la suppression de l'Agent avec l'id=" + id
         });
     });
 };
 
-//Supprimer tout les employés 
+//Supprimer tout les Agents 
 
 exports.deleteAll = (req, res) => {
-    
-    //Récupérer le type d'employé à créer
-    const Employe = getModel(req.originalUrl)
 
-    Employe.destroy({
+    Agent.destroy({
         where: {},
         truncate: false
     })
     .then(nums => {
-        res.send({ message: `${nums} employés ont été supprimés avec succés!` });
+        res.send({ message: `${nums} Agents ont été supprimés avec succés!` });
     })
     .catch(err => {
         res.status(500).send({
