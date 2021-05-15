@@ -23,7 +23,7 @@ const getUserBalance = async (req, res) => {
 		console.log(balance);
 
 		if (balance.length != 0) {
-			res.send(balance);
+			res.send(balance[0]);
 		} else {
 			res.status(404).send({
 				error: 'the id ' + id + ' does not exist',
