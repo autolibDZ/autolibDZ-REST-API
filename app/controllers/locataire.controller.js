@@ -21,6 +21,19 @@ const createLocataire = async(req, res) => {
         });
         return;
     }
+    //Pour tester l'existance de l'email
+    Locataire.findAll({ where: 1 === 1 })
+        .then(data => {
+            data.forEach(element => {
+                if (element.email === req.body.email) {
+                    res.status(400).send({
+                        message: "Email déja existé"
+                    });
+                    return;
+                }
+            });
+
+        })
 
     var locataire = {
 
@@ -49,19 +62,31 @@ const createLocataire = async(req, res) => {
         });
 
 };
+// La creation d'un locataire via gmail
 
 const createLocataireGmail = async(req, res) => {
     var token = req.body.token;
     async function verify() {
         const ticket = await client.verifyIdToken({
             idToken: token,
-            audience: CLIENT_ID, // Specify the CLIENT_ID of the app that accesses the backend
-            // Or, if multiple clients access the backend:
-            //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
+            audience: CLIENT_ID,
         });
         const payload = ticket.getPayload();
         const userid = payload['sub'];
-        //console.log(payload)
+
+        //Pour tester l'existance de l'email
+        Locataire.findAll({ where: 1 === 1 })
+            .then(data => {
+                data.forEach(element => {
+                    if (element.email === payload.email) {
+                        res.status(400).send({
+                            message: "Email déja existé"
+                        });
+                        return;
+                    }
+                });
+
+            })
         var locataire = {
 
             nom: payload.given_name,
@@ -88,8 +113,7 @@ const createLocataireGmail = async(req, res) => {
                 });
             });
 
-        // If request specified a G Suite domain:
-        // const domain = payload['hd'];
+
     }
     verify().catch(console.error);
 

@@ -65,6 +65,27 @@ describe('POST : Creation de locataire', () => {
             });
 
     });
+    //Création d'un compte via un email déja existé
+    it('returns 400 bad request when sending an existant email', (done) => {
+        request
+            .post('/createLocataire')
+            .send({
+                nom: 'Athmane',
+                prenom: 'Doumi',
+                email: 'ha_doo@esi.dz',
+                motdepasse: '00001234'
+            })
+            .expect(400)
+            .expect('Content-Type', 'application/json; charset=utf-8')
+            .end((err, res) => {
+                if (err) done(err);
+
+                expect(res.body.message == "Email déja existé").toBe(true)
+
+                done();
+            });
+
+    });
 })
 
 //Test unitaire pour creation de compte via gmail
