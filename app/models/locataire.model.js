@@ -3,6 +3,8 @@ module.exports = function(sequelize, Sequelize) {
         idLocataire: {
             type: Sequelize.INTEGER,
             primaryKey: true,
+            autoIncrement: true,
+
         },
         nom: {
             type: Sequelize.STRING(50)
@@ -26,10 +28,12 @@ module.exports = function(sequelize, Sequelize) {
         updatedAt: false
     });
 
-    Locataire.associate = (models) => {
-        Locataire.hasMany(models.Abonnement, {
-            foreignKey: 'idLocataire'
-        });
-    };
+
     return Locataire;
 };
+/*
+Locataire.associate = (models) => {
+    Locataire.hasMany(models.Abonnement, {
+        foreignKey: 'idLocataire'
+    });
+};*/
