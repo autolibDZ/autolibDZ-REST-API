@@ -27,6 +27,8 @@ module.exports = function(sequelize, Sequelize) {
             freezeTableName: true,
             tableName: 'reservation',
             timestamps: true,
+            createdAt: false,
+            updatedAt: false
         }
 
     );
@@ -45,3 +47,8 @@ module.exports = function(sequelize, Sequelize) {
 
     return Reservation;
 };
+
+/*idVehicule
+idLocataire
+idBorneDepart
+idBorneDestination*/
