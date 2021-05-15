@@ -19,6 +19,24 @@ describe('Testing GET on /api/vehicules endpoint', () => {
 	});
 });
 
+describe('Testing GET on /api/vehicules/:id endpoint', () => {
+	it("should return details of vehicule's numChassis is 123456", (done) => {
+		request
+			.get('/vehicules/123456')
+			.set('Accept', 'application/json')
+			.expect('Content-Type', /json/)
+			.expect(200)
+			.end((err, res) => {
+				if (err) {
+					done.fail(err);
+				} else {
+					expect(res.body.numChassis).toEqual(123456);
+					done();
+				}
+			});
+	});
+});
+
 describe('Testing GET on /api/agents/vehicules/:id endpoint', () => {
 	it('should return the list of all vehicules of a given agents, at least one vehicule for agent with id 1', (done) => {
 		request
