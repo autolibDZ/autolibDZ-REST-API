@@ -7,6 +7,7 @@
     "test": "jasmine",
     "start": "nodemon --exec babel-node app/server.js",
     "doc": "jsdoc -c jsdoc.json"
+
   },
   "author": "",
   "license": "ISC",

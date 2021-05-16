@@ -1,9 +1,5 @@
 module.exports = function(sequelize, Sequelize) {
-    const AgentMaintenance = sequelize.define("agentMaintenance", {
-        idAgentMaintenance: {
-            type: Sequelize.INTEGER,
-            primaryKey: true,
-        },
+    const Operateur = sequelize.define("operateur", {
         nom: {
             type: Sequelize.STRING
         },
@@ -13,17 +9,17 @@ module.exports = function(sequelize, Sequelize) {
         email: {
             type: Sequelize.STRING
         },
-        motDePasse: {
-            type: Sequelize.STRING(255)
+        mdp: {
+            type: Sequelize.STRING
         },
         salaire: {
             type: Sequelize.DOUBLE
         }
     }, {
         freezeTableName: true,
-        tableName: 'agent_maintenance',
+        tableName: 'operateur',
         createdAt: false,
         updatedAt: false
     });
-    return AgentMaintenance;
+    return Operateur;
 };
