@@ -33,7 +33,7 @@ try {
 }
 
 
-db.tutorials = require("./tutorial.model")(sequelize, Sequelize);
+
 db.abonnement = require("./abonnement.model")(sequelize, Sequelize);
 db.vehicules = require('./vehicule.model')(sequelize, Sequelize);
 db.locataire = require("./locataire.model")(sequelize, Sequelize);
@@ -48,6 +48,5 @@ db.planMaintenance = require("./planMaintenance.model")(sequelize, Sequelize);
 db.reclamation = require("./paiement.model")(sequelize, Sequelize);
 db.tarif = require('./tarif.model')(sequelize, Sequelize);
 db.trajet = require("./trajet.model")(sequelize, Sequelize);
-
 
 module.exports = db;
