@@ -21,5 +21,6 @@ module.exports = function(sequelize, Sequelize) {
         updatedAt: false
     });
 
+
     return Identite;
 };
