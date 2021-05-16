@@ -100,7 +100,7 @@ const findReservationById = async (req, res) => {
     try {
         const reservation = await Reservation.findAll({
             where: {
-                idreservation: +req.params.id,
+                idReservation: +req.params.id,
             },
         });
         res.status(200).send(reservation);
@@ -114,7 +114,7 @@ const findReservationById = async (req, res) => {
     }
 };
 
-const updateReservationById = async (req, res) => {
+/*const updateReservationById = async (req, res) => {
     try {
         const reservation = await Reservation.findByIdAndUpdate(req.params.id);
         res.status(200).json(reservation);
@@ -123,8 +123,8 @@ const updateReservationById = async (req, res) => {
             message: err.message,
         });
     }
-}
-const deleteReservationById  = async (req, res) => {
+}*/
+/*const deleteReservationById  = async (req, res) => {
     try {
         const reservation = await Reservation.findByIdAndDelete(req.params.id);
         res.status(200).json(reservation);
@@ -134,6 +134,56 @@ const deleteReservationById  = async (req, res) => {
         });
     }
 }
+*/
+const updateReservationById= async (req, res) => {
+    const id = req.params.id;
+
+    Reservation.update(req.body, {
+        where: { idReservation: id }
+    })
+        .then(num => {
+            if (num == 1) {
+                res.send({
+                    message: "Reservation was updated successfully."
+                });
+            } else {
+                res.send({
+                    message: `Cannot update Reservation with id=${id}. Maybe Reservation was not found or req.body is empty!`
+                });
+            }
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: "Error updating Vehicule with id=" + id
+            });
+        });
+};
+
+const deleteReservationById  = async (req, res) => {
+    const id = req.params.id;
+
+    console.log(id);
+
+    Reservation.destroy({
+        where: { idReservation: id }
+    })
+        .then(num => {
+            if (num == 1) {
+                res.send({
+                    message: "Reservationwas deleted successfully!"
+                });
+            } else {
+                res.send({
+                    message: `Cannot delete Reservation with id=${id}. Maybe Reservation was not found!`
+                });
+            }
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: "Could not delete Tutorial with id=" + id
+            });
+        });
+};
 
 export default {
     createReservation,
