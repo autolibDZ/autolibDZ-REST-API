@@ -22,8 +22,9 @@ const createLocataire = async(req, res) => {
         return;
     }
     //Pour tester l'existance de l'email
-    const locataires = Locataire.findOne({ where: { email: req.body.email } })
-    if (locataires) {
+    const locataires = await Locataire.findOne({ where: { email: req.body.email } })
+    console.log(locataires != null)
+    if (locataires != null) {
         res.status(400).send({
             message: "Email déja existé"
         });
@@ -43,7 +44,7 @@ const createLocataire = async(req, res) => {
 
 
         // Enregistrer le locataire dans la BDD
-        Locataire.create(locataire)
+        await Locataire.create(locataire)
             .then(data => {
                 //Création reussite
                 res.status(200).send({
@@ -72,8 +73,8 @@ const createLocataireGmail = async(req, res) => {
         const userid = payload['sub'];
 
         //Pour tester l'existance de l'email
-        const locataires = Locataire.findOne({ where: { email: req.body.email } })
-        if (locataires) {
+        const locataires = await Locataire.findOne({ where: { email: req.body.email } })
+        if (locataires != null) {
             res.status(400).send({
                 message: "Email déja existé"
             });
@@ -94,7 +95,7 @@ const createLocataireGmail = async(req, res) => {
             locataire.motDePasse = hash;
 
             // Enregistrer le locataire dans la BDD
-            Locataire.create(locataire)
+            await Locataire.create(locataire)
                 .then(data => {
                     //Création reussite
                     res.status(200).send({
