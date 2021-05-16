@@ -32,21 +32,9 @@ try {
 }
 
 
-db.tutorials = require("./tutorial.model")(sequelize, Sequelize);
-db.abonnement = require("./abonnement.model")(sequelize, Sequelize);
-db.vehicules = require('./vehicule.model')(sequelize, Sequelize);
-db.locataire = require("./locataire.model")(sequelize, Sequelize);
 db.administrateur = require("./administrateur.model")(sequelize, Sequelize);
 db.agent = require("./agent.model")(sequelize, Sequelize);
-db.borne = require('./borne.model')(sequelize, Sequelize);
 db.dirigenat = require("./dirigeant.model")(sequelize, Sequelize);
 db.operateur = require("./operateur.model")(sequelize, Sequelize);
-db.paiement = require("./paiement.model")(sequelize, Sequelize);
-db.pannne = require('./panne.model')(sequelize, Sequelize);
-db.planMaintenance = require("./planMaintenance.model")(sequelize, Sequelize);
-db.reclamation = require("./paiement.model")(sequelize, Sequelize);
-db.tarif = require('./tarif.model')(sequelize, Sequelize);
-db.trajet = require("./trajet.model")(sequelize, Sequelize);
-
 
 module.exports = db;
