@@ -31,7 +31,6 @@ try {
 	console.error('Unable to connect to the database:', error);
 }
 
-db.tutorials = require('./tutorial.model')(sequelize, Sequelize);
 db.abonnement = require('./abonnement.model')(sequelize, Sequelize);
 db.vehicules = require('./vehicule.model')(sequelize, Sequelize);
 db.locataire = require('./locataire.model')(sequelize, Sequelize);

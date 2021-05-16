@@ -1,29 +1,34 @@
-import vehiculesController from '../controllers/vehicules.controller';
+import vehiculeController from '../controllers/vehicules.controller.js';
 
-const vehiculesRouter = require('express').Router();
+var vehiculeRouter = require('express').Router();
+
+vehiculeRouter.post('/', vehiculeController.createVehicule);
+
+vehiculeRouter.delete('/:id', vehiculeController.deleteVehicule);
+
+vehiculeRouter.put('/:id', vehiculeController.updateVehicule);
+
+// vehiculeRouter.get("/:id",vehiculeController.getOneVehicule);
 
 // GET All Vehicules
-vehiculesRouter.get('/', vehiculesController.selectVehicues);
+vehiculeRouter.get('/', vehiculeController.getAllVehicule);
 
-// GET Information about a specific vehicule
-vehiculesRouter.get('/:numChassis', vehiculesController.getVehiculeDetails);
+// GET Details of a given vehicule's numero chassis
+vehiculeRouter.get('/:numChassis', vehiculeController.getVehiculeDetails);
 
-// GET All Vehicules
-vehiculesRouter.get(
+// GET Vehicules of A given agent
+vehiculeRouter.get(
 	'/agents/:id',
-	vehiculesController.selectVehicuesOfAGivenAgent
+	vehiculeController.selectVehicuesOfAGivenAgent
 );
 
 // PUT the state of a given vehicule
-vehiculesRouter.put('/etat/:numChassis', vehiculesController.setEtatVehicule);
+vehiculeRouter.put('/etat/:numChassis', vehiculeController.setEtatVehicule);
 
 // GET All vehicules which are - en service
-vehiculesRouter.get('/en-service', vehiculesController.getVehiculesEnService);
+vehiculeRouter.get('/en-service', vehiculeController.getVehiculesEnService);
 
 // GET All vehicules which are - hors service
-vehiculesRouter.get(
-	'/hors-service',
-	vehiculesController.getVehiculesHorsService
-);
+vehiculeRouter.get('/hors-service', vehiculeController.getVehiculesHorsService);
 
-export default vehiculesRouter;
+export default vehiculeRouter;
