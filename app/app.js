@@ -10,6 +10,7 @@ import administrateurRouter from './routes/administrateur.route'
 import operateurRouter from './routes/operateur.route'
 import agentRouter from './routes/agent.route'
 import dirigeantRouter from './routes/dirigeant.route'
+import stripePaiementRouter from './routes/paiement.route'
 
 dotenv.config();
 const app = express();
@@ -39,6 +40,7 @@ app.use('/api/vehicules', vehiculesRouter);
 // Vehicule Route Of A Given Agent
 app.use('/api/vehicules/agents/:id', vehiculesRouter);
 
+app.use('/api/paiement',stripePaiementRouter)
 
 //Home
 app.use((req, res) => {
