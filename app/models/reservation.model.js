@@ -3,7 +3,7 @@ module.exports = function(sequelize, Sequelize) {
         'reservation', {
             idReservation: {
                 type: Sequelize.INTEGER,
-                primaryKey: true,
+             primaryKey: true,
             },
             etat: {
                 type: Sequelize.STRING,
