@@ -1,5 +1,4 @@
 const db = require("../models");
-const bcrypt = require("bcryptjs")
 const Locataire = db.locataire;
 const validator = require('validator');
 var bcrypt = require('bcryptjs');
@@ -50,17 +49,19 @@ const createLocataire = async(req, res) => {
     var hash = bcrypt.hashSync(locataire.motDePasse, salt);
     locataire.motDePasse = hash;
 
- 
+
     // Enregistrer le locataire dans la BDD
     Locataire.create(locataire)
         .then(data => {
             //Création reussite
-            res.status(200).send(data);
+            res.status(200).send({
+                message: "Création réuissite"
+            });
         })
         .catch(err => {
             //Création non reussite
             res.status(500).send({
-                message: err.message || "Une erreur  lors de la création de locataire"
+                message: "Une erreur  lors de la création de locataire"
             });
         });
 
@@ -107,12 +108,14 @@ const createLocataireGmail = async(req, res) => {
         Locataire.create(locataire)
             .then(data => {
                 //Création reussite
-                res.status(200).send(data);
+                res.status(200).send({
+                    message: "Création réuissite"
+                });
             })
             .catch(err => {
                 //Création non reussite
                 res.status(500).send({
-                    message: err.message || "Une erreur  lors de la création de locataire"
+                    message: "Une erreur  lors de la création de locataire"
                 });
             });
 
@@ -137,16 +140,16 @@ const findAll = (req, res) => {
         });
 };
 
-const  findOne = async(req, res) => {
+const findOne = async(req, res) => {
 
-    Locataire.findOne({ where: {idLocataire: req.params.id} })
+    Locataire.findOne({ where: { idLocataire: req.params.id } })
         .then(data => {
             res.send(data);
         })
         .catch(err => {
             res.status(500).send({
                 message: err.message || "Some error occurred while retrieving locataire."
-            }); 
+            });
         });
 };
 

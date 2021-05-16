@@ -4,7 +4,7 @@ var router = require("express").Router();
 
 
 router.post("/locataire/", authController.loginLocataire);
-router.post("/agant/", authController.loginAgent);
+router.post("/agent/", authController.loginAgent);
 router.post("/administrateur/", authController.loginAdmin);
 
 
