@@ -81,6 +81,7 @@ const loginAdmin = async(req, res, next) => {
             } else {
                 const token = jwt.sign({ id: admin.idAdministrateur, role: "administrateur" }, process.env.JWT_SECRET);
                 res.send({ success: true, token: token });
+
             }
         }
     }
@@ -93,3 +94,4 @@ export default {
     loginAdmin,
     loginAgent
 }
+
