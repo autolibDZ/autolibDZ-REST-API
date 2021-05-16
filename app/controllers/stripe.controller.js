@@ -10,7 +10,14 @@ const createPyementIntent = async (req, res) => {
 		return;
 	}
 
-    if (isNaN(req.body.prix) || req.body.prix <0 ) {
+    if (isNaN(req.body.prix)) {
+		res.status(400).send({
+			message: "body 'prix' element must be a number!",
+		});
+		return;
+	}
+
+    if (req.body.prix < 0 ) {
 		res.status(400).send({
 			message: "body 'prix' element must be a positive number!",
 		});
