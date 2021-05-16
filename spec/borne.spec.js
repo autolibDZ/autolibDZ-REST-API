@@ -83,7 +83,7 @@ describe('Borne route test', () => {
                 .post('/')
                 .send({
                     "nomBorne": "Bab El Oued",
-                    "wilaya": "Alger", 
+                    "wilaya": "Alger",
                     "commune": "Bab El Oued",
                     "latitude": 59.99,
                     "longitude": 60,
@@ -105,7 +105,7 @@ describe('Borne route test', () => {
 
 
         it('returns 404 When borne exists', (done) => {
-           request
+            request
                 .post('/')
                 .send({
                     "nomBorne": "Grande Poste",
@@ -134,6 +134,27 @@ describe('Borne route test', () => {
                 .expect(500)
                 .expect('Content-Type', /json/)
 
+                .end((err, res) => {
+                    if (err) done(err);
+
+                    expect(res.body.error)
+
+                    done();
+                });
+
+        });
+
+    });
+
+
+    describe('Get list of all bornes in database 4th scenario', () => {
+
+        it('returns 200 OK when getting all bornes', (done) => {
+            request
+                .post('/all')
+                .set('Accept', 'application/json')
+                .expect(200)
+                .expect('Content-Type', /json/)
                 .end((err, res) => {
                     if (err) done(err);
 

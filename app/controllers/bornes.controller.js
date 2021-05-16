@@ -36,7 +36,7 @@ const createBorne = async (req, res) => {
         nbVehicules: req.body.nbVehicules,
         nbPlaces: req.body.nbPlaces
       }
-     
+
     })
 
     if (result.length > 0) {
@@ -160,9 +160,46 @@ const getBorne = async (req, res) => {
   }
 
 };
+/**
+ * Return all bornes in database
+ * @param {*} req request 
+ * @param {*} res response
+ */
+const getAllBornes = async (req, res) => {
+  try {
+
+    const data = await Borne.findAll()
+
+    //console.log(data)
+
+    if (data != null && data.length != 0) {
+
+      res.send(data);
+
+    } else {
+
+      res.status(404).send({
+
+        message: "Borne table is empty!"
+
+      })
+    }
+
+  } catch (err) {
+    res.status(500).send({
+
+      error: err.message || "Some error occurred while getting Bornes."
+
+    });
+  }
+
+
+
+};
 
 export default {
   createBorne,
   getFilteredBornes,
-  getBorne
+  getBorne,
+  getAllBornes
 }
