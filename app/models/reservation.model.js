@@ -28,7 +28,8 @@ module.exports = function(sequelize, Sequelize) {
             tableName: 'reservation',
             timestamps: true,
             createdAt: false,
-            updatedAt: false
+            updatedAt: false,
+            initialAutoIncrement: true
         }
 
     );

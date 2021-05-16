@@ -51,8 +51,6 @@ const Reservation = db.reservation;
 
        try {
 
-
-           let data;
            data = await Reservation.create(reservation)
           res.send(data)
 
@@ -73,7 +71,7 @@ const Reservation = db.reservation;
 const listAllReservations = (req, res) => {
     var condition = 1 === 1
 
-    reservation.findAll({ where: condition })
+    Reservation.findAll({ where: condition })
         .then(data => {
             res.send(data);
         })
@@ -113,7 +111,7 @@ const listAllReservations = (req, res) => {
 
 const findReservationById = async (req, res) => {
     try {
-        const reservation = await reservation.findAll({
+        const reservation = await Reservation.findAll({
             where: {
                 idreservation: +req.params.id,
             },
@@ -131,7 +129,7 @@ const findReservationById = async (req, res) => {
 
 const updateReservationById = async (req, res) => {
     try {
-        const reservation = await reservation.findByIdAndUpdate(req.params.id);
+        const reservation = await Reservation.findByIdAndUpdate(req.params.id);
         res.status(200).json(reservation);
     } catch (err) {
         res.status(500).json({
@@ -141,7 +139,7 @@ const updateReservationById = async (req, res) => {
 }
 const deleteReservationById  = async (req, res) => {
     try {
-        const reservation = await reservation.findByIdAndDelete(req.params.id);
+        const reservation = await Reservation.findByIdAndDelete(req.params.id);
         res.status(200).json(reservation);
     } catch (err) {
         res.status(500).json({
