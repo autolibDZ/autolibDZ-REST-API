@@ -31,6 +31,12 @@ module.exports = function(sequelize, Sequelize) {
         createdAt: false,
         updatedAt: false
     });
- 
+
     return Locataire;
 };
+/*
+Locataire.associate = (models) => {
+    Locataire.hasMany(models.Abonnement, {
+        foreignKey: 'idLocataire'
+    });
+};*/
