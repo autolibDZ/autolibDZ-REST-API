@@ -61,36 +61,15 @@ module.exports = function(sequelize, Sequelize) {
             updatedAt: false
         }
     );
-
-    //  Déclaration des clès étrangères
-    // Vehicule.associate = function(models) {
-    //     Vehicule.belongsTo(models.utilisateur, {
-    //         foreignKey: 'idAgentMaintenace',
-    //     });
-
-    //     Vehicule.belongsTo(models.borne, {
-    //         foreignKey: 'idBorne',
-    //     });
-    // }
+    // Déclaration des clès étrangères
+     Vehicule.associate = (models) => {
+         Vehicule.belongsTo(models.utilisateur, {
+        foreignKey: 'idAgentMaintenace',
+         });
+    Vehicule.belongsTo(models.borne, {
+           foreignKey: 'idBorne',
+         });
+    }
 
     return Vehicule;
 };
-
- /*
-{
-  "numChassis":"323456789",
-  "numImmatriculation":"123",
-    "modele": "Test",
-    "marque": "Test",
-    "couleur": "Test", 
-    "etat": "Test", 
-    "tempsDeRefroidissement": "20", 
-    "pressionHuileMoteur": "20", 
-    "chargeBatterie": "20", 
-    "anomalieCircuit": "Rien", 
-    "pressionPneus": "20", 
-    "niveauMinimumHuile":"20", 
-    "regulateurVitesse": "20", 
-    "limiteurVitesse": "20"
-
-} */ 

@@ -9,14 +9,12 @@ vehiculeRouter.put("/:id",vehiculeController.updateVehicule);
 vehiculeRouter.get("/:id",vehiculeController.getOneVehicule); 
 vehiculeRouter.get("/",vehiculeController.getAllVehicule);
 
-// GET All Vehicules
-vehiculeRouter.get('/', vehiculeController.selectVehicues);
+/*
+// GET All Vehicules Mel: this route already exists 
+vehiculeRouter.get('/', vehiculeController.selectVehicues);*/ 
 
 // GET All Vehicules
-vehiculeRouter.get(
-	'/agents/:id',
-	vehiculeController.selectVehicueOfAGivenAgent
-);
+vehiculeRouter.get('/agents/:id',vehiculeController.selectVehicuesOfAGivenAgent);
 
 export default vehiculeRouter;
 

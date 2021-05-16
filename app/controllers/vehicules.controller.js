@@ -113,7 +113,6 @@ const createVehicule = async (req, res) => {
   // Afficher les détails de tous les véhicules Get all from database 
 
   const getAllVehicule = async (req,res)=> {
-    // Retrieve all Tutorials from the database.
     
     Vehicule.findAll()
     .then(data => {

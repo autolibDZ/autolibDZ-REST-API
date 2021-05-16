@@ -25,11 +25,8 @@ app.use('/api/vehicules',vehiculeRouter);
 app.use('/api/abonnement', abonnementRouter);
 app.use('/api/locataire', locataireRouter);
 
-// Vehicule Route
-app.use('/api/vehicules', vehiculeRouter);
-
 // Vehicule Route Of A Given Agent
-app.use('/api/vehicules/agents/:id', vehiculeRouter);
+//app.use('/api/vehicules/agents/:id', vehiculeRouter);
 
 //Home
 app.use((req, res) => {
