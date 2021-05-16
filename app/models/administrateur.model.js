@@ -1,3 +1,6 @@
+var bcrypt = require("bcryptjs");
+var jwt = require("jsonwebtoken");
+
 module.exports = function(sequelize, Sequelize) {
     const Administrateur = sequelize.define("administrateur", {
         idAdministrateur: {
@@ -19,7 +22,8 @@ module.exports = function(sequelize, Sequelize) {
         salaire: {
             type: Sequelize.DOUBLE
         }
-    }, {
+    },
+    {
         freezeTableName: true,
         tableName: 'administrateur',
         createdAt: false,

@@ -61,17 +61,15 @@ module.exports = function(sequelize, Sequelize) {
             updatedAt: false
         }
     );
-
-    //  Déclaration des clès étrangères
-    // Vehicule.associate = function(models) {
-    //     Vehicule.belongsTo(models.utilisateur, {
-    //         foreignKey: 'idAgentMaintenace',
-    //     });
-
-    //     Vehicule.belongsTo(models.borne, {
-    //         foreignKey: 'idBorne',
-    //     });
-    // }
+    // Déclaration des clès étrangères
+     Vehicule.associate = (models) => {
+         Vehicule.belongsTo(models.utilisateur, {
+        foreignKey: 'idAgentMaintenace',
+         });
+    Vehicule.belongsTo(models.borne, {
+           foreignKey: 'idBorne',
+         });
+    }
 
     return Vehicule;
 };
