@@ -22,30 +22,30 @@ const selectVehicues = async (req, res) => {
 	}
 };
 
-const getVehiculeDetails = async (req, res) => {
+const getVehiculeDetails = async (req, res, next) => {
 	try {
-		const vehicule = await Vehicule.findAll({
-			where: {
-				numChassis: +req.params.numChassis,
-			},
-		});
-		if (vehicule.length === 0) {
-			// No content with that numChassis
-			res.status(404).send({
-				error: 'not_found',
-				message: `No vehicule with such numero chassis: ${+req.params
-					.numChassis}`,
-				status: 404,
+		if (parseInt(req.params.numChassis, 10)) {
+			const vehicule = await Vehicule.findAll({
+				where: {
+					numChassis: +req.params.numChassis,
+				},
 			});
-		} else {
-			res.status(200).send(vehicule[0]);
-		}
+			if (vehicule.length === 0) {
+				// No content with that numChassis
+				res.status(404).send({
+					error: 'not_found',
+					message: `No vehicule with such numero chassis: ${+req.params
+						.numChassis}`,
+					status: 404,
+				});
+			} else {
+				res.status(200).send(vehicule[0]);
+			}
+		} else next();
 	} catch (err) {
 		res.status(500).send({
 			error:
-				err.message ||
-				'Some error occured while retreiving vehicules agent id: ' +
-					req.params.id,
+				err.message || 'Some error occured while retreiving vehicules details',
 		});
 	}
 };
@@ -124,8 +124,60 @@ const setEtatVehicule = async (req, res) => {
 		res.status(500).send({
 			error:
 				err.message ||
-				'Some error occured while retreiving vehicules agent id: ' +
-					req.params.id,
+				'Some error occured while attemping to set state of vehicule id ' +
+					req.params.numChassis,
+		});
+	}
+};
+
+const getVehiculesEnService = async (req, res) => {
+	try {
+		const vehiculesEnService = await Vehicule.findAll({
+			where: {
+				etat: 'en service',
+			},
+		});
+		if (vehiculesEnService.length === 0) {
+			// No content
+			res.status(404).send({
+				error: 'not_found',
+				message: `No vehicules are 'en service'`,
+				status: 404,
+			});
+		} else {
+			res.status(200).send(vehiculesEnService);
+		}
+	} catch (err) {
+		res.status(500).send({
+			error:
+				err.message ||
+				"Some error occured while retreiving vehicules 'en service'",
+		});
+	}
+};
+
+const getVehiculesHorsService = async (req, res) => {
+	try {
+		const vehiculesHorsService = await Vehicule.findAll({
+			where: {
+				etat: 'hors service',
+			},
+		});
+		if (vehiculesHorsService.length === 0) {
+			// No content
+			res.status(404).send({
+				error: 'not_found',
+				message: `No vehicules are 'hors service'`,
+				status: 404,
+			});
+		} else {
+			res.status(200).send(vehiculesHorsService);
+		}
+	} catch (err) {
+		res.status(500).send({
+			error:
+				err.message ||
+				"Some error occured while retreiving vehicules 'hors service'",
 		});
 	}
 };
@@ -135,4 +187,6 @@ export default {
 	selectVehicues,
 	getVehiculeDetails,
 	selectVehicuesOfAGivenAgent,
+	getVehiculesEnService,
+	getVehiculesHorsService,
 };
