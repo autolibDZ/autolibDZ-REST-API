@@ -1,3 +1,4 @@
+
 {
     "name": "autolibdz",
     "version": "1.0.0",
@@ -35,4 +36,5 @@
         "jasmine": "^3.7.0",
         "rimraf": "^3.0.2"
     }
+
 }

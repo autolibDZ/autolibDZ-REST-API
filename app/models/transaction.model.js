@@ -1,8 +1,7 @@
 module.exports = function(sequelize, Sequelize) {
-    const Abonnement = sequelize.define("transaction", {
+    const Transaction = sequelize.define("transaction", {
         idTransaction: {
             type: Sequelize.INTEGER,
-            //autoIncrement: true,
             primaryKey: true
         },
         dateTransaction: {
@@ -31,5 +30,5 @@ module.exports = function(sequelize, Sequelize) {
         updatedAt: false
     });
 
-    return Borne;
+    return Transaction;
 };
