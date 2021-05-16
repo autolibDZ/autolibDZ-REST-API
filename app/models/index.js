@@ -33,7 +33,6 @@ try {
 }
 
 
-
 db.abonnement = require("./abonnement.model")(sequelize, Sequelize);
 db.vehicules = require('./vehicule.model')(sequelize, Sequelize);
 db.locataire = require("./locataire.model")(sequelize, Sequelize);

@@ -5,15 +5,14 @@ import bodyParser from 'body-parser'
 import db from './models/index'
 import abonnementRouter from './routes/abonnement.route'
 import locataireRouter from './routes/locataire.route'
-import vehiculesRouter from './routes/vehicule.route';
+import vehiculeRouter from './routes/vehicule.route';
 import borneRoute from './routes/borne.route'
-
-
 import authRouter from './routes/auth.route';
 import administrateurRouter from './routes/administrateur.route'
 import operateurRouter from './routes/operateur.route'
 import agentRouter from './routes/agent.route'
 import dirigeantRouter from './routes/dirigeant.route'
+
 
 
 dotenv.config();
@@ -29,6 +28,7 @@ app.use(bodyParser.json());
 db.sequelize.sync();
 
 
+app.use('/api/vehicules',vehiculeRouter); 
 app.use('/api/abonnement', abonnementRouter);
 
 app.use('/api/locataire', locataireRouter);
@@ -37,14 +37,10 @@ app.use('/api/agent',agentRouter)
 app.use('/api/operateur',operateurRouter)
 app.use('/api/dirigeant',dirigeantRouter)
 
-// Vehicule Route
-app.use('/api/vehicules', vehiculesRouter);
 
 //auth Router
 app.use('/api/auth', authRouter);
 
-// Vehicule Route Of A Given Agent
-app.use('/api/vehicules/agents/:id', vehiculesRouter);
 
 
 // Borne Route
