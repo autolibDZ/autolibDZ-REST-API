@@ -104,7 +104,7 @@ describe('Borne route test', () => {
         });
 
 
-        it('returns 404 When borne exists', (done) => {
+        it('returns 400 When borne exists', (done) => {
             request
                 .post('/')
                 .send({
@@ -117,7 +117,7 @@ describe('Borne route test', () => {
                     "nbPlaces": 9
                 })
                 .set('Accept', 'application/json')
-                .expect(404)
+                .expect(400)
                 .expect('Content-Type', /json/)
                 .end((err, res) => {
                     if (err) done(err);
