@@ -12,22 +12,28 @@ const loginLocataire = async(req, res, next ) => {
         if (!email || !motdepasse) {
             res.status(400).send({success: false, error: "Please provide and email and password"})
         }
-        // check for user
-        const locataire = await Locataire.findOne({where: {email : email}})
-        if (!locataire ) {
-            res.status(401).send({success: false, error: "Invalid credentials"})
+        // check for locataire
+        else{
+            const locataire = await Locataire.findOne({where: {email : email}})
+            if (!locataire ) {
+                res.status(401).send({success: false, error: "Invalid credentials"})
+            }
+
+            else {
+        
+                const motdepasseCorrect= await bcrypt.compare(motdepasse,locataire.motDePasse);
+
+                if(!motdepasseCorrect){
+                    res.status(401).send({success: false, error: "Invalid credentials"})
+
+                }
+                else {
+                const token = jwt.sign({ id: locataire.idLocataire, role: "locataire"},process.env.JWT_SECRET) ;
+                res.send({success: true, token: token });
+        //console.log("locataires connection established!")
+                }
+            }
         }
-
-        const motdepasseCorrect= await bcrypt.compare(motdepasse,locataire.motDePasse);
-
-        if(!motdepasseCorrect){
-            res.status(401).send({success: false, error: "Invalid credentials"})
-
-        }
-
-        const token = jwt.sign({ id: locataire.idLocataire, role: "locataire"},process.env.JWT_SECRET) ;
-        res.send({success: true, token: token });
-
 }
 
 
@@ -38,22 +44,27 @@ const loginAgent = async(req, res, next ) => {
     if (!email || !motdepasse) {
         res.status(400).send({success: false, error: "Please provide and email and password"})
     }
-    // check for user
-    const agent = await Agent.findOne({email : email})
-    if (!agent ) {
-        res.status(401).send({success: false, error: "Invalid credentials"})
+    // check for agent
+    else {
+    
+        const agent = await Agent.findOne({email : email})
+        if (!agent ) {
+            res.status(401).send({success: false, error: "Invalid credentials"})
+        }
+
+        else{
+            const motdepasseCorrect= await bcrypt.compare(motdepasse,agent.motDePasse);
+
+            if(!motdepasseCorrect){
+                res.status(401).send({success: false, error: "Invalid credentials"})
+            }
+
+            else {
+                const token = jwt.sign({ id: this.idAgentMaintenance, role: "AgentMaintenance"},process.env.JWT_SECRET) ;
+                res.send({success: true, token: token });
+            }
+        }
     }
-
-    const motdepasseCorrect= await bcrypt.compare(motdepasse,agent.motDePasse);
-
-    if(!motdepasseCorrect){
-        res.status(401).send({success: false, error: "Invalid credentials"})
-
-    }
-
-    const token = jwt.sign({ id: this.idAgentMaintenance, role: "AgentMaintenance"},process.env.JWT_SECRET) ;
-    res.send({success: true, token: token });
-
 }
 
 
@@ -64,23 +75,28 @@ const loginAgent = async(req, res, next ) => {
     if (!email || !motdepasse) {
         res.status(400).send({success: false, error: "Please provide and email and password"})
     }
-    // check for user
-    const admin = await Administrateur.findOne({email : email})
-    if (!admin ) {
-        res.status(401).send({success: false, error: "Invalid credentials"})
+    // check for admin
+    else{ 
+        const admin = await Administrateur.findOne({email : email})
+        if (!admin ) {
+            res.status(401).send({success: false, error: "Invalid credentials"})
+        }
+
+        else{
+            const motdepasseCorrect= await bcrypt.compare(motdepasse,admin.mdp);
+
+            if(!motdepasseCorrect){
+                res.status(401).send({success: false, error: "Invalid credentials"})
+            }
+            else {
+                const token = jwt.sign({ id: admin.idAdministrateur, role: "administrateur"},process.env.JWT_SECRET) ;
+                res.send({success: true, token: token });
+            }
+        }
     }
-
-    const motdepasseCorrect= await bcrypt.compare(motdepasse,admin.mdp);
-
-    if(!motdepasseCorrect){
-        res.status(401).send({success: false, error: "Invalid credentials"})
-
-    }
-
-    const token = jwt.sign({ id: admin.idAdministrateur, role: "administrateur"},process.env.JWT_SECRET) ;
-    res.send({success: true, token: token });
-
 }
+
+
 
 export default {
     loginLocataire , loginAdmin, loginAgent
