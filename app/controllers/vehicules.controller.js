@@ -28,9 +28,9 @@ const createVehicule = async (req, res) => {
       limiteurVitesse: req.body.limiteurVitesse, 
     };
 
-    // Save Vehicule in the database
+    // Ajout d'un véhicule à la base de données
     try{
-     data = await Vehicule.create(vehicule)
+      data = await Vehicule.create(vehicule)
      .then(data => {
       res.send(data);
      }); 
@@ -42,7 +42,8 @@ const createVehicule = async (req, res) => {
     }
      
   };
-  ///// 
+
+  // Suppresion d'un véhicule 
   const deleteVehicule = async (req, res) => {
       const id = req.params.id;
     
@@ -68,8 +69,86 @@ const createVehicule = async (req, res) => {
           });
         });
     };
+
+    // Mise à jour d'un véhicule 
+  const updateVehicule= async (req, res) => {
+    const id = req.params.id;
   
+    Vehicule.update(req.body, {
+      where: { numChassis: id }
+    })
+      .then(num => {
+        if (num == 1) {
+          res.send({
+            message: "Vehicule was updated successfully."
+          });
+        } else {
+          res.send({
+            message: `Cannot update Vehicule with id=${id}. Maybe Tutorial was not found or req.body is empty!`
+          });
+        }
+      })
+      .catch(err => {
+        res.status(500).send({
+          message: "Error updating Vehicule with id=" + id
+        });
+      });
+  };
+
+  // Afficher les détails d'un seul véhicule 
+  const getOneVehicule= async (req, res) => {
+    const id = req.params.id;
+  
+    Vehicule.findByPk(id)
+      .then(data => {
+        res.send(data);
+      })
+      .catch(err => {
+        res.status(500).send({
+          message: "Error retrieving Tutorial with id=" + id
+        });
+      });
+  };
+
+  // Afficher les détails de tous les véhicules Get all from database 
+
+  const getAllVehicule = async (req,res)=> {
+    // Retrieve all Tutorials from the database.
+    
+    Vehicule.findAll()
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: "Error retrieving Tutorial with id=" + id
+      });
+    });
+  }
+  
+  //Afficher les vehicules selon un état donné (Réservé, non réservé, en panne, en cirulcation ou en maintenance) 
+ /* const getVehiculeByCondition = (req, res) => {
+    const etat = req.query.etat;
+    var condition = etat ? { etat: { [Op.like]: `%${etat}%` } } : null;
+  
+    Vehicule.findAll({ where: condition })
+      .then(data => {
+        res.send(data);
+      })
+      .catch(err => {
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while retrieving tutorials."
+        });
+      });
+  };
+
+*/ 
   export default {
     createVehicule, 
-    deleteVehicule
+    deleteVehicule, 
+    updateVehicule,
+    getOneVehicule, 
+    getAllVehicule,
+    //getVehiculeByCondition
   }

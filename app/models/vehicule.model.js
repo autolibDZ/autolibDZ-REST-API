@@ -23,7 +23,8 @@
           allowNull: false
       }, 
       etat: {
-          type: Sequelize.STRING(50), 
+          type: Sequelize.ENUM,
+          values: ['réservé','Nonréservé','circulation','panne','maintenance'], 
           allowNull: false
       },
       tempsDeRefroidissement: {
@@ -64,7 +65,7 @@
   //  Déclaration des clès étrangères     
   vehicule.associate = function (models){
     vehciule.belongsTo(models.utilisateur, {
-      foreignKey:'idUtilisateur',
+      foreignKey:'idAgentMaintenace',
     });
 
     vehciule.belongsTo(models.borne, {
