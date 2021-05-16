@@ -4,7 +4,8 @@ module.exports = function (sequelize, Sequelize) {
     idBorne: {
       type: Sequelize.INTEGER,
       primaryKey: true,
-      AutoIncrement: true,
+      autoIncrement: true,
+      
     },
     
     nomBorne: {
@@ -42,10 +43,13 @@ module.exports = function (sequelize, Sequelize) {
     },
   },
   {
+
     freezeTableName: true,
     tableName: 'borne',
     createdAt: false,
-    updatedAt: false
+    updatedAt: false,
+  
+    
   }
   );
 

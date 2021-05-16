@@ -9,24 +9,10 @@ const Borne = db.borne;
 
 const createBorne = async (req, res) => {
 
-  // Validate request
-
-  /* if (!req.body.idBorne) {
- 
-     res.status(400).send({
- 
-       message: "Content can not be empty!"
- 
-     });
- 
-     return;
-   }*/
 
   // Create a Borne
 
   const borne = {
-
-    idBorne: req.body.idBorne,
     nomBorne: req.body.nomBorne,
     wilaya: req.body.wilaya,
     commune: req.body.commune,
@@ -40,21 +26,29 @@ const createBorne = async (req, res) => {
   // Save Borne in the database
 
   try {
+    let result = await Borne.findAll({
+      where: {
+        nomBorne: req.body.nomBorne,
+        wilaya: req.body.wilaya,
+        commune: req.body.commune,
+        latitude: req.body.latitude,
+        longitude: req.body.longitude,
+        nbVehicules: req.body.nbVehicules,
+        nbPlaces: req.body.nbPlaces
+      }
+     
+    })
 
-    const data = await Borne.create(borne)
-    if (data != null && data.length != 0) {
-      console.log(data);
-
-      res.send(data);
-    }
-    else {
+    if (result.length > 0) {
       res.status(404).send({
 
         message: "Borne already exists!"
 
       })
+    } else {
+      let data = await Borne.create(borne)
+      res.send(data);
     }
-
   }
   catch (err) {
 
@@ -150,7 +144,7 @@ const getBorne = async (req, res) => {
 
       res.status(404).send({
 
-        message: "Borne with id" + id + " does not exist"
+        message: "Borne with id " + id + " does not exist"
 
       })
     }

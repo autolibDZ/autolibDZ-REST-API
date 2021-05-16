@@ -1,59 +1,150 @@
-var request = require("request");
-var base_url = "http://localhost:4000"
+const Request = require('supertest');
+request = Request('http://localhost:4000/api/bornes');
 
-describe("Test get one borne", function () {
-    describe("GET/", function () {
-        it("returns status code 200", function (done) {
-            request.get(base_url, function (error, response, body) {
-                expect(response.statusCode).toBe(200);
-                done();
-            });
+describe('Borne route test', () => {
+    describe('getBorne 1st scenario', () => {
+
+        it('returns 200 OK when using an exesting id 1', (done) => {
+            request
+                .get('/1')
+                .expect(200)
+                .expect('Content-Type', 'application/json; charset=utf-8')
+                .end((err, res) => {
+                    if (err) done(err);
+
+                    expect(function (res) {
+                        res.body.nomBorne = "Grande Poste";
+                        res.body.wilaya = "Alger";
+                        res.body.commune = "Grande Poste";
+                        res.body.latitude = 36.7731;
+                        res.body.longitude = 3.0595;
+                        res.body.nbVehicule = 20;
+                        res.body.nbPlaces = 9
+                    })
+
+                    done();
+                });
+
         });
 
-        it("get borne by id", function (done) {
-            request.get("http://localhost:4000/api/bornes/1", function (error, response, body) {
-                expect(JSON.parse(body)).toEqual({ idBorne: 1, nomBorne: 'Grande Poste', wilaya: 'Alger', commune: 'Grande Poste', latitude: 36.7731, longitude: 3.0595, nbVehicules: 20, nbPlaces: 9 });
-               // console.log(body);
-                done();
-            });
+
+        it('returns 404 Not found when using an non exesting id 4', (done) => {
+            request
+                .get('/4')
+                .expect(404)
+                .expect('Content-Type', 'application/json; charset=utf-8')
+                .end((err, res) => {
+                    if (err) done(err);
+
+                    expect(res.body.error == 'Borne with id 4 does not exist')
+
+                    done();
+                });
+
+        });
+
+        it('returns 500  server error when using a wrong id like AA55', (done) => {
+            request
+                .get('/AA55')
+                .expect(500)
+                .expect('Content-Type', 'application/json; charset=utf-8')
+                .end((err, res) => {
+                    if (err) done(err);
+
+                    expect(res.body.error)
+
+                    done();
+                });
+
         });
     });
-});
 
+    describe('getFilteredBornes 2nd scenario', () => {
 
+        it('returns 200 OK when sending an empty filter', (done) => {
+            request
+                .post('/filter')
+                .send({ "filter": '' })
+                .expect(200)
+                .expect('Content-Type', 'application/json; charset=utf-8')
+                .end((err, res) => {
+                    if (err) done(err);
+                    return done();
+                });
 
-/**
- * Test getfilteredBornes method
- */
-describe("get all bornes", function () {
-    describe("post/filter", function () {
-
-
-        it("get filtered brones", function (done) {
-
-            request.post({ url: "http://localhost:4000/api/bornes/filter", form: { "filter": "" } }, function (error, response, body) {
-                expect(JSON.parse(body)).toEqual([{ idBorne: 1, nomBorne: 'Grande Poste', wilaya: 'Alger', commune: 'Grande Poste', latitude: 36.7731, longitude: 3.0595, nbVehicules: 20, nbPlaces: 9 }]);
-
-                //console.log(body);
-                done();
-            });
         });
+
     });
-});
 
-/**
- * Test "createBorne" method
- */
-describe("add borne", function () {
-    describe("post/", function () {
+    describe('createBorne 3rd scenario', () => {
 
+        it('returns 200 OK when sending borne params that doesn"t exist in db', (done) => {
+            request
+                .post('/')
+                .send({
+                    "nomBorne": "Bab El Oued",
+                    "wilaya": "Alger", 
+                    "commune": "Bab El Oued",
+                    "latitude": 59.99,
+                    "longitude": 60,
+                    "nbVehicule": 30,
+                    "nbPlaces": 5
+                })
+                .set('Accept', 'application/json')
+                .expect(200)
+                .expect('Content-Type', /json/)
+                .end((err, res) => {
+                    if (err) done(err);
 
-        it("add one borne", function (done) {
+                    expect(res.body.error)
 
-            request.post({ url: "http://localhost:4000/api/bornes", form: { "idBorne": 2, "nomBorne": 'Bab El Oued', "wilaya": 'Alger', "commune": 'Bab El Oued', "latitude": 59.99, "longitude": 60, "nbVehicules": 19, "nbPlaces": 8 } }, function (error, response, body) {
-                expect(response.statusCode).toBe(500);
-                done();
-            });
+                    done();
+                });
+
         });
+
+
+        it('returns 404 When borne exists', (done) => {
+           request
+                .post('/')
+                .send({
+                    "nomBorne": "Grande Poste",
+                    "wilaya": "Alger",
+                    "commune": "Grande Poste",
+                    "latitude": 36.7731,
+                    "longitude": 3.0595,
+                    "nbVehicule": 20,
+                    "nbPlaces": 9
+                })
+                .set('Accept', 'application/json')
+                .expect(404)
+                .expect('Content-Type', /json/)
+                .end((err, res) => {
+                    if (err) done(err);
+                    expect(res.body)
+                    done();
+                });
+        });
+
+        it('returns 500  server error when sending an empty parameter', (done) => {
+            request
+                .post('/')
+                .send({ nomBorne: "Grande Poste", commune: "Grande Poste", latitude: 36.7731, longitude: 3.0595, nbVehicule: 20, nbPlaces: 9 })
+                .set('Accept', 'application/json')
+                .expect(500)
+                .expect('Content-Type', /json/)
+
+                .end((err, res) => {
+                    if (err) done(err);
+
+                    expect(res.body.error)
+
+                    done();
+                });
+
+        });
+
     });
+
 });
+
