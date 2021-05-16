@@ -115,3 +115,43 @@ describe('Testing PUT on /api/vehicules/etat/:numChassis endpoint', () => {
 			});
 	});
 });
+
+describe('Testing GET on /api/vehicules/en-service', () => {
+	it("should return all 'en service' vehicules", (done) => {
+		request
+			.get('/vehicules/en-service')
+			.set('Accept', 'application/json')
+			.expect('Content-Type', /json/)
+			.expect(200)
+			.end((err, res) => {
+				if (err) {
+					done.fail(err);
+				} else {
+					res.body.forEach((vehicule) => {
+						expect(vehicule.etat).toBe('en service');
+					});
+					done();
+				}
+			});
+	});
+});
+
+describe('Testing GET on /api/vehicules/hors-service', () => {
+	it("should return all 'hors service' vehicules", (done) => {
+		request
+			.get('/vehicules/hors-service')
+			.set('Accept', 'application/json')
+			.expect('Content-Type', /json/)
+			.expect(200)
+			.end((err, res) => {
+				if (err) {
+					done.fail(err);
+				} else {
+					res.body.forEach((vehicule) => {
+						expect(vehicule.etat).toBe('hors service');
+					});
+					done();
+				}
+			});
+	});
+});
