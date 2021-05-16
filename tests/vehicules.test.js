@@ -74,3 +74,44 @@ describe('Testing GET on /api/agents/vehicules/:id endpoint', () => {
 			});
 	});
 });
+
+describe('Testing PUT on /api/vehicules/etat/:numChassis endpoint', () => {
+	it('should return updated rows number and the actual updated vehicule which has numChassis set to 123456', (done) => {
+		request
+			.put('/vehicules/etat/123456')
+			.send({ etat: 'en service' })
+			.set('Accept', 'application/json')
+			.expect('Content-Type', /json/)
+			.expect(200)
+			.end((err, res) => {
+				if (err) {
+					done.fail(err);
+				} else {
+					let { UpdatedRows, UpdatedVehicule } = res.body;
+					UpdatedVehicule = UpdatedVehicule[0];
+					expect(UpdatedRows).toEqual(1);
+					expect(UpdatedVehicule.numChassis).toEqual(123456);
+					done();
+				}
+			});
+	});
+
+	it("should return error status 400, if etat attribut is set to a value different from 'en service' or 'hors service", (done) => {
+		request
+			.put('/vehicules/etat/123456')
+			.send({ etat: 'en hors service' })
+			.set('Accept', 'application/json')
+			.expect('Content-Type', /json/)
+			.expect(400)
+			.end((err, res) => {
+				if (err) {
+					done.fail(err);
+				} else {
+					expect(res.body.message).toBe(
+						"Attribute 'etat' must be either 'en service' or 'hors service'"
+					);
+					done();
+				}
+			});
+	});
+});

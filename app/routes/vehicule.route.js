@@ -14,4 +14,6 @@ vehiculesRouter.get(
 	vehiculesController.selectVehicuesOfAGivenAgent
 );
 
+vehiculesRouter.put('/etat/:numChassis', vehiculesController.setEtatVehicule);
+
 export default vehiculesRouter;
