@@ -1,11 +1,13 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import cors from 'cors';
-import bodyParser from 'body-parser';
-import db from './models/index';
-import abonnementRouter from './routes/abonnement.route';
-import locataireRouter from './routes/locataire.route';
+import express from 'express'
+import dotenv from 'dotenv'
+import cors from 'cors'
+import bodyParser from 'body-parser'
+import db from './models/index'
+import abonnementRouter from './routes/abonnement.route'
+import locataireRouter from './routes/locataire.route'
 import vehiculesRouter from './routes/vehicule.route';
+
+import authRouter from './routes/auth.route';
 import administrateurRouter from './routes/administrateur.route'
 import operateurRouter from './routes/operateur.route'
 import agentRouter from './routes/agent.route'
@@ -36,6 +38,9 @@ app.use('/api/dirigeant',dirigeantRouter)
 // Vehicule Route
 app.use('/api/vehicules', vehiculesRouter);
 
+//auth Router
+app.use('/api/auth', authRouter);
+
 // Vehicule Route Of A Given Agent
 app.use('/api/vehicules/agents/:id', vehiculesRouter);
 
@@ -43,7 +48,6 @@ app.use('/api/vehicules/agents/:id', vehiculesRouter);
 //Home
 app.use((req, res) => {
     res.send('<h1>Welcome to AutolibDZ REST API</h1>');
-
 });
 
 module.exports = app;

@@ -1,4 +1,5 @@
 const db = require("../models");
+const bcrypt = require("bcryptjs")
 const Locataire = db.locataire;
 const validator = require('validator');
 var bcrypt = require('bcryptjs');
@@ -35,6 +36,7 @@ const createLocataire = async(req, res) => {
 
         })
 
+
     var locataire = {
 
         nom: req.body.nom,
@@ -48,6 +50,7 @@ const createLocataire = async(req, res) => {
     var hash = bcrypt.hashSync(locataire.motDePasse, salt);
     locataire.motDePasse = hash;
 
+ 
     // Enregistrer le locataire dans la BDD
     Locataire.create(locataire)
         .then(data => {
@@ -134,10 +137,23 @@ const findAll = (req, res) => {
         });
 };
 
+const  findOne = async(req, res) => {
+
+    Locataire.findOne({ where: {idLocataire: req.params.id} })
+        .then(data => {
+            res.send(data);
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: err.message || "Some error occurred while retrieving locataire."
+            }); 
+        });
+};
 
 
 export default {
     createLocataire,
     findAll,
+    findOne,
     createLocataireGmail
 }

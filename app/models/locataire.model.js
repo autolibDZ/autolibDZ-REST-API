@@ -1,3 +1,6 @@
+var bcrypt = require("bcryptjs");
+var jwt = require("jsonwebtoken");
+
 module.exports = function(sequelize, Sequelize) {
     const Locataire = sequelize.define("locataire", {
         idLocataire: {
@@ -21,13 +24,13 @@ module.exports = function(sequelize, Sequelize) {
         Active: {
             type: Sequelize.BOOLEAN
         },
-    }, {
+    },
+     {
         freezeTableName: true,
         tableName: 'locataire',
         createdAt: false,
         updatedAt: false
     });
-
 
     return Locataire;
 };
