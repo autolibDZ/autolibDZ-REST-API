@@ -151,7 +151,7 @@ describe('Borne route test', () => {
 
         it('returns 200 OK when getting all bornes', (done) => {
             request
-                .post('/all')
+                .get('/all')
                 .set('Accept', 'application/json')
                 .expect(200)
                 .expect('Content-Type', /json/)
