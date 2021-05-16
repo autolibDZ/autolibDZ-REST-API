@@ -22,48 +22,41 @@ const createLocataire = async(req, res) => {
         return;
     }
     //Pour tester l'existance de l'email
-    Locataire.findAll({ where: 1 === 1 })
-        .then(data => {
-            data.forEach(element => {
-                if (element.email === req.body.email) {
-                    res.status(400).send({
-                        message: "Email déja existé"
-                    });
-                    return;
-                }
-            });
-
-        })
-
-
-    var locataire = {
-
-        nom: req.body.nom,
-        prenom: req.body.prenom,
-        email: req.body.email,
-        motDePasse: req.body.motdepasse
-
-    };
-    //Pour hasher le mot de passe 
-    var salt = bcrypt.genSaltSync(10);
-    var hash = bcrypt.hashSync(locataire.motDePasse, salt);
-    locataire.motDePasse = hash;
-
-
-    // Enregistrer le locataire dans la BDD
-    Locataire.create(locataire)
-        .then(data => {
-            //Création reussite
-            res.status(200).send({
-                message: "Création réuissite"
-            });
-        })
-        .catch(err => {
-            //Création non reussite
-            res.status(500).send({
-                message: "Une erreur  lors de la création de locataire"
-            });
+    const locataires = Locataire.findOne({ where: { email: req.body.email } })
+    if (locataires) {
+        res.status(400).send({
+            message: "Email déja existé"
         });
+    } else {
+        var locataire = {
+
+            nom: req.body.nom,
+            prenom: req.body.prenom,
+            email: req.body.email,
+            motDePasse: req.body.motdepasse
+
+        };
+        //Pour hasher le mot de passe 
+        var salt = bcrypt.genSaltSync(10);
+        var hash = bcrypt.hashSync(locataire.motDePasse, salt);
+        locataire.motDePasse = hash;
+
+
+        // Enregistrer le locataire dans la BDD
+        Locataire.create(locataire)
+            .then(data => {
+                //Création reussite
+                res.status(200).send({
+                    message: "Création réussite"
+                });
+            })
+            .catch(err => {
+                //Création non reussite
+                res.status(500).send({
+                    message: "Une erreur  lors de la création de locataire"
+                });
+            });
+    }
 
 };
 // La creation d'un locataire via gmail
@@ -79,47 +72,43 @@ const createLocataireGmail = async(req, res) => {
         const userid = payload['sub'];
 
         //Pour tester l'existance de l'email
-        Locataire.findAll({ where: 1 === 1 })
-            .then(data => {
-                data.forEach(element => {
-                    if (element.email === payload.email) {
-                        res.status(400).send({
-                            message: "Email déja existé"
-                        });
-                        return;
-                    }
-                });
-
-            })
-        var locataire = {
-
-            nom: payload.given_name,
-            prenom: payload.family_name,
-            email: payload.email,
-            motDePasse: payload.email + payload.name //Un mot de passe par defaut
-
-        };
-        //Pour hasher le mot de passe 
-        var salt = bcrypt.genSaltSync(10);
-        var hash = bcrypt.hashSync(locataire.motDePasse, salt);
-        locataire.motDePasse = hash;
-
-        // Enregistrer le locataire dans la BDD
-        Locataire.create(locataire)
-            .then(data => {
-                //Création reussite
-                res.status(200).send({
-                    message: "Création réuissite"
-                });
-            })
-            .catch(err => {
-                //Création non reussite
-                res.status(500).send({
-                    message: "Une erreur  lors de la création de locataire"
-                });
+        const locataires = Locataire.findOne({ where: { email: req.body.email } })
+        if (locataires) {
+            res.status(400).send({
+                message: "Email déja existé"
             });
+        } else {
 
 
+            var locataire = {
+
+                nom: payload.given_name,
+                prenom: payload.family_name,
+                email: payload.email,
+                motDePasse: payload.email + payload.name //Un mot de passe par defaut
+
+            };
+            //Pour hasher le mot de passe 
+            var salt = bcrypt.genSaltSync(10);
+            var hash = bcrypt.hashSync(locataire.motDePasse, salt);
+            locataire.motDePasse = hash;
+
+            // Enregistrer le locataire dans la BDD
+            Locataire.create(locataire)
+                .then(data => {
+                    //Création reussite
+                    res.status(200).send({
+                        message: "Création réussite"
+                    });
+                })
+                .catch(err => {
+                    //Création non reussite
+                    res.status(500).send({
+                        message: "Une erreur  lors de la création de locataire"
+                    });
+                });
+
+        }
     }
     verify().catch(console.error);
 
