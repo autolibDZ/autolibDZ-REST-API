@@ -1,5 +1,4 @@
 const db = require("../models");
-const bcrypt = require("bcryptjs")
 const Locataire = db.locataire;
 const validator = require('validator');
 var bcrypt = require('bcryptjs');
