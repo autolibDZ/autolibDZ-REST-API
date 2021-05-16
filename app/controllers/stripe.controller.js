@@ -1,5 +1,5 @@
 
-const stripe = require("stripe")("pk_test_51IpB9FFlA46GQCJtPCuVBzXAaWbT4Nwiy6RchGcxO2OeOHNLrQXBm0TgR4LcICPZQ9cgMKqkytKN2pUU9vGjkZSw00WhixIzkx");
+const stripe = require("stripe")("sk_test_51IpB9FFlA46GQCJtlgmMqZV1YLYJ8I4csD2ybXJKu7uNu2prvmTHIEMQ6r06tyXVU0vvTmqBdlVcmiujf6G6jUiI008woZKPpw");
 
 const createPyementIntent = async (req, res) => {
 
