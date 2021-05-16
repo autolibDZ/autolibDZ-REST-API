@@ -24,7 +24,9 @@ app.use(bodyParser.json());
 db.sequelize.sync();
 
 
+
 app.use('/api/abonnement', abonnementRouter);
+
 app.use('/api/locataire', locataireRouter);
 app.use('/api/administrateur',administrateurRouter)
 app.use('/api/agent',agentRouter)
