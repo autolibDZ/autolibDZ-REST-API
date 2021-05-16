@@ -47,5 +47,7 @@ db.planMaintenance = require("./planMaintenance.model")(sequelize, Sequelize);
 db.reclamation = require("./paiement.model")(sequelize, Sequelize);
 db.tarif = require('./tarif.model')(sequelize, Sequelize);
 db.trajet = require("./trajet.model")(sequelize, Sequelize);
+db.reservation = require("./reservation.model")(sequelize, Sequelize);
+
 
 module.exports = db;
