@@ -1,83 +1,82 @@
+module.exports = function(sequelize, Sequelize) {
+    const Vehicule = sequelize.define(
+        'vehicule', {
+            numChassis: {
+                type: Sequelize.INTEGER,
+                primaryKey: true,
+            },
+            numImmatriculation: {
+                type: Sequelize.INTEGER,
+            },
+            modele: {
+                type: Sequelize.STRING(50),
+                allowNull: false
+            },
+            marque: {
+                type: Sequelize.STRING(50),
+                allowNull: false
+            },
+            couleur: {
+                type: Sequelize.STRING,
+                allowNull: false
+            },
+            etat: {
+                type: Sequelize.STRING,
+            },
+            tempsDeRefroidissement: {
+                type: Sequelize.INTEGER,
+            },
+            pressionHuileMoteur: {
+                type: Sequelize.INTEGER,
+            },
+            chargeBatterie: {
+                type: Sequelize.INTEGER,
+            },
+            anomalieCircuit: {
+                type: Sequelize.STRING,
+            },
+            pressionPneus: {
+                type: Sequelize.INTEGER,
+            },
+            niveauMinimumHuile: {
+                type: Sequelize.INTEGER,
+            },
+            regulateurVitesse: {
+                type: Sequelize.INTEGER,
+            },
+            limiteurVitesse: {
+                type: Sequelize.INTEGER,
+            },
+            idAgentMaintenance: {
+                type: Sequelize.INTEGER,
+            },
+            idBorne: {
+                type: Sequelize.INTEGER,
+            }
 
-  module.exports= function (squelize, Sequelize){
-      const Vehicule = squelize.define("vehicule", {
-      numChassis: {
-        type: Sequelize.INTEGER, 
-        primaryKey: true,
-      },
-      
-      numImmatriculation: {
-          type: Sequelize.INTEGER,
-          allowNull: false
-      }, 
-      modele: {
-          type: Sequelize.STRING(50),
-          allowNull: false
-      }, 
-      marque: {
-          type: Sequelize.STRING(50), 
-          allowNull: false
-      }, 
-      couleur: {
-          type: Sequelize.STRING(50), 
-          allowNull: false
-      }, 
-      etat: {
-          type: Sequelize.ENUM,
-          values: ['réservé','Nonréservé','circulation','panne','maintenance'], 
-          allowNull: false
-      },
-      tempsDeRefroidissement: {
-          type: Sequelize.INTEGER, 
-          allowNull: false
-      }, 
-      pressionHuileMoteur : {
-        type: Sequelize.INTEGER, 
-        allowNull: false
-      }, 
-      chargeBatterie: {
-          type: Sequelize.INTEGER, 
-          allowNull: false
-      }, 
-      anomalieCircuit: {
-          type: Sequelize.STRING(30),
-          allowNull: false
-      },
-      pressionPneus: {
-        type: Sequelize.INTEGER,
-        allowNull: false
-      },
-      niveauMinimumHuile: {
-        type: Sequelize.INTEGER,
-        allowNull: false
-      },
-      regulateurVitesse: {
-        type: Sequelize.INTEGER,
-        allowNull: false
-      }, 
-      limiteurVitesse: {
-        type: Sequelize.INTEGER,
-        allowNull: false
-      }, 
-      
-      }); 
-/*
-  //  Déclaration des clès étrangères     
-  vehicule.associate = function (models){
-    vehciule.belongsTo(models.utilisateur, {
-      foreignKey:'idAgentMaintenace',
-    });
+        }, {
+            freezeTableName: true,
+            tableName: 'vehicule',
+            createdAt: false,
+            updatedAt: false
+        }
+    );
 
-    vehciule.belongsTo(models.borne, {
-      foreignKey:'idBorne',
-    });
-  }*/ 
-      return Vehicule; 
-  }
+    //  Déclaration des clès étrangères
+    // Vehicule.associate = function(models) {
+    //     Vehicule.belongsTo(models.utilisateur, {
+    //         foreignKey: 'idAgentMaintenace',
+    //     });
 
+    //     Vehicule.belongsTo(models.borne, {
+    //         foreignKey: 'idBorne',
+    //     });
+    // }
 
+    return Vehicule;
+};
 
-  /*
+ /*
 {
   "numChassis":"323456789",
   "numImmatriculation":"123",
