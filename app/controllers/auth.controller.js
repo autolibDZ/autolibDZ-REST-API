@@ -83,7 +83,7 @@ const loginAgent = async(req, res, next ) => {
         }
 
         else{
-            const motdepasseCorrect= await bcrypt.compare(motdepasse,admin.mdp);
+            const motdepasseCorrect= await bcrypt.compare(motdepasse,admin.motDePasse);
 
             if(!motdepasseCorrect){
                 res.status(401).send({success: false, error: "Invalid credentials"})
