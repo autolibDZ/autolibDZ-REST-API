@@ -5,6 +5,8 @@ import bodyParser from 'body-parser';
 import db from './models/index';
 import abonnementRouter from './routes/abonnement.route';
 import locataireRouter from './routes/locataire.route';
+import adminRouter from './routes/admin.route';
+import agentRouter from './routes/agent.route';
 import vehiculesRouter from './routes/vehicule.route';
 
 dotenv.config();
@@ -19,14 +21,27 @@ app.use(bodyParser.json());
 
 db.sequelize.sync();
 
+
+
+// 
 app.use('/api/abonnement', abonnementRouter);
+
+// Locataire Router
 app.use('/api/locataire', locataireRouter);
+
+// Administrator Router
+app.use('/api/admin', adminRouter);
+
+// Agent de maintenance Router
+app.use('/api/agent', agentRouter);
 
 // Vehicule Route
 app.use('/api/vehicules', vehiculesRouter);
 
 // Vehicule Route Of A Given Agent
 app.use('/api/vehicules/agents/:id', vehiculesRouter);
+
+
 
 //Home
 app.use((req, res) => {

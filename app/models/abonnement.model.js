@@ -1,6 +1,6 @@
 import { Locataire } from './locataire.model'
 
-module.exports = function(sequelize, Sequelize) {
+module.exports = function (sequelize, Sequelize) {
     const Abonnement = sequelize.define("abonnement", {
         //added this
         idAbonnement: {

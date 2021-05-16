@@ -1,39 +1,36 @@
 const db = require("../models");
-const bcrypt = require("bcryptjs");
-const Locataire = db.locataire;
-
+const Agent = db.agent;
+const bcrypt = require('bcryptjs')
 // La creation d'un locataire (lors de l'inscription)
-const createLocataire = async (req, res) => {
+const createAgent = async (req, res) => {
     // Validate request
-    if (!req.body.nom || !req.body.prenom || !req.body.email || !req.body.motdepasse) {
+    if (!req.body.nom || !req.body.prenom || !req.body.email || !req.body.motdepasse || !req.body.salaire) {
         res.status(400).send({
-            success: false,
             message: "Content can not be empty!"
         });
         return;
     }
-
     const salt = await bcrypt.genSalt(10);
     const mdp = await bcrypt.hash(req.body.motdepasse, salt);
 
-    const locataire = {
-
+    const agent = {
         nom: req.body.nom,
         prenom: req.body.prenom,
         email: req.body.email,
-        motDePasse: mdp
+        motDePasse: mdp,
+        salaire: req.body.salaire
 
     };
 
 
     // Enregistrer le locataire dans la BDD
     try {
-        const data = await Locataire.create(locataire)
-        res.send({ success: true });
+        const data = await Agent.create(agent)
+        res.status(200).send({ success: true, message: `Agent ${agent.nom} ${agent.prenom} created successfully` });
 
     } catch (err) {
         res.status(500).send({
-            error: err.message || "Some error occurred while creating the locataire."
+            error: err.message || "Some error occurred while creating the agent."
         });
     }
 
@@ -43,52 +40,51 @@ const createLocataire = async (req, res) => {
 const findAll = (req, res) => {
     var condition = 1 === 1
 
-    Locataire.findAll({ where: condition })
+    Agent.findAll({ where: condition })
         .then(data => {
             if (data.length == 0) {
                 return res.status(400).send({
                     success: false,
-                    message: "No locataires were found"
+                    message: "No agents were found"
                 });
             }
             res.status(200).send(data);
         })
         .catch(err => {
             res.status(500).send({
-                message: err.message || "Some error occurred while retrieving locataire."
+                message: err.message || "Some error occurred while retrieving agents."
             });
         });
 };
 
 const findOne = async (req, res) => {
 
-    Locataire.findOne({ where: { idLocataire: req.params.id } })
+    Agent.findOne({ where: { idAgentMaintenance: req.params.id } })
         .then(data => {
             if (!data) {
                 return res.status(400).send({
-                    message: "Locataire not found"
+                    success: false,
+                    message: "Agent not found"
                 });
             }
             res.status(200).send(data);
         })
         .catch(err => {
             res.status(500).send({
-                success: false,
-                message: err.message || "Some error occurred while retrieving locataire."
+                message: err.message || "Some error occurred while retrieving agent."
             });
         });
 };
-const updateLocataire = async (req, res) => {
+const updateAgent = async (req, res) => {
     if (req.body.motdepasse) {
         const salt = await bcrypt.genSalt(10);
         req.body.motDePasse = await bcrypt.hash(req.body.motdepasse, salt);
     }
-
-    Locataire.update(req.body, { where: { idLocataire: req.params.id } })
+    Agent.update(req.body, { where: { idAgentMaintenance: req.params.id } })
         .then(result => {
             res.status(200).send({
                 success: true,
-                message: `Locataire  updated successfully`
+                message: `Agent ${req.body.nom} ${req.body.prenom} updated successfully`
             })
         }).catch(err => {
             res.status(400).send({
@@ -97,11 +93,11 @@ const updateLocataire = async (req, res) => {
             })
         })
 }
-const deleteLocataire = async (req, res) => {
-    Locataire.destroy({ where: { idLocataire: req.params.id } }).then(result => {
+const deleteAgent = async (req, res) => {
+    Agent.destroy({ where: { idAgentMaintenance: req.params.id } }).then(result => {
         res.status(200).send({
             success: true,
-            message: `Locataire deleted successfully`
+            message: `Agent deleted successfully`
         })
     }).catch(err => {
         res.status(400).send({
@@ -111,9 +107,9 @@ const deleteLocataire = async (req, res) => {
     })
 }
 export default {
-    createLocataire,
+    createAgent,
     findAll,
     findOne,
-    updateLocataire,
-    deleteLocataire
+    updateAgent,
+    deleteAgent
 }

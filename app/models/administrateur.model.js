@@ -1,8 +1,10 @@
-module.exports = function(sequelize, Sequelize) {
+module.exports = function (sequelize, Sequelize) {
     const Administrateur = sequelize.define("administrateur", {
         idAdministrateur: {
             type: Sequelize.INTEGER,
             primaryKey: true,
+            autoIncrement: true,
+
         },
         nom: {
             type: Sequelize.STRING

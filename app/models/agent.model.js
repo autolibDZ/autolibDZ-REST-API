@@ -1,8 +1,13 @@
-module.exports = function(sequelize, Sequelize) {
+var bcrypt = require("bcryptjs");
+var jwt = require("jsonwebtoken");
+
+module.exports = function (sequelize, Sequelize) {
     const AgentMaintenance = sequelize.define("agentMaintenance", {
         idAgentMaintenance: {
             type: Sequelize.INTEGER,
             primaryKey: true,
+            autoIncrement: true,
+
         },
         nom: {
             type: Sequelize.STRING
@@ -14,16 +19,17 @@ module.exports = function(sequelize, Sequelize) {
             type: Sequelize.STRING
         },
         motDePasse: {
-            type: Sequelize.STRING(255)
+            type: Sequelize.STRING
         },
         salaire: {
             type: Sequelize.DOUBLE
         }
-    }, {
-        freezeTableName: true,
-        tableName: 'agent_maintenance',
-        createdAt: false,
-        updatedAt: false
-    });
+    },
+        {
+            freezeTableName: true,
+            tableName: 'agent_maintenance',
+            createdAt: false,
+            updatedAt: false
+        });
     return AgentMaintenance;
 };

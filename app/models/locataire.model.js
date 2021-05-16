@@ -1,8 +1,9 @@
-module.exports = function(sequelize, Sequelize) {
+module.exports = function (sequelize, Sequelize) {
     const Locataire = sequelize.define("locataire", {
         idLocataire: {
             type: Sequelize.INTEGER,
             primaryKey: true,
+            autoIncrement: true,
         },
         nom: {
             type: Sequelize.STRING(50)
