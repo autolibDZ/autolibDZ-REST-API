@@ -3,7 +3,8 @@ module.exports = function(sequelize, Sequelize) {
         'reservation', {
             idReservation: {
                 type: Sequelize.INTEGER,
-             primaryKey: true,
+            primaryKey: true,
+                autoIncrement: true
             },
             etat: {
                 type: Sequelize.STRING,
@@ -22,17 +23,16 @@ module.exports = function(sequelize, Sequelize) {
             }
 
         },
-
         {
             freezeTableName: true,
             tableName: 'reservation',
             timestamps: true,
             createdAt: false,
             updatedAt: false,
-            initialAutoIncrement: true
-        }
 
+        }
     );
+    return Reservation;
     /* Reservation.associate = function(models) {
          // associations can be defined here
          Reservation.belongsTo(models.utilisateur, {
@@ -46,7 +46,6 @@ module.exports = function(sequelize, Sequelize) {
          });
      };*/
 
-    return Reservation;
 };
 
 /*idVehicule

@@ -1,5 +1,4 @@
-const db = require('../models');
-const Reservation = db.reservation;
+
 
 
 
@@ -18,14 +17,9 @@ const Reservation = db.reservation;
             reservation: { etat, idUtilisateur, numChassis }
         },
     });*/
-
-
-
-
-
-
-
-    const createReservation = async(req, res) => {
+const db = require('../models');
+const Reservation = db.reservation;
+ const createReservation = async(req, res) => {
 
         if (!req.body.etat || !req.body.idVehicule || !req.body.idLocataire|| !req.body.idBorneDepart|| !req.body.idBorneDestination) {
             res.status(400).send({
@@ -33,11 +27,6 @@ const Reservation = db.reservation;
             });
             return;
         }
-
-
-
-
-
         const reservation = {
 
             etat: req.body.etat,
@@ -45,12 +34,10 @@ const Reservation = db.reservation;
             idLocataire: req.body. idLocataire,
             idBorneDepart: req.body. idBorneDepart,
             idBorneDestination: req.body.  idBorneDestination,
-
         };
-
-
        try {
 
+           let data;
            data = await Reservation.create(reservation)
           res.send(data)
 
