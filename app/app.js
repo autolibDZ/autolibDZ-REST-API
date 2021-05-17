@@ -26,8 +26,9 @@ app.use(bodyParser.json());
 
 db.sequelize.sync();
 
-
+//vehicule router
 app.use('/api/vehicules',vehiculeRouter); 
+
 app.use('/api/abonnement', abonnementRouter);
 app.use('/api/locataire', locataireRouter);
 app.use('/api/reservation', reservationRouter);

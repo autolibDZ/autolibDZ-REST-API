@@ -84,7 +84,7 @@ const createVehicule = async (req, res) => {
           });
         } else {
           res.send({
-            message: `Cannot update Vehicule with id=${id}. Maybe Tutorial was not found or req.body is empty!`
+            message: `Cannot update Vehicule with id=${id}. Maybe Vehicule was not found or req.body is empty!`
           });
         }
       })
@@ -120,7 +120,7 @@ const createVehicule = async (req, res) => {
     })
     .catch(err => {
       res.status(500).send({
-        message: "Error retrieving Tutorial with id=" + id
+        message: "Error retrieving Vehicule with id=" + id
       });
     });
   }

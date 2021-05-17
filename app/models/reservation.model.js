@@ -48,7 +48,3 @@ module.exports = function(sequelize, Sequelize) {
 
 };
 
-/*idVehicule
-idLocataire
-idBorneDepart
-idBorneDestination*/

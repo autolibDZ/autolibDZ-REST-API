@@ -1,22 +1,3 @@
-
-
-
-
-
-
-/*exports.createReservation = async (req, res) => {
-    const { etat, idUtilisateur, numChassis } = req.body;
-    const { rows } = await db.query(
-        "INSERT INTO reservation (etat, idUtilisatuer, numChassis) VALUES ($1, $2, $3)",
-        [etat,idUtilisateur, numChassis]
-    );
-
-    res.status(201).send({
-        message: "Reservation added successfully!",
-        body: {
-            reservation: { etat, idUtilisateur, numChassis }
-        },
-    });*/
 const db = require('../models');
 const Reservation = db.reservation;
  const createReservation = async(req, res) => {
@@ -50,11 +31,7 @@ const Reservation = db.reservation;
     };
 
 
-  /*  exports.listAllReservations = async (req, res) => {
-        const response = await db.query('SELECT * FROM reservation ');
-        res.status(200).send(response.rows);
-    };*/
-
+  
 const listAllReservations = (req, res) => {
     var condition = 1 === 1
 
@@ -68,33 +45,6 @@ const listAllReservations = (req, res) => {
             });
         });
 };
-
-    /*exports.findReservationById = async (req, res) => {
-        const Rid = parseInt(req.params.id);
-        const response = await db.query('SELECT * FROM reservation WHERE idReservation = $1', [Rid]);
-        res.status(200).send(response.rows);
-    }
-    exports.updateReservationById = async (req, res) => {
-        const Rid = parseInt(req.params.id);
-        const { etat, idUtilisateur, numChassis  } = req.body;
-
-        const response = await db.query(
-            "UPDATE reservation SET etat = $1, idUtilisateur = $2, numChassis = $3 WHERE idReservation = $4",
-            [etat, idUtilisateur, numChassis, Rid]
-        );
-
-        res.status(200).send({ message: "Product Updated Successfully!" });
-    };
-
-
-    exports.deleteReservationById = async (req, res) => {
-        const Rid = parseInt(req.params.id);
-        await db.query('DELETE FROM reservation WHERE idReservation = $1', [
-            Rid
-        ]);
-
-        res.status(200).send({ message: 'Product deleted successfully!', productId });
-    };*/
 
 const findReservationById = async (req, res) => {
     try {
@@ -114,27 +64,7 @@ const findReservationById = async (req, res) => {
     }
 };
 
-/*const updateReservationById = async (req, res) => {
-    try {
-        const reservation = await Reservation.findByIdAndUpdate(req.params.id);
-        res.status(200).json(reservation);
-    } catch (err) {
-        res.status(500).json({
-            message: err.message,
-        });
-    }
-}*/
-/*const deleteReservationById  = async (req, res) => {
-    try {
-        const reservation = await Reservation.findByIdAndDelete(req.params.id);
-        res.status(200).json(reservation);
-    } catch (err) {
-        res.status(500).json({
-            message: err.message,
-        });
-    }
-}
-*/
+
 const updateReservationById= async (req, res) => {
     const id = req.params.id;
 
@@ -191,5 +121,4 @@ export default {
   findReservationById,
     deleteReservationById,
 updateReservationById,
-   // listAllReservations
 }
