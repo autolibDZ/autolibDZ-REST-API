@@ -6,6 +6,7 @@ import db from './models/index';
 import abonnementRouter from './routes/abonnement.route';
 import locataireRouter from './routes/locataire.route';
 import vehiculesRouter from './routes/vehicule.route';
+import trajetRouter from './routes/trajet.route';
 
 dotenv.config();
 const app = express();
@@ -27,6 +28,10 @@ app.use('/api/vehicules', vehiculesRouter);
 
 // Vehicule Route Of A Given Agent
 app.use('/api/vehicules/agents/:id', vehiculesRouter);
+
+
+// Trajet Route
+app.use('/api/trajet', trajetRouter);
 
 //Home
 app.use((req, res) => {
