@@ -1,7 +1,13 @@
 const db = require('../models');
 const Vehicule = db.vehicules;
 
+/**
+ * Create and save a new Vehicule in database
+ * @param {*} req The request
+ * @param {*} res The response
+ */
 // Create and Save a new Vehicule
+
 const createVehicule = async (req, res) => {
 	// Validate request
 	if (!req.body.numChassis) {
@@ -28,7 +34,7 @@ const createVehicule = async (req, res) => {
 		limiteurVitesse: req.body.limiteurVitesse,
 	};
 
-	// Ajout d'un véhicule à la base de données
+	// Add data to databse 
 	try {
 		data = await Vehicule.create(vehicule).then((data) => {
 			res.send(data);
@@ -40,7 +46,13 @@ const createVehicule = async (req, res) => {
 	}
 };
 
-// Suppresion d'un véhicule
+/**
+ * Delete a vehicule with the specified ID in request body
+ * @param {*} req The request
+ * @param {*} res The response
+ */
+//Delete vehicule with numChassis = id
+
 const deleteVehicule = async (req, res) => {
 	const id = req.params.id;
 
@@ -67,7 +79,12 @@ const deleteVehicule = async (req, res) => {
 		});
 };
 
-// Mise à jour d'un véhicule
+/**
+ * Update a Vehicule that has the specified ID in request body with data in request body
+ * @param {*} req The request
+ * @param {*} res The response
+ */
+//Update vehicule with numChassis = id
 const updateVehicule = async (req, res) => {
 	const id = req.params.id;
 
@@ -92,7 +109,11 @@ const updateVehicule = async (req, res) => {
 		});
 };
 
-// Afficher les détails de tous les véhicules Get all from database
+/**
+ * Return details of all vehicules thar are stored in database
+ * @param {*} req request 
+ * @param {*} res response
+ */
 
 const getAllVehicule = async (req, res) => {
 	Vehicule.findAll()
@@ -106,25 +127,12 @@ const getAllVehicule = async (req, res) => {
 		});
 };
 
-//Afficher les vehicules selon un état donné (Réservé, non réservé, en panne, en cirulcation ou en maintenance)
-/* const getVehiculeByCondition = (req, res) => {
-    const etat = req.query.etat;
-    var condition = etat ? { etat: { [Op.like]: `%${etat}%` } } : null;
-  
-    Vehicule.findAll({ where: condition })
-      .then(data => {
-        res.send(data);
-      })
-      .catch(err => {
-        res.status(500).send({
-          message:
-            err.message || "Some error occurred while retrieving tutorials."
-        });
-      });
-  };
-
-*/
-
+/**
+ * Return vehciule details of the vehicule that has the specified ID in request body
+ * @param {*} req The request
+ * @param {*} res The response
+ */
+//Returne vehiule with numChassis = id
 const getVehiculeDetails = async (req, res, next) => {
 	try {
 		if (parseInt(req.params.numChassis, 10)) {
