@@ -22,7 +22,7 @@ module.exports = function(sequelize, Sequelize) {
             },
             etat: {
                 Type: Sequelize.ENUM , 
-                values: ['circulation', 'en service', 'reserve','hors service ']
+                values: ['circulation', 'en service', 'reserve','hors service']
             },
            
             tempsDeRefroidissement: {
