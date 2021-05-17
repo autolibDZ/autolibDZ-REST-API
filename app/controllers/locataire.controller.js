@@ -34,7 +34,8 @@ const createLocataire = async(req, res) => {
             nom: req.body.nom,
             prenom: req.body.prenom,
             email: req.body.email,
-            motDePasse: req.body.motdepasse
+            motDePasse: req.body.motdepasse,
+            Active : req.body.Active?req.body.Active:false
 
         };
         //Pour hasher le mot de passe 
@@ -86,7 +87,8 @@ const createLocataireGmail = async(req, res) => {
                 nom: payload.given_name,
                 prenom: payload.family_name,
                 email: payload.email,
-                motDePasse: payload.email //Un mot de passe par defaut
+                motDePasse: payload.email, //Un mot de passe par defaut
+                Active : false
 
             };
             //Pour hasher le mot de passe 
@@ -149,7 +151,7 @@ const update = (req, res) => {
    var hash = bcrypt.hashSync(req.body.motDePasse, salt);
     req.body.motDePasse = hash;
     Locataire.update(req.body, {
-      where: { IdUtilisateur: id }
+      where: { idLocataire: id }
     })
       .then(num => {
         if (num == 1) {
@@ -174,7 +176,7 @@ const deleteLocataire = (req, res) => {
   const id = req.params.id;
 
     Locataire.destroy({
-      where: { IdUtilisateur: id }
+      where: { idLocataire: id }
     })
       .then(num => {
         if (num == 1) {
@@ -202,7 +204,7 @@ const block = (req, res) => {
     // Active: true
   }, {
     where: {
-      IdUtilisateur: id
+      idLocataire: id
     }
   }).then(num => {
     if (num == 1) {
