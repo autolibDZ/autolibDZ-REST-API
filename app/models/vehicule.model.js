@@ -21,8 +21,10 @@ module.exports = function(sequelize, Sequelize) {
                 allowNull: false
             },
             etat: {
-                type: Sequelize.STRING,
+                Type: Sequelize.ENUM , 
+                values: ['circulation', 'en service', 'reserve','hors service ']
             },
+           
             tempsDeRefroidissement: {
                 type: Sequelize.INTEGER,
             },
