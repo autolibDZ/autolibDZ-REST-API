@@ -14,8 +14,36 @@ import agentRouter from './routes/agent.route'
 import dirigeantRouter from './routes/dirigeant.route'
 import reservationRouter from './routes/reservation.route'
 
+// // For documentation
+// import SwaggerUI from 'swagger-ui-express';
+
+// const swaggerJsDoc = require('swagger-jsdoc');
+
 dotenv.config();
+
+// Optiens for Swagger
+const options = {
+	definition: {
+		openapi: '3.0.0',
+		info: {
+			title: 'Projet 2CSSIL - AutoLib',
+			version: '1.0.0',
+			description: 'Une application de location de véhicules à libre service',
+		},
+		servers: [
+			{
+				url: 'http://localhost:4000',
+			},
+		],
+	},
+	apis: ['./routes/*.js'],
+};
+
+// const specs = swaggerJsDoc(options);
+
 const app = express();
+
+// app.use('/api-docs', SwaggerUI.serve, SwaggerUI.setup(specs));
 
 // Cross Origin Resources Sharing, Initially all whitelisted
 app.use(cors());
