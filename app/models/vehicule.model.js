@@ -21,7 +21,7 @@ module.exports = function(sequelize, Sequelize) {
                 allowNull: false
             },
             etat: {
-                Type: Sequelize.ENUM , 
+                type: Sequelize.ENUM , 
                 values: ['circulation', 'en service', 'reserve','hors service']
             },
            
