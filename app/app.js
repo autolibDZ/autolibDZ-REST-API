@@ -12,8 +12,7 @@ import administrateurRouter from './routes/administrateur.route'
 import operateurRouter from './routes/operateur.route'
 import agentRouter from './routes/agent.route'
 import dirigeantRouter from './routes/dirigeant.route'
-
-
+import reservationRouter from './routes/reservation.route'
 
 // // For documentation
 // import SwaggerUI from 'swagger-ui-express';
@@ -55,11 +54,12 @@ app.use(bodyParser.json());
 
 db.sequelize.sync();
 
-
+//vehicule router
 app.use('/api/vehicules',vehiculeRouter); 
-app.use('/api/abonnement', abonnementRouter);
 
+app.use('/api/abonnement', abonnementRouter);
 app.use('/api/locataire', locataireRouter);
+app.use('/api/reservation', reservationRouter);
 app.use('/api/administrateur',administrateurRouter)
 app.use('/api/agent',agentRouter)
 app.use('/api/operateur',operateurRouter)
