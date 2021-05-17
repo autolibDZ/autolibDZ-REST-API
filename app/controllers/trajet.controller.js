@@ -5,6 +5,14 @@ var sequelize = require("sequelize");
 
 // For a specific year, return how much reservations there were for each month
 const countTrajetsByMonth = async (req, res) => {
+	// Validate request
+	if (!req.params.year) {
+		res.status(400).send({
+			message: "params 'year' can not be empty!",
+		});
+		return;
+	}
+
 	try {
 		let year=req.params.year;
 		const trajets_par_mois = await Trajet.findAll({
