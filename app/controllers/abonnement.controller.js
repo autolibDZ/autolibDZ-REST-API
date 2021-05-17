@@ -37,58 +37,85 @@
 	};
 
 
-	const doPayment = async(req, res) => {
-	    // Validate request
-	    if (!req.params.id) {
-	        res.status(400).send({
-	            message: "params 'id' can not be empty!",
-	        });
-	        return;
-	    }
+const doPayment = async (req, res) => {
+	// Validate request
 
-	    if (!req.body.prix) {
-	        res.status(400).send({
-	            message: "body 'prix' element can not be empty!",
-	        });
-	        return;
-	    }
+	if (!req.params.id) {
+		res.status(400).send({
+			message: "params 'id' can not be empty!",
+		});
+		return;
+	}
 
-	    // update the balance from DB
-	    try {
-	        const id = req.params.id;
-	        const userAbonnement = await Abonnement.findOne({
-	            where: {
-	                idLocataire: id,
-	            },
+	if (!req.body.prix) {
+		res.status(400).send({
+			message: "body 'prix' element can not be empty!",
+		});
+		return;
+	}
+	
+	if (isNaN(req.body.prix)) {
+		res.status(400).send({
+			message: "body 'prix' element must be a number",
+		});
+		return;
+	}
 
-	        });
-	        console.log(userAbonnement);
+	if (req.body.prix < 0) {
+		res.status(400).send({
+			message: "body 'prix' element must be a positive number",
+		});
+		return;
+	}
 
-	        if (userAbonnement) {
-	            const newBalance = userAbonnement.balance - req.body.prix
-	            userAbonnement.update({
-	                balance: newBalance
-	            }).then(() => {
-	                console.log("balance updated")
+	// update the balance from DB
+	try {
+		const id = req.params.id;
+		const userAbonnement = await Abonnement.findOne({
+			where: {
+				idLocataire: id,
+			},
+			
+		});
+		console.log(userAbonnement);
 
-	                res.send({
-	                    "message": "payment done"
-	                });
-	            })
-	        } else {
+		if(userAbonnement){
+			const newBalance = userAbonnement.balance - req.body.prix
 
-	            res.status(404).send({
-	                error: 'the id ' + id + ' does not exist',
-	            });
-	        }
+			if(newBalance > 0){
 
-	    } catch (err) {
-	        res.status(500).send({
-	            error: err.message || 'Some error occurred !',
-	        });
-	    }
-	};
+				userAbonnement.update({
+					balance : newBalance
+				}).then(()=>{
+					console.log("balance updated")
+					
+					res.send({
+						"message" : "payment done"
+					});
+				})
 
+			}else{
+
+				res.status(500).send({
+					error: 'user does not have enough funds to pay',
+				});
+			}
+			
+
+
+		}else{
+
+			res.status(404).send({
+				error: 'the id ' + id + ' does not exist',
+			});
+		}
+		
+	} catch (err) {
+		res.status(500).send({
+			error: err.message || 'Some error occurred !',
+		});
+	}
+};
 
 
 	export default {
