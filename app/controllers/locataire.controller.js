@@ -142,11 +142,93 @@ const findOne = async(req, res) => {
             });
         });
 };
+// Update a Locataire by the id in the request
+const update = (req, res) => {
+  const id = req.params.id;
+   var salt = bcrypt.genSaltSync(10);
+   var hash = bcrypt.hashSync(req.body.motdepasse, salt);
+    req.body.motdepasse = hash;
+    Locataire.update(req.body, {
+      where: { IdUtilisateur: id }
+    })
+      .then(num => {
+        if (num == 1) {
+          res.send({
+            message: "Locataire was updated successfully."
+          });
+        } else {
+          res.send({
+            message: `Cannot update Locataire with id=${id}. Maybe Locataire was not found or req.body is empty!`
+          });
+        }
+      })
+      .catch(err => {
+        res.status(500).send({
+          message: "Error updating Locataire with id=" + id
+        });
+      });
+};
+
+// Delete a Locataire with the specified id in the request
+const deleteLocataire = (req, res) => {
+  const id = req.params.id;
+
+    Locataire.destroy({
+      where: { IdUtilisateur: id }
+    })
+      .then(num => {
+        if (num == 1) {
+          res.send({
+            message: "Locataire was deleted successfully!"
+          });
+        } else {
+          res.send({
+            message: `Cannot delete Locataire with id=${id}. Maybe Locataire was not found!`
+          });
+        }
+      })
+      .catch(err => {
+        res.status(500).send({
+          message: "Could not delete Locataire with id=" + id
+        });
+      });
+};
+
+// Block or Unblock a locataire
+const block = (req, res) => {
+  const id = req.params.id;
+  Locataire.update({
+    Active: Sequelize.literal('not "Active"')
+    // Active: true
+  }, {
+    where: {
+      IdUtilisateur: id
+    }
+  }).then(num => {
+    if (num == 1) {
+      res.send({
+        message: "Locataire was updated successfully."
+      });
+    } else {
+      res.send({
+        message: `Cannot update Locataire with id=${id}. Maybe Locataire was not found or req.body is empty!`
+      });
+    }
+  })
+  .catch(err => {
+    res.status(500).send({
+      message: "Error updating Locataire with id=" + id
+    });
+  });
+};
 
 
 export default {
     createLocataire,
     findAll,
     findOne,
-    createLocataireGmail
+    createLocataireGmail,
+    update,
+    deleteLocataire,
+    block
 }
