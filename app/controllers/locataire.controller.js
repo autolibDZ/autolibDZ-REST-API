@@ -64,16 +64,17 @@ const createLocataire = async(req, res) => {
 
 const createLocataireGmail = async(req, res) => {
     var token = req.body.token;
+    console.log(token)
+
     async function verify() {
-        const ticket = await client.verifyIdToken({
+        const ticket = await client.verifyIdTokenAsync({
             idToken: token,
             audience: CLIENT_ID,
         });
         const payload = ticket.getPayload();
         const userid = payload['sub'];
-
         //Pour tester l'existance de l'email
-        const locataires = await Locataire.findOne({ where: { email: req.body.email } })
+        const locataires = await Locataire.findOne({ where: { email: payload.email } })
         if (locataires != null) {
             res.status(400).send({
                 message: "Email déja existé"
@@ -86,7 +87,7 @@ const createLocataireGmail = async(req, res) => {
                 nom: payload.given_name,
                 prenom: payload.family_name,
                 email: payload.email,
-                motDePasse: payload.email + payload.name //Un mot de passe par defaut
+                motDePasse: payload.email //Un mot de passe par defaut
 
             };
             //Pour hasher le mot de passe 
