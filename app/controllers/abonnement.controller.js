@@ -1,44 +1,45 @@
-const db = require('../models');
-const Abonnement = db.abonnement;
+	const db = require('../models');
+	const Abonnement = db.abonnement;
 
-// get the balance
-const getUserBalance = async (req, res) => {
-	// Validate request
-	if (!req.params.id) {
-		res.status(400).send({
-			message: "params 'id' can not be empty!",
-		});
-		return;
-	}
+	// get the balance
+	const getUserBalance = async(req, res) => {
+	    // Validate request
+	    if (!req.params.id) {
+	        res.status(400).send({
+	            message: "params 'id' can not be empty!",
+	        });
+	        return;
+	    }
 
-	// read the balance from DB
-	try {
-		const id = req.params.id;
-		const balance = await Abonnement.findAll({
-			where: {
-				idLocataire: id,
-			},
-			attributes: ['balance'],
-		});
-		console.log(balance);
+	    // read the balance from DB
+	    try {
+	        const id = req.params.id;
+	        const balance = await Abonnement.findAll({
+	            where: {
+	                idLocataire: id,
+	            },
+	            attributes: ['balance'],
+	        });
+	        console.log(balance);
 
-		if (balance.length != 0) {
-			res.send(balance[0]);
-		} else {
-			res.status(404).send({
-				error: 'the id ' + id + ' does not exist',
-			});
-		}
-	} catch (err) {
-		res.status(500).send({
-			error: err.message || 'Some error occurred !',
-		});
-	}
-};
+	        if (balance.length != 0) {
+	            res.send(balance[0]);
+	        } else {
+	            res.status(404).send({
+	                error: 'the id ' + id + ' does not exist',
+	            });
+	        }
+	    } catch (err) {
+	        res.status(500).send({
+	            error: err.message || 'Some error occurred !',
+	        });
+	    }
+	};
 
 
 const doPayment = async (req, res) => {
 	// Validate request
+
 	if (!req.params.id) {
 		res.status(400).send({
 			message: "params 'id' can not be empty!",
@@ -49,6 +50,20 @@ const doPayment = async (req, res) => {
 	if (!req.body.prix) {
 		res.status(400).send({
 			message: "body 'prix' element can not be empty!",
+		});
+		return;
+	}
+	
+	if (isNaN(req.body.prix)) {
+		res.status(400).send({
+			message: "body 'prix' element must be a number",
+		});
+		return;
+	}
+
+	if (req.body.prix < 0) {
+		res.status(400).send({
+			message: "body 'prix' element must be a positive number",
 		});
 		return;
 	}
@@ -66,15 +81,28 @@ const doPayment = async (req, res) => {
 
 		if(userAbonnement){
 			const newBalance = userAbonnement.balance - req.body.prix
-			userAbonnement.update({
-				balance : newBalance
-			}).then(()=>{
-				console.log("balance updated")
-				
-				res.send({
-					"message" : "payment done"
+
+			if(newBalance > 0){
+
+				userAbonnement.update({
+					balance : newBalance
+				}).then(()=>{
+					console.log("balance updated")
+					
+					res.send({
+						"message" : "payment done"
+					});
+				})
+
+			}else{
+
+				res.status(500).send({
+					error: 'user does not have enough funds to pay',
 				});
-			})
+			}
+			
+
+
 		}else{
 
 			res.status(404).send({
@@ -90,8 +118,7 @@ const doPayment = async (req, res) => {
 };
 
 
-
-export default {
-	getUserBalance,
-	doPayment
-};
+	export default {
+	    getUserBalance,
+	    doPayment
+	};
