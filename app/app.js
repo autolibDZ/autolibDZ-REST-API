@@ -13,7 +13,7 @@ import operateurRouter from './routes/operateur.route'
 import agentRouter from './routes/agent.route'
 import dirigeantRouter from './routes/dirigeant.route'
 import reservationRouter from './routes/reservation.route'
-
+import trajetRouter from './routes/trajet.route'
 dotenv.config();
 const app = express();
 
@@ -31,6 +31,7 @@ app.use('/api/vehicules',vehiculeRouter);
 app.use('/api/abonnement', abonnementRouter);
 app.use('/api/locataire', locataireRouter);
 app.use('/api/reservation', reservationRouter);
+app.use('/api/trajet', trajetRouter);
 app.use('/api/administrateur',administrateurRouter)
 app.use('/api/agent',agentRouter)
 app.use('/api/operateur',operateurRouter)

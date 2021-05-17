@@ -3,6 +3,7 @@ module.exports = function(sequelize, Sequelize) {
         idTrajet: {
             type: Sequelize.INTEGER,
             primaryKey: true,
+           autoIncrement:true,
         },
         dateDebut: {
             type: Sequelize.DATE,
