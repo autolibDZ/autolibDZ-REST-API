@@ -146,8 +146,8 @@ const findOne = async(req, res) => {
 const update = (req, res) => {
   const id = req.params.id;
    var salt = bcrypt.genSaltSync(10);
-   var hash = bcrypt.hashSync(req.body.motdepasse, salt);
-    req.body.motdepasse = hash;
+   var hash = bcrypt.hashSync(req.body.motDePasse, salt);
+    req.body.motDePasse = hash;
     Locataire.update(req.body, {
       where: { IdUtilisateur: id }
     })
