@@ -33,22 +33,6 @@ module.exports = function(sequelize, Sequelize) {
         }
     );
     return Reservation;
-    /* Reservation.associate = function(models) {
-         // associations can be defined here
-         Reservation.belongsTo(models.utilisateur, {
-             foreignKey: 'idUtilisateur'
-         });
-     };
-     Reservation.associate = function(models) {
-         // associations can be defined here
-         Reservation.belongsTo(models.vehicules, {
-             foreignKey: 'numChassis'
-         });
-     };*/
+
 
 };
-
-/*idVehicule
-idLocataire
-idBorneDepart
-idBorneDestination*/

@@ -9,13 +9,13 @@ const createTrajet = async(req, res) => {
         return;
     }
     const trajet = {
-idTrajet:req.body.idTrajet,
+        idTrajet:req.body.idTrajet,
         dateDebut: req.body.dateDebut,
         dateFin : req.body.dateFin ,
         tempsEstime: req.body.tempsEstime,
         kmParcourue: req.body.kmParcourue,
         prixAPayer: req.body.prixAPayer,
-     idReservation :req.body.idReservation,
+        idReservation :req.body.idReservation,
     };
     try {
 
@@ -32,10 +32,7 @@ idTrajet:req.body.idTrajet,
 };
 
 
-/*  exports.listAllReservations = async (req, res) => {
-      const response = await db.query('SELECT * FROM reservation ');
-      res.status(200).send(response.rows);
-  };*/
+
 
 const listAllTrajets = (req, res) => {
     var condition = 1 === 1

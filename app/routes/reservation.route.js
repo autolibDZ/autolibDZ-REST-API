@@ -1,5 +1,3 @@
-//const reservationRouter = require('express').Router();
-//const reservationController = require('../controllers/reservation.controller');
 import reservationController from "../controllers/reservation.controller";
 
 var reservationRouter = require("express").Router();
