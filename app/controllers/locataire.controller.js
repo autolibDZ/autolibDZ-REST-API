@@ -1,4 +1,5 @@
 const db = require("../models");
+const { Sequelize } = require('../models');
 const Locataire = db.locataire;
 const validator = require('validator');
 var bcrypt = require('bcryptjs');
