@@ -30,6 +30,7 @@ const Reservation = db.reservation;
 
     };
 
+
 const listAllReservations = (req, res) => {
     var condition = 1 === 1
 
@@ -43,7 +44,6 @@ const listAllReservations = (req, res) => {
             });
         });
 };
-
 
 
 const findReservationById = async (req, res) => {
@@ -121,5 +121,4 @@ export default {
   findReservationById,
     deleteReservationById,
 updateReservationById,
-
 }

@@ -8,5 +8,5 @@ reservationRouter.get( '/', reservationController.listAllReservations);
 reservationRouter.get('/:id', reservationController.findReservationById);
 reservationRouter.put('/:id', reservationController.updateReservationById);
 reservationRouter.delete('/:id', reservationController.deleteReservationById);
-module.exports=reservationRouter;
+
 export default reservationRouter;

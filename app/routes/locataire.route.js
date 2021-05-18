@@ -9,9 +9,16 @@ router.get("/getLocataires", locataireController.findAll);
 //Router pour la creation d'un locataire via gmail
 router.post("/createLocataireGmail", locataireController.createLocataireGmail)
 
-router.post("/", locataireController.createLocataire);
 router.get("/", locataireController.findAll);
 router.get("/:id", locataireController.findOne);
+
+ router.put("/:id", locataireController.update);
+  
+    // Delete a Locataire with id
+ router.delete("/:id", locataireController.deleteLocataire);
+
+    //Block or Unblock Locataire with id
+ router.put('/block/:id', locataireController.block);
 
 
 
