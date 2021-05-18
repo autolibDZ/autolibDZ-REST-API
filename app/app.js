@@ -3,12 +3,47 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 import bodyParser from 'body-parser'
 import db from './models/index'
-import router from './routes/tutorial.route'
+import abonnementRouter from './routes/abonnement.route'
+import locataireRouter from './routes/locataire.route'
+import vehiculeRouter from './routes/vehicule.route';
+import borneRoute from './routes/borne.route'
+import authRouter from './routes/auth.route';
+import administrateurRouter from './routes/administrateur.route'
+import operateurRouter from './routes/operateur.route'
+import agentRouter from './routes/agent.route'
+import dirigeantRouter from './routes/dirigeant.route'
+import reservationRouter from './routes/reservation.route'
 
+// // For documentation
+// import SwaggerUI from 'swagger-ui-express';
 
-dotenv.config()
+// const swaggerJsDoc = require('swagger-jsdoc');
+
+dotenv.config();
+
+// Optiens for Swagger
+const options = {
+	definition: {
+		openapi: '3.0.0',
+		info: {
+			title: 'Projet 2CSSIL - AutoLib',
+			version: '1.0.0',
+			description: 'Une application de location de véhicules à libre service',
+		},
+		servers: [
+			{
+				url: 'http://localhost:4000',
+			},
+		],
+	},
+	apis: ['./routes/*.js'],
+};
+
+// const specs = swaggerJsDoc(options);
+
 const app = express();
 
+// app.use('/api-docs', SwaggerUI.serve, SwaggerUI.setup(specs));
 
 // Cross Origin Resources Sharing, Initially all whitelisted
 app.use(cors());
@@ -19,13 +54,27 @@ app.use(bodyParser.json());
 
 db.sequelize.sync();
 
-app.use('/api/tutorials', router);
+//vehicule router
+app.use('/api/vehicules',vehiculeRouter); 
+
+app.use('/api/abonnement', abonnementRouter);
+app.use('/api/locataire', locataireRouter);
+app.use('/api/reservation', reservationRouter);
+app.use('/api/administrateur',administrateurRouter)
+app.use('/api/agent',agentRouter)
+app.use('/api/operateur',operateurRouter)
+app.use('/api/dirigeant',dirigeantRouter)
+
+
+//auth Router
+app.use('/api/auth', authRouter);
+
+// Borne Route
+app.use('/api/bornes', borneRoute);
 
 //Home
 app.use((req, res) => {
-   res.send("<h1>Welcome to AutolibDZ REST API</h1>");
-
+    res.send('<h1>Welcome to AutolibDZ REST API</h1>');
 });
-
 
 module.exports = app;
