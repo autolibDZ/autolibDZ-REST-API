@@ -62,7 +62,7 @@ const deleteVehicule = async (req, res) => {
 		})
 		.catch((err) => {
 			res.status(500).send({
-				message: 'Could not delete Tutorial with id=' + id,
+				message: 'Could not delete vehicule with id=' + id,
 			});
 		});
 };
@@ -118,7 +118,7 @@ const getAllVehicule = async (req, res) => {
       .catch(err => {
         res.status(500).send({
           message:
-            err.message || "Some error occurred while retrieving tutorials."
+            err.message || "Some error occurred while retrieving cars."
         });
       });
   };
@@ -296,8 +296,6 @@ export default {
 	createVehicule,
 	deleteVehicule,
 	updateVehicule,
-	// Ca existe déja.. C'est : getVehiculeDetails
-	// getOneVehicule,
 	getAllVehicule,
 	//getVehiculeByCondition
 };
