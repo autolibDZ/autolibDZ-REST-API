@@ -13,6 +13,7 @@ import operateurRouter from './routes/operateur.route'
 import agentRouter from './routes/agent.route'
 import dirigeantRouter from './routes/dirigeant.route'
 import reservationRouter from './routes/reservation.route'
+import trajetRouter from './routes/trajet.route'
 
 // // For documentation
 // import SwaggerUI from 'swagger-ui-express';
@@ -71,6 +72,10 @@ app.use('/api/auth', authRouter);
 
 // Borne Route
 app.use('/api/bornes', borneRoute);
+
+
+// Trajet Route
+app.use('/api/trajet', trajetRouter);
 
 //Home
 app.use((req, res) => {
