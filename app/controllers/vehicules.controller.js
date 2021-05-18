@@ -153,24 +153,26 @@ const getVehiculeDetails = async (req, res, next) => {
 	}
 };
 
-const selectVehicuesOfAGivenAgent = async (req, res) => {
+const selectVehicuesOfAGivenAgent = async (req, res, done) => {
 	try {
-		const vehicules = await Vehicule.findAll({
-			where: {
-				idAgentMaintenance: +req.params.id,
-			},
-		});
-		if (vehicules.length === 0) {
-			// No content with that id
-			res.status(404).send({
-				error: 'not_found',
-				message: `No content with such id: ${+req.params.id}`,
-				status: 404,
+		if (parseInt(req.params.id, 10)) {
+			const vehicules = await Vehicule.findAll({
+				where: {
+					idAgentMaintenance: +req.params.id,
+				},
 			});
-		} else {
+			if (vehicules.length === 0) {
+				// No content with that id
+				res.status(404).send({
+					error: 'not_found',
+					message: `No content with such id: ${+req.params.id}`,
+					status: 404,
+				});
+			} else {
+				res.status(200).send(vehicules);
+			}
 			res.status(200).send(vehicules);
-		}
-		res.status(200).send(vehicules);
+		} else done();
 	} catch (err) {
 		res.status(500).send({
 			error:
@@ -234,11 +236,12 @@ const setEtatVehicule = async (req, res) => {
 	}
 };
 
-const getVehiculesEnService = async (req, res) => {
+const getVehiculesEnServiceOfAGivenAgent = async (req, res) => {
 	try {
 		const vehiculesEnService = await Vehicule.findAll({
 			where: {
 				etat: 'en service',
+				idAgentMaintenance: +req.params.id,
 			},
 		});
 		if (vehiculesEnService.length === 0) {
@@ -260,11 +263,12 @@ const getVehiculesEnService = async (req, res) => {
 	}
 };
 
-const getVehiculesHorsService = async (req, res) => {
+const getVehiculesHorsServiceOfAGivenAgent = async (req, res) => {
 	try {
 		const vehiculesHorsService = await Vehicule.findAll({
 			where: {
 				etat: 'hors service',
+				idAgentMaintenance: +req.params.id,
 			},
 		});
 		if (vehiculesHorsService.length === 0) {
@@ -290,8 +294,8 @@ export default {
 	setEtatVehicule,
 	getVehiculeDetails,
 	selectVehicuesOfAGivenAgent,
-	getVehiculesEnService,
-	getVehiculesHorsService,
+	getVehiculesEnServiceOfAGivenAgent,
+	getVehiculesHorsServiceOfAGivenAgent,
 
 	createVehicule,
 	deleteVehicule,
