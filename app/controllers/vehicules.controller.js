@@ -14,6 +14,10 @@ const createVehicule = async (req, res) => {
 		res.status(400).send({
 			message: 'Content can not be empty!',
 		});
+		console.log( req.body.numChassis);
+		console.log(req.body.numImmatriculation); 
+		console.log(req.body.modele); 
+		console.log(req.body.couleur);
 		return;
 	}
 	// Create a Vehicule
@@ -33,12 +37,27 @@ const createVehicule = async (req, res) => {
 		regulateurVitesse: req.body.regulateurVitesse,
 		limiteurVitesse: req.body.limiteurVitesse,
 	};
-
+	
 	// Add data to databse 
 	try {
-		data = await Vehicule.create(vehicule).then((data) => {
-			res.send(data);
-		});
+
+		let result = await Vehicule.findAll({
+			where: {
+				numChassis: req.body.numChassis,
+			}
+	  
+		  })
+		  if (result.length > 0) {
+			  console.log("HEEEEEY I EXIST");
+			  res.status(400).send({
+			  message: "Vehicule already exists!"
+			})
+		  } else {
+				data = await Vehicule.create(vehicule).then((data) => {
+				res.send(data);
+			});
+		  }
+		  
 	} catch (err) {
 		res.status(500).send({
 			error: err.message || 'Some error occurred while creating the Vehicule.',
