@@ -20,7 +20,6 @@ const createVehicule = async (req, res) => {
 		});
 		return;
 	}
-console.log("Hiii");
 	// Create a Vehicule
 	const vehicule = {
 		numChassis: req.body.numChassis,
@@ -37,33 +36,24 @@ console.log("Hiii");
 		niveauMinimumHuile: req.body.niveauMinimumHuile,
 		regulateurVitesse: req.body.regulateurVitesse,
 		limiteurVitesse: req.body.limiteurVitesse,
-		cloudinary_id: "" , 
-		secure_url: ""
+	    idCloudinary: null, 
+		secureUrl: null
 	};
 
 	// upload image here to cloudinary here
 	if (req.body.image) {
 		const image = req.body.image;
-		console.log("I'm innn"); 
 		cloudinary.uploader.upload(req.body.image)
 		.then((result) => {
-		response.status(200).send({
-			message: "success",
-			result,
-		});
-		data.cloudinary_id=response.public_id; 
-		data.secure_url= response.secure_url;
-
+			vehicule.idCloudinary=result.public_id;
+			vehicule.secureUrl= result.secure_url;
+		
 		}).catch((error) => {
-		response.status(500).send({
-			message: "failure",
-			error,
-		});
+			console.log(error);
 		});
 	}
 	// Ajout d'un véhicule à la base de données
 	try {
-		console.log("HEEEEY ADD");
 		data = await Vehicule.create(vehicule).then((data) => {
 			res.send(data);
 		});
@@ -72,7 +62,6 @@ console.log("Hiii");
 			error: err.message || 'Some error occurred while creating the Vehicule.',
 		});
 	}
-
 };
 
 // Suppresion d'un véhicule
