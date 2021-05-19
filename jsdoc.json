@@ -1,0 +1,19 @@
+{
+     "source": {
+          "plugins": [
+               "plugins/markdown",
+               "plugins/summarize"
+           ],
+            "include": ["app/controllers","spec"],
+             "includePattern": ".js$",
+             "excludePattern": "(node_modules/|docs)"
+     },
+     "templates": {
+          "cleverLinks": true,
+          "monospaceLinks": true
+     },
+     "opts": {
+       "recurse": true,
+       "destination": "./docs/"
+     }
+   } 

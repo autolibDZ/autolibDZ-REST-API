@@ -15,7 +15,7 @@ module.exports = function (sequelize, Sequelize) {
         },
         moyenPayement: {
             type: Sequelize.DataTypes.ENUM({
-                values: ['Paypal', 'Carte d\'abonnement']
+                values: ['Stripe', 'Carte d\'abonnement']
             })
         },
         idLocataire: { //not sure if we need it

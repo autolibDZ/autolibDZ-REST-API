@@ -1,18 +1,23 @@
 const Request = require('supertest');
 request = Request('http://localhost:4000/api/transaction');
 
+
+
 describe('Transaction route test', () => {
 
+ /**
+ * Test "createTransaction" method 
+ */    
      describe('Add one transaction', () => {
 
           it('returns 201 when the id reservation does not existe', (done) => {
                request
                     .post('/')
                     .send({
-                         "idLocataire": 1,
+                         "idLocataire": 3,
                          "montant": 222.2,
-                         "moyenPayement": "Paypal",
-                         "idReservation": 3
+                         "moyenPayement": "Stripe",
+                         "idReservation": 10
                     })
                     .set('Accept', 'application/json')
                     .expect('Content-Type', /json/)
@@ -29,8 +34,8 @@ describe('Transaction route test', () => {
                     .send({
                          "idLocataire": 1,
                          "montant": 222.2,
-                         "moyenPayement": "Paypal",
-                         "idReservation": 2
+                         "moyenPayement": "Stripe",
+                         "idReservation": 9
                     })
                     .set('Accept', 'application/json')
                     .expect(404)
@@ -44,10 +49,14 @@ describe('Transaction route test', () => {
      })
 
 
+/**
+ * Test "getUserTransactions" method 
+ */   
+
      describe('Get transactions by user id', () => {
           it('returns 200 OK when using an exesting id 1', (done) => {
                request
-                    .get('/1')
+                    .get('/3')
                     .expect(200)
                     .expect('Content-Type', 'application/json; charset=utf-8')
                     .end((err, res) => {
