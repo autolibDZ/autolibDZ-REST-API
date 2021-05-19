@@ -1,6 +1,16 @@
 const db = require('../models');
 const Vehicule = db.vehicules;
 
+const cloudinary = require('cloudinary').v2
+require('dotenv').config()
+
+// cloudinary configuration
+cloudinary.config({
+	cloud_name: process.env.CLOUD_NAME,
+	api_key: process.env.API_KEY,
+	api_secret: process.env.API_SECRET
+  });
+
 // Create and Save a new Vehicule
 const createVehicule = async (req, res) => {
 	// Validate request
@@ -10,6 +20,7 @@ const createVehicule = async (req, res) => {
 		});
 		return;
 	}
+console.log("Hiii");
 	// Create a Vehicule
 	const vehicule = {
 		numChassis: req.body.numChassis,
@@ -26,10 +37,33 @@ const createVehicule = async (req, res) => {
 		niveauMinimumHuile: req.body.niveauMinimumHuile,
 		regulateurVitesse: req.body.regulateurVitesse,
 		limiteurVitesse: req.body.limiteurVitesse,
+		cloudinary_id: "" , 
+		secure_url: ""
 	};
 
+	// upload image here to cloudinary here
+	if (req.body.image) {
+		const image = req.body.image;
+		console.log("I'm innn"); 
+		cloudinary.uploader.upload(req.body.image)
+		.then((result) => {
+		response.status(200).send({
+			message: "success",
+			result,
+		});
+		data.cloudinary_id=response.public_id; 
+		data.secure_url= response.secure_url;
+
+		}).catch((error) => {
+		response.status(500).send({
+			message: "failure",
+			error,
+		});
+		});
+	}
 	// Ajout d'un véhicule à la base de données
 	try {
+		console.log("HEEEEY ADD");
 		data = await Vehicule.create(vehicule).then((data) => {
 			res.send(data);
 		});
@@ -38,6 +72,7 @@ const createVehicule = async (req, res) => {
 			error: err.message || 'Some error occurred while creating the Vehicule.',
 		});
 	}
+
 };
 
 // Suppresion d'un véhicule
@@ -62,7 +97,7 @@ const deleteVehicule = async (req, res) => {
 		})
 		.catch((err) => {
 			res.status(500).send({
-				message: 'Could not delete Tutorial with id=' + id,
+				message: 'Could not delete Vehicule with id=' + id,
 			});
 		});
 };
@@ -105,25 +140,6 @@ const getAllVehicule = async (req, res) => {
 			});
 		});
 };
-
-//Afficher les vehicules selon un état donné (Réservé, non réservé, en panne, en cirulcation ou en maintenance)
-/* const getVehiculeByCondition = (req, res) => {
-    const etat = req.query.etat;
-    var condition = etat ? { etat: { [Op.like]: `%${etat}%` } } : null;
-  
-    Vehicule.findAll({ where: condition })
-      .then(data => {
-        res.send(data);
-      })
-      .catch(err => {
-        res.status(500).send({
-          message:
-            err.message || "Some error occurred while retrieving tutorials."
-        });
-      });
-  };
-
-*/
 
 const getVehiculeDetails = async (req, res, next) => {
 	try {
