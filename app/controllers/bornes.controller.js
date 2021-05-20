@@ -199,6 +199,12 @@ const getAllBornes = async (req, res) => {
 
 };
 
+/**
+ * Return all Vehicles in borne of idBorne=id
+ * @param {*} req request 
+ * @param {*} res response
+* @returns {vehicules} liste of vehicles
+*/
 
 
 const getVehiclesInABorne = async (req, res) => {
