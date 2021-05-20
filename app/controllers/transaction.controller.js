@@ -87,7 +87,10 @@ const filterTransaction = async (req, res) => {
                               { idLocataire: id },
                               options
                          ]
-                    }
+                    },
+                    order: [
+                         ['dateTransaction','DESC']
+                    ]
                })
                if (transactions.length <= 0) {
                     res.status(404).send({

@@ -32,10 +32,12 @@ describe('Transaction route test', () => {
                     .end((err, res) => {
                          if (err) done.fail(err);
                          else {
-                              let transaction=res.body
-                              expect(transaction.length).not.toEqual(0);
-                              expect(transaction[0].montant).toBeLessThan(223)
-                              done();    
+                              let transactions = res.body
+                              expect(transactions.length).not.toEqual(0);
+                              transactions.forEach(transaction => {
+                                   expect(transaction.montant).toBeLessThan(223)
+                              });
+                              done();
                          }
                     });
           });
