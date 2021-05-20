@@ -214,6 +214,9 @@ const getVehiclesInABorne = async (req, res) => {
       where: {
         idBorne: req.params.id,
       },
+      order: [
+        ['chargeBatterie', 'DESC']
+      ]
     });
     if (vehicules.length <= 0) {
       res.status(404).send({
