@@ -7,7 +7,11 @@ var router = require("express").Router();
 router.post("/", bornesCtrl.createBorne);
 router.post("/filter", bornesCtrl.getFilteredBornes);
 router.get("/all", bornesCtrl.getAllBornes);
-router.get("/:id",bornesCtrl.getBorne);
+router.get("/:id", bornesCtrl.getBorne);
+
+// GET Vehicules of a given borne
+router.get("/:id/vehicules", bornesCtrl.getVehiclesOfABorne)
+
 export default router;
 
 

@@ -1,5 +1,7 @@
 const db = require("../models");
 const Borne = db.borne;
+const Vehicule = db.vehicules;
+
 /**
  * Create and save a new borne in database
  * @param {*} req The request
@@ -197,9 +199,34 @@ const getAllBornes = async (req, res) => {
 
 };
 
+
+
+const getVehiclesOfABorne = async (req, res) => {
+
+  try {
+    const vehicules = await Vehicule.findAll({
+      where: {
+        idBorne: req.params.id,
+      },
+    });
+    if (vehicules.length <= 0) {
+      res.status(404).send({
+        error: `No vehicles in the borne with id: ${req.params.id}`
+      });
+    } else {
+      res.status(200).send(vehicules);
+    }
+  } catch (err) {
+    res.status(500).send({
+      error: err.message || 'Some error occured while retreiving vehicules borne id: ' + req.params.id
+    });
+  }
+};
+
 export default {
   createBorne,
   getFilteredBornes,
   getBorne,
-  getAllBornes
+  getAllBornes,
+  getVehiclesOfABorne
 }
