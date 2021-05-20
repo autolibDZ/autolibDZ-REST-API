@@ -14,6 +14,8 @@ import agentRouter from './routes/agent.route'
 import dirigeantRouter from './routes/dirigeant.route'
 import reservationRouter from './routes/reservation.route'
 import trajetRouter from './routes/trajet.route'
+import transactionRouter from './routes/transaction.route';
+
 
 // // For documentation
 // import SwaggerUI from 'swagger-ui-express';
@@ -56,7 +58,7 @@ app.use(bodyParser.json());
 db.sequelize.sync();
 
 //vehicule router
-app.use('/api/vehicules',vehiculeRouter); 
+app.use('/api/vehicules', vehiculeRouter);
 
 //abonnement route
 app.use('/api/abonnement', abonnementRouter);
@@ -67,10 +69,10 @@ app.use('/api/locataire', locataireRouter);
 //reservation route
 app.use('/api/reservation', reservationRouter);
 
-app.use('/api/administrateur',administrateurRouter)
-app.use('/api/agent',agentRouter)
-app.use('/api/operateur',operateurRouter)
-app.use('/api/dirigeant',dirigeantRouter)
+app.use('/api/administrateur', administrateurRouter)
+app.use('/api/agent', agentRouter)
+app.use('/api/operateur', operateurRouter)
+app.use('/api/dirigeant', dirigeantRouter)
 
 
 //auth Router
@@ -79,13 +81,16 @@ app.use('/api/auth', authRouter);
 // Borne Router
 app.use('/api/bornes', borneRoute);
 
+//Transaction Router 
+app.use('/api/transaction', transactionRouter);
+
 
 // Trajet Route
 app.use('/api/trajet', trajetRouter);
 
 //Home
 app.use((req, res) => {
-    res.send('<h1>Welcome to AutolibDZ REST API</h1>');
+	res.send('<h1>Welcome to AutolibDZ REST API</h1>');
 });
 
 module.exports = app;
