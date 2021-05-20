@@ -65,15 +65,12 @@ const createLocataire = async(req, res) => {
 
 const createLocataireGmail = async(req, res) => {
     var token = req.body.token;
-    console.log(token)
-
     async function verify() {
         const ticket = await client.verifyIdTokenAsync({
             idToken: token,
             audience: CLIENT_ID,
         });
         const payload = ticket.getPayload();
-        const userid = payload['sub'];
         //Pour tester l'existance de l'email
         const locataires = await Locataire.findOne({ where: { email: payload.email } })
         if (locataires != null) {
