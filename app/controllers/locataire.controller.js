@@ -191,7 +191,7 @@ const deleteLocataire = (req, res) => {
             message: "Locataire was deleted successfully!"
           });
         } else {
-          res.status(400).send({{
+          res.status(400).send({
             message: `Cannot delete Locataire with id=${id}. Maybe Locataire was not found!`
           });
         }
