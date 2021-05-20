@@ -7,7 +7,7 @@ const { Op } = require("sequelize");
  * Filter transaction of 
  * @param {*} req The request
  * @param {*} res The response
-* @returns {object} The transaction that created 
+* @returns {object} A list of filtered transactions
  */
 
 const filterTransaction = async (req, res) => {
@@ -97,7 +97,7 @@ const filterTransaction = async (req, res) => {
                     res.status(200).send(transactions);
                }
           } else {
-               res.status(404).send({ "error": "le locataire avec id " + id + " n'a pas encore de transactions" })
+               res.status(404).send({ "error": "le locataire avec id " + id + " n'a pas encore de transactions." })
           }
      }
      catch (err) {
