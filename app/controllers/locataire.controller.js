@@ -1,3 +1,4 @@
+const { Sequelize } = require('../models');
 const db = require("../models");
 const Locataire = db.locataire;
 const validator = require('validator');
@@ -134,7 +135,8 @@ const findOne = async(req, res) => {
 
     Locataire.findOne({ where: { idLocataire: req.params.id } })
         .then(data => {
-            res.send(data);
+            if (!data) res.status(404).send({ message: "Locataire non existant" })
+            else res.status(200).send(data);
         })
         .catch(err => {
             res.status(500).send({
@@ -143,21 +145,28 @@ const findOne = async(req, res) => {
         });
 };
 // Update a Locataire by the id in the request
-const update = (req, res) => {
+
+const update = async(req, res) => {
     const id = req.params.id;
+    //Pour tester l'existance de l'email
+    const locataires = await Locataire.findOne({ where: { email: req.body.email } })
+    if (locataires != null) {
+        delete req.body.email;
+    }
     var salt = bcrypt.genSaltSync(10);
     var hash = bcrypt.hashSync(req.body.motDePasse, salt);
     req.body.motDePasse = hash;
     Locataire.update(req.body, {
+
             where: { idLocataire: id }
         })
         .then(num => {
             if (num == 1) {
-                res.send({
+                res.status(200).send({
                     message: "Locataire was updated successfully."
                 });
             } else {
-                res.send({
+                res.status(400).send({
                     message: `Cannot update Locataire with id=${id}. Maybe Locataire was not found or req.body is empty!`
                 });
             }
@@ -169,20 +178,23 @@ const update = (req, res) => {
         });
 };
 
+
+
 // Delete a Locataire with the specified id in the request
 const deleteLocataire = (req, res) => {
     const id = req.params.id;
 
     Locataire.destroy({
+
             where: { idLocataire: id }
         })
         .then(num => {
             if (num == 1) {
-                res.send({
+                res.status(200).send({
                     message: "Locataire was deleted successfully!"
                 });
             } else {
-                res.send({
+                res.status(400).send({
                     message: `Cannot delete Locataire with id=${id}. Maybe Locataire was not found!`
                 });
             }
@@ -192,7 +204,7 @@ const deleteLocataire = (req, res) => {
                 message: "Could not delete Locataire with id=" + id
             });
         });
-};
+}
 
 // Block or Unblock a locataire
 const block = (req, res) => {
@@ -206,12 +218,12 @@ const block = (req, res) => {
             }
         }).then(num => {
             if (num == 1) {
-                res.send({
+                res.status(200).send({
                     message: "Locataire was updated successfully."
                 });
             } else {
-                res.send({
-                    message: `Cannot update Locataire with id=${id}. Maybe Locataire was not found or req.body is empty!`
+                res.status(400).send({
+                    message: `Cannot update Locataire with id=${id}. Maybe Locataire was not found!`
                 });
             }
         })

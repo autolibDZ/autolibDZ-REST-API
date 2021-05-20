@@ -122,3 +122,160 @@ describe('POST : Creation de locataire', () => {
                         });
                 });
             });*/
+
+//Test unitiare pour la récupération des locataires
+describe('GET : Recuperation des locataires', () => {
+    //Recuperation reussite
+    it('returns 200 OK when using a valid input', (done) => {
+        request
+            .get('/')
+            .expect(200)
+            .expect('Content-Type', 'application/json; charset=utf-8')
+            .end((err, res) => {
+                if (err) done(err);
+                done();
+            });
+    });
+});
+
+//Test unitiare pour la récupération d'un locataire
+describe("GET : Recuperation d'un locataire", () => {
+    //Recuperarion reussite
+    it('returns 200 OK when using a valid input', (done) => {
+        let id = 1;
+        request
+            .get(`/${id}`)
+            .expect(200)
+            .expect('Content-Type', 'application/json; charset=utf-8')
+            .end((err, res) => {
+                console.log(res.body);
+                if (err) done(err);
+                expect(res.body.nom == 'ZATOUT').toBe(true);
+
+                done();
+            });
+    });
+    //Recuperarion echouée
+    it('returns 404 not found when using an invalid input', (done) => {
+        let id = 2;
+        request
+            .get('/' + id)
+            .expect(404)
+            .end((err, res) => {
+                if (err) done(err);
+                expect(res.body.message == 'Locataire non existant').toBe(true);
+
+                done();
+            });
+    });
+});
+
+//Test unitiare pour la mise à jour des locataires
+describe('PUT : Mise à jour de locataire', () => {
+    //Mise à jour reussite
+    it('returns 200 OK when using a valid input', (done) => {
+        let id = 1;
+        request
+            .put(`/${id}`)
+            .send({
+                nom: 'ZATOUT',
+                prenom: 'BADREDDINE',
+                email: 'hb_zat@esi.dz',
+                motDePasse: '00001234',
+                Active: true
+            })
+            .expect(200)
+            .expect('Content-Type', 'application/json; charset=utf-8')
+            .end((err, res) => {
+                if (err) done(err);
+                expect(res.body.message == 'Locataire was updated successfully.').toBe(true);
+
+                done();
+            });
+    });
+    //Mise à jour echouée
+    it('returns 400 Bad request when using an invalid input', (done) => {
+        let id = 2;
+        request
+            .put(`/${id}`)
+            .send({
+                nom: 'ZATOUT',
+                prenom: 'BADREDDINE',
+                email: 'hb_zat@esi.dz',
+                motDePasse: '00001234',
+                Active: true
+            })
+            .expect(400)
+            .expect('Content-Type', 'application/json; charset=utf-8')
+            .end((err, res) => {
+                if (err) done(err);
+                expect(res.body.message == `Cannot update Locataire with id=${id}. Maybe Locataire was not found or req.body is empty!`).toBe(true);
+
+                done();
+            });
+    });
+});
+
+//Test unitiare pour la suppression des locataires
+describe('DELETE : Suppression un locataire', () => {
+    //Suppression reussite
+    it('returns 200 OK when using a valid input', (done) => {
+        let id = 1;
+        request
+            .delete(`/${id}`)
+            .expect(200)
+            .expect('Content-Type', 'application/json; charset=utf-8')
+            .end((err, res) => {
+                if (err) done(err);
+                expect(res.body.message == 'Locataire was deleted successfully!').toBe(true);
+
+                done();
+            });
+    });
+    //Suppression echouée
+    it('returns 400 Bad request when using an invalid input', (done) => {
+        let id = 2;
+        request
+            .delete(`/${id}`)
+            .expect(400)
+            .expect('Content-Type', 'application/json; charset=utf-8')
+            .end((err, res) => {
+                if (err) done(err);
+                expect(res.body.message == `Cannot delete Locataire with id=${id}. Maybe Locataire was not found!`).toBe(true);
+
+                done();
+            });
+    });
+});
+
+//Test unitiare pour le blocage er déblocage des locataires
+describe('PUT : Blocage/Déblocage de locataire', () => {
+    //Mise à jour reussite
+    it('returns 200 OK when using a valid input', (done) => {
+        let id = 4;
+        request
+            .put(`/block/${id}`)
+            .expect(200)
+            .expect('Content-Type', 'application/json; charset=utf-8')
+            .end((err, res) => {
+                if (err) done(err);
+                expect(res.body.message == 'Locataire was updated successfully.').toBe(true);
+
+                done();
+            });
+    });
+    //Mise à jour echouée
+    it('returns 400 Bad request when using an invalid input', (done) => {
+        let id = 2;
+        request
+            .put(`/block/${id}`)
+            .expect(400)
+            .expect('Content-Type', 'application/json; charset=utf-8')
+            .end((err, res) => {
+                if (err) done(err);
+                expect(res.body.message == `Cannot update Locataire with id=${id}. Maybe Locataire was not found!`).toBe(true);
+
+                done();
+            });
+    });
+});
