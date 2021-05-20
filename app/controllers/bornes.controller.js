@@ -201,7 +201,7 @@ const getAllBornes = async (req, res) => {
 
 
 
-const getVehiclesOfABorne = async (req, res) => {
+const getVehiclesInABorne = async (req, res) => {
 
   try {
     const vehicules = await Vehicule.findAll({
@@ -228,5 +228,5 @@ export default {
   getFilteredBornes,
   getBorne,
   getAllBornes,
-  getVehiclesOfABorne
+  getVehiclesInABorne
 }

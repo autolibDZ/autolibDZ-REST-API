@@ -9,8 +9,8 @@ router.post("/filter", bornesCtrl.getFilteredBornes);
 router.get("/all", bornesCtrl.getAllBornes);
 router.get("/:id", bornesCtrl.getBorne);
 
-// GET Vehicules of a given borne
-router.get("/:id/vehicules", bornesCtrl.getVehiclesOfABorne)
+// GET all vehicles in a borne
+router.get("/:id/vehicules", bornesCtrl.getVehiclesInABorne)
 
 export default router;
 
