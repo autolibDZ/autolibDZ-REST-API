@@ -3,6 +3,7 @@ module.exports = function(sequelize, Sequelize) {
         idOperateur: {
             type: Sequelize.INTEGER,
             primaryKey: true,
+            autoIncrement: true,
         },
         nom: {
             type: Sequelize.STRING

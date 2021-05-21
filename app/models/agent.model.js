@@ -6,6 +6,7 @@ module.exports = function(sequelize, Sequelize) {
         idAgentMaintenance: {
             type: Sequelize.INTEGER,
             primaryKey: true,
+            autoIncrement: true,
         },
         nom: {
             type: Sequelize.STRING

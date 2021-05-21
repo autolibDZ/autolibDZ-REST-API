@@ -2,6 +2,8 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const validator = require('validator');
 const passwordValidator = require('password-validator')
+var bcrypt = require("bcryptjs");
+var jwt = require("jsonwebtoken");
 const db = require("../models");
 const Operateur = db.operateur;
 
@@ -94,6 +96,10 @@ exports.create = (req, res) => {
                     });
                     return;
                 }else{
+                    //hasher le mot de passe
+                    var salt = bcrypt.genSaltSync(10);
+                    var hash = bcrypt.hashSync(operateur.motDePasse, salt);
+                    operateur.motDePasse= hash;
                     //Créer l'Operateur
                     Operateur.create(operateur)
                     .then(data => {

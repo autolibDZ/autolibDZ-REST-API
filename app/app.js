@@ -13,6 +13,7 @@ import operateurRouter from './routes/operateur.route'
 import agentRouter from './routes/agent.route'
 import dirigeantRouter from './routes/dirigeant.route'
 import reservationRouter from './routes/reservation.route'
+import identiteRouter from './routes/identite.route'
 
 dotenv.config();
 const app = express();
@@ -36,6 +37,9 @@ app.use('/api/administrateur',administrateurRouter)
 app.use('/api/agent',agentRouter)
 app.use('/api/operateur',operateurRouter)
 app.use('/api/dirigeant',dirigeantRouter)
+
+//identite router
+app.use('/api/identites',identiteRouter)
 
 
 //auth Router

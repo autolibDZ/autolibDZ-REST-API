@@ -2,6 +2,8 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const validator = require('validator');
 const passwordValidator = require('password-validator')
+var bcrypt = require("bcryptjs");
+var jwt = require("jsonwebtoken");
 const db = require("../models");
 const Agent = db.agent;
 
@@ -61,7 +63,7 @@ exports.create = (req, res) => {
           
     //Initialiser les attributs de l'Agent à créer
     const agent = {
-        idAgentMaintenance:req.body.id,
+        //idAgentMaintenance:req.body.id,
         nom: req.body.nom,
         prenom: req.body.prenom,
         email: req.body.email,
@@ -95,6 +97,10 @@ exports.create = (req, res) => {
                     });
                     return;
                 }else{
+                    //hasher le mot de passe
+                    var salt = bcrypt.genSaltSync(10);
+                    var hash = bcrypt.hashSync(agent.motDePasse, salt);
+                    agent.motDePasse= hash;
                     //Créer l'Agent
                     Agent.create(agent)
                     .then(data => {
