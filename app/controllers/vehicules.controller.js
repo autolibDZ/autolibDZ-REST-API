@@ -48,7 +48,6 @@ const createVehicule = async (req, res) => {
 	  
 		  })
 		  if (result.length > 0) {
-			  console.log("HEEEEEY I EXIST");
 			  res.status(400).send({
 			  message: "Vehicule already exists!"
 			})
@@ -93,7 +92,7 @@ const deleteVehicule = async (req, res) => {
 		})
 		.catch((err) => {
 			res.status(500).send({
-				message: 'Could not delete Tutorial with id=' + id,
+				message: 'Could not delete vehicule with id=' + id,
 			});
 		});
 };
@@ -146,12 +145,7 @@ const getAllVehicule = async (req, res) => {
 		});
 };
 
-/**
- * Return vehciule details of the vehicule that has the specified ID in request body
- * @param {*} req The request
- * @param {*} res The response
- */
-//Returne vehiule with numChassis = id
+
 const getVehiculeDetails = async (req, res, next) => {
 	try {
 		if (parseInt(req.params.numChassis, 10)) {
@@ -323,8 +317,6 @@ export default {
 	createVehicule,
 	deleteVehicule,
 	updateVehicule,
-	// Ca existe déja.. C'est : getVehiculeDetails
-	// getOneVehicule,
 	getAllVehicule,
 	//getVehiculeByCondition
 };
