@@ -5,8 +5,15 @@ var router = require("express").Router();
     
 // Create a new Borne
 router.post("/", bornesCtrl.createBorne);
+// Get bornes with filters
 router.post("/filter", bornesCtrl.getFilteredBornes);
-router.post("/all", bornesCtrl.getAllBornes);
+// Get all bornes in db
+router.get("/all", bornesCtrl.getAllBornes);
+// Get list of wilaya
+router.get("/wilaya",bornesCtrl.getWilaya);
+// Get list of communes by wilaya
+router.get("/wilaya/:wilaya/commune",bornesCtrl.getCommune);
+// Get borne by id
 router.get("/:id",bornesCtrl.getBorne);
 export default router;
 
