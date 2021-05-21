@@ -37,6 +37,102 @@ describe('Testing GET on /api/vehicules/:id endpoint', () => {
 	});
 });
 
+describe('createVehicule api', () => {
+	it('returns 200 OK when sending vehicule params that doesn"t exist in db', (done) => {
+		request
+			.post('/vehicules/')
+			.send({
+				  numChassis:32,
+				  numImmatriculation:125479684,
+				  modele: 'Ibiza',
+				  marque: 'Seat',
+				  couleur: 'Rouge', 
+				  etat: 'en cirulation', 
+				  tempsDeRefroidissement: 20, 
+				  pressionHuileMoteur: 20, 
+				  chargeBatterie: 20, 
+				  anomalieCircuit: 'Rien', 
+				  pressionPneus: 20, 
+				  niveauMinimumHuile:20, 
+				  regulateurVitesse: 20, 
+				  limiteurVitesse: 20,
+				  idBorne: 1
+			})
+			.set('Accept', 'application/json')
+			.expect(200)
+			.end((err, res) => {
+				if (err) done(err);
+
+				expect(res.body.error);
+
+				done();
+			});
+	});
+	
+	it('returns 400 When vehicule exists', (done) => {
+		request
+			.post('/vehicules/')
+			.send({
+				  numChassis:213456,
+				  numImmatriculation:123,
+				  modele: '404',
+				  marque: 'Peugeot',
+				  couleur: 'noir', 
+				  etat: 'hors service', 
+				  tempsDeRefroidissement: 20, 
+				  pressionHuileMoteur: 20, 
+				  chargeBatterie: 20, 
+				  anomalieCircuit: 'Rien', 
+				  pressionPneus: 20, 
+				  niveauMinimumHuile:20, 
+				  regulateurVitesse: 20, 
+				  limiteurVitesse: 20,
+				  idAgentmaintenance: 1, 
+			})
+			.expect(400)
+			.expect('Content-Type','application/json; charset=utf-8')
+			.end((err, res) => {
+				console.log(res.body.err);
+				if (err) done(err);
+				expect(res.body);
+				done();
+			});
+	});
+
+	it('returns 500 server error when sending an empty parameter', (done) => {
+		request
+		
+			.post('/vehicules')
+			.send({
+				//numChassis:'',
+				numImmatriculation:125479684,
+				modele: 'Ibiza',
+				marque: 'Seat',
+				couleur: 'Rouge', 
+				etat: 'en cirulation', 
+				tempsDeRefroidissement: 20, 
+				pressionHuileMoteur: 20, 
+				chargeBatterie: 20, 
+				anomalieCircuit: 'Rien', 
+				pressionPneus: 20, 
+				niveauMinimumHuile:20, 
+				regulateurVitesse: 20, 
+				limiteurVitesse: 20,
+				idBorne: 1
+			})
+			.set('Accept', 'application/json')
+			.expect(400)
+			.end((err, res) => {
+				if (err) done(err);
+
+				expect(res.body.error);
+
+				done();
+			});
+	}); 
+});
+
+
 describe('Testing GET on /api/agents/vehicules/:id endpoint', () => {
 	it('should return the list of all vehicules of a given agents, at least one vehicule for agent with id 1', (done) => {
 		request
@@ -153,5 +249,5 @@ describe('Testing GET on /api/vehicules/hors-service', () => {
 					done();
 				}
 			});
-	});
+	}); 
 });

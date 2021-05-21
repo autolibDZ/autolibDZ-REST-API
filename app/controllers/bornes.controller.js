@@ -8,10 +8,8 @@ const Borne = db.borne;
 // Create and Save a new Borne
 
 const createBorne = async (req, res) => {
-
-
+  
   // Create a Borne
-
   const borne = {
     nomBorne: req.body.nomBorne,
     wilaya: req.body.wilaya,
