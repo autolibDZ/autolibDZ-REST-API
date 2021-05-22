@@ -1,3 +1,4 @@
+
 const db = require('../models');
 const Reservation = db.reservation;
  const createReservation = async(req, res) => {
@@ -84,7 +85,7 @@ const updateReservationById= async (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error updating Vehicule with id=" + id
+                message: "Error updating reservation with id=" + id
             });
         });
 };
@@ -100,7 +101,7 @@ const deleteReservationById  = async (req, res) => {
         .then(num => {
             if (num == 1) {
                 res.send({
-                    message: "Reservationwas deleted successfully!"
+                    message: "Reservation was deleted successfully!"
                 });
             } else {
                 res.send({

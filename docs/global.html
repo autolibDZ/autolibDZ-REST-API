@@ -1521,6 +1521,102 @@
 
 
 
+    <h4 class="name" id="createReservation"><span class="type-signature">(async) </span>createReservation<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+
+
+
+
+
+
+    <div class="description">
+        <p>Create and save a new Reservation in database</p>
+    </div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+
+
+    <table class="params">
+        <thead>
+        <tr>
+
+            <th>Name</th>
+
+
+            <th>Type</th>
+
+
+
+
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+
+        <tr>
+
+            <td class="name"><code>req</code></td>
+
+
+            <td class="type">
+
+
+                <span class="param-type">*</span>
+
+
+
+            </td>
+
+
+
+
+
+            <td class="description last"><p>The request</p></td>
+        </tr>
+
+
+
+        <tr>
+
+            <td class="name"><code>res</code></td>
+
+
+            <td class="type">
+
+
+                <span class="param-type">*</span>
+
+
+
+            </td>
+
+
+
+
+
+            <td class="description last"><p>The response</p></td>
+        </tr>
+
+
+        </tbody>
+    </table>
+
+
+
+
+
+
+    <dl class="details">
 
 
 
@@ -1538,12 +1634,584 @@
 
 
 
-        
-    
 
-    
 
-    
+
+
+
+
+
+
+
+        <dt class="tag-source">Source:</dt>
+        <dd class="tag-source"><ul class="dummy"><li>
+            <a href="reservation.controller.js.html">reservation.controller.js</a>, <a href="vehicules.controller.js.html#line4">line 4</a>
+        </li></ul></dd>
+
+
+
+
+
+
+
+    </dl>
+
+
+
+    <h4 class="name" id="findReservationById"><span class="type-signature">(async) </span>findReservationById<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+
+
+
+
+
+
+    <div class="description">
+        <p>Return the deatails of reservation with specified ID in request body</p>
+    </div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+
+
+    <table class="params">
+        <thead>
+        <tr>
+
+            <th>Name</th>
+
+
+            <th>Type</th>
+
+
+
+
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+
+        <tr>
+
+            <td class="name"><code>req</code></td>
+
+
+            <td class="type">
+
+
+                <span class="param-type">*</span>
+
+
+
+            </td>
+
+
+
+
+
+            <td class="description last"><p>The request</p></td>
+        </tr>
+
+
+
+        <tr>
+
+            <td class="name"><code>res</code></td>
+
+
+            <td class="type">
+
+
+                <span class="param-type">*</span>
+
+
+
+            </td>
+
+
+
+
+
+            <td class="description last"><p>The response</p></td>
+        </tr>
+
+
+        </tbody>
+    </table>
+
+
+
+
+
+
+    <dl class="details">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <dt class="tag-source">Source:</dt>
+        <dd class="tag-source"><ul class="dummy"><li>
+            <a href="reservation.controller.js.html">reservation.controller.js</a>, <a href="reservation.controller.js.html#line50">line 50</a>
+        </li></ul></dd>
+
+
+
+
+
+
+
+    </dl>
+
+
+
+    <h4 class="name" id="listAllReservations"><span class="type-signature">(async) </span>listAllReservations<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+
+
+
+
+
+
+    <div class="description">
+        <p>Return details of all reservations thar are stored in database</p>
+    </div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+
+
+    <table class="params">
+        <thead>
+        <tr>
+
+            <th>Name</th>
+
+
+            <th>Type</th>
+
+
+
+
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+
+        <tr>
+
+            <td class="name"><code>req</code></td>
+
+
+            <td class="type">
+
+
+                <span class="param-type">*</span>
+
+
+
+            </td>
+
+
+
+
+
+            <td class="description last"><p>request</p></td>
+        </tr>
+
+
+
+        <tr>
+
+            <td class="name"><code>res</code></td>
+
+
+            <td class="type">
+
+
+                <span class="param-type">*</span>
+
+
+
+            </td>
+
+
+
+
+
+            <td class="description last"><p>response</p></td>
+        </tr>
+
+
+        </tbody>
+    </table>
+
+
+
+
+
+
+    <dl class="details">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <dt class="tag-source">Source:</dt>
+        <dd class="tag-source"><ul class="dummy"><li>
+            <a href="reservation.controller.js.html">reservation.controller.js</a>, <a href="reservation.controller.js.html#line36">line 36</a>
+        </li></ul></dd>
+    </dl>
+
+    <h4 class="name" id="updateReservationById"><span class="type-signature">(async) </span>updateReservationById<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+
+
+
+
+
+
+    <div class="description">
+        <p>Update a Reservation that has the specified ID in request body with data in request body</p>
+    </div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+
+
+    <table class="params">
+        <thead>
+        <tr>
+
+            <th>Name</th>
+
+
+            <th>Type</th>
+
+
+
+
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+
+        <tr>
+
+            <td class="name"><code>req</code></td>
+
+
+            <td class="type">
+
+
+                <span class="param-type">*</span>
+
+
+
+            </td>
+
+
+
+
+
+            <td class="description last"><p>The request</p></td>
+        </tr>
+
+
+
+        <tr>
+
+            <td class="name"><code>res</code></td>
+
+
+            <td class="type">
+
+
+                <span class="param-type">*</span>
+
+
+
+            </td>
+
+
+
+
+
+            <td class="description last"><p>The response</p></td>
+        </tr>
+
+
+        </tbody>
+    </table>
+
+
+
+
+
+
+    <dl class="details">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <dt class="tag-source">Source:</dt>
+        <dd class="tag-source"><ul class="dummy"><li>
+            <a href="reservation.controller.js.html">reservation.controller.js</a>, <a href="reservation.controller.js.html#line69">line 69</a>
+        </li></ul></dd>
+
+
+
+
+
+
+
+    </dl>
+    <h4 class="name" id="deleteReservationById"><span class="type-signature">(async) </span>deleteReservationById<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+
+
+
+
+
+
+    <div class="description">
+        <p>Delete a reservation with the specified ID in request body</p>
+    </div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+
+
+    <table class="params">
+        <thead>
+        <tr>
+
+            <th>Name</th>
+
+
+            <th>Type</th>
+
+
+
+
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+
+        <tr>
+
+            <td class="name"><code>req</code></td>
+
+
+            <td class="type">
+
+
+                <span class="param-type">*</span>
+
+
+
+            </td>
+
+
+
+
+
+            <td class="description last"><p>The request</p></td>
+        </tr>
+
+
+
+        <tr>
+
+            <td class="name"><code>res</code></td>
+
+
+            <td class="type">
+
+
+                <span class="param-type">*</span>
+
+
+
+            </td>
+
+
+
+
+
+            <td class="description last"><p>The response</p></td>
+        </tr>
+
+
+        </tbody>
+    </table>
+
+
+
+
+
+
+    <dl class="details">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <dt class="tag-source">Source:</dt>
+        <dd class="tag-source"><ul class="dummy"><li>
+            <a href="reservation.controller.js.html">reservation.controller.js</a>, <a href="reservation.controller.js.html#line93">line 93</a>
+        </li></ul></dd>
+
+
+
+
+
+
+
+    </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </article>
 
 </section>
@@ -1554,7 +2222,7 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#createBorne">createBorne</a></li><li><a href="global.html#createVehicule">createVehicule</a></li><li><a href="global.html#deleteVehicule">deleteVehicule</a></li><li><a href="global.html#getAllBornes">getAllBornes</a></li><li><a href="global.html#getAllVehicule">getAllVehicule</a></li><li><a href="global.html#getBorne">getBorne</a></li><li><a href="global.html#getFilteredBornes">getFilteredBornes</a></li><li><a href="global.html#getVehiculeDetails">getVehiculeDetails</a></li><li><a href="global.html#updateVehicule">updateVehicule</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#createBorne">createBorne</a></li><li><a href="global.html#createVehicule">createVehicule</a></li><li><a href="global.html#deleteVehicule">deleteVehicule</a></li><li><a href="global.html#getAllBornes">getAllBornes</a></li><li><a href="global.html#getAllVehicule">getAllVehicule</a></li><li><a href="global.html#getBorne">getBorne</a></li><li><a href="global.html#getFilteredBornes">getFilteredBornes</a></li><li><a href="global.html#getVehiculeDetails">getVehiculeDetails</a></li><li><a href="global.html#updateVehicule">updateVehicule</a></li><li><a href="global.html#createReservation">createReservation</a></li><li><a href="global.html#findReservationById">findReservationByID</a></li><li><a href="global.html#updateReservationById">updateReservationById</a></li><li><a href="global.html#deleteReservationById">deleteReservationById</a></li><li><a href="global.html#listAllReservations">listAllReseravtions</a></li></ul>
 </nav>
 
 <br class="clear">
