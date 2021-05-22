@@ -91,7 +91,7 @@ const getFilteredBornes = async (req, res) => {
 
   if (req.body.nbPlacesOp != null && ! ops.includes(req.body.nbPlacesOp)) {
 		res.status(400).send({
-			message: "nbPlacesOp must be > , < or = ",
+			message: "nbPlacesOp must be min or max",
 		});
 		return;
 	}
@@ -127,10 +127,7 @@ const getFilteredBornes = async (req, res) => {
           [Op.like] : (req.body.commune != null) ? req.body.commune :  '%'
         },
         nbVehicules: {
-          [Op.gte] : nbVehiculesMin
-        },
-        nbVehicules: {
-          [Op.lte] : nbVehiculesMax
+          [Op.between] : [nbVehiculesMin,nbVehiculesMax]
         },
         nbPlaces: {
           [nbPlacesSquelizeOp] : (req.body.nbPlaces != null) ? req.body.nbPlaces :  0
