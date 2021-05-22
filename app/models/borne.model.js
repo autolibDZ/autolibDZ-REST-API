@@ -4,7 +4,7 @@ module.exports = function (sequelize, Sequelize) {
     idBorne: {
       type: Sequelize.INTEGER,
       primaryKey: true,
-      autoIncrement: true,
+      autoIncrement: true
       
     },
     
