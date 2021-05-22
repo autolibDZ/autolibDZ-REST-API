@@ -156,7 +156,7 @@ const getFilteredBornes = async (req, res) => {
 	        res.send(bornes);
 	    } else {
 	        res.status(404).send({
-	            error: 'there is no Born that matches your filter',
+	            error: 'there is no Borne that matches your filter',
 	        });
 	    }
     
