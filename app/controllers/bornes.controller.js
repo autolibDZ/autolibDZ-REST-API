@@ -10,8 +10,6 @@ const Vehicule = db.vehicules;
 // Create and Save a new Borne
 
 const createBorne = async (req, res) => {
-
-
   // Create a Borne
 
   const borne = {
@@ -22,7 +20,6 @@ const createBorne = async (req, res) => {
     longitude: req.body.longitude,
     nbVehicules: req.body.nbVehicules,
     nbPlaces: req.body.nbPlaces
-
   };
 
   // Save Borne in the database
@@ -220,14 +217,14 @@ const getVehiclesInABorne = async (req, res) => {
     });
     if (vehicules.length <= 0) {
       res.status(404).send({
-        error: `No vehicles in the borne with id: ${req.params.id}`
+        error: "No vehicles in the borne with id: ${req.params.id}"
       });
     } else {
       res.status(200).send(vehicules);
     }
   } catch (err) {
     res.status(500).send({
-      error: err.message || 'Some error occured while retreiving vehicules borne id: ' + req.params.id
+      error: err.message || "Some error occured while retreiving vehicules borne id: " + req.params.id
     });
   }
 };
