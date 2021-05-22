@@ -14,7 +14,8 @@ cloudinary.config({
 // Create and Save a new Vehicule
 const createVehicule = async (req, res) => {
 	// Validate request
-	if (!req.body.numChassis) {
+	if (!req.body.numChassis || !body.numImmatriculation || !req.body.modele || !req.body.marque || !req.body.couleur
+		|| !req.body.etat ) {
 		res.status(400).send({
 			message: 'Content can not be empty!',
 		});
@@ -36,21 +37,23 @@ const createVehicule = async (req, res) => {
 		niveauMinimumHuile: req.body.niveauMinimumHuile,
 		regulateurVitesse: req.body.regulateurVitesse,
 		limiteurVitesse: req.body.limiteurVitesse,
-	    idCloudinary: null, 
-		secureUrl: null
+	    idCloudinary: "", 
+		secureUrl: ""
 	};
 
-	// upload image here to cloudinary here
+	// upload image to cloudinary here
 	if (req.body.image) {
 		const image = req.body.image;
-		cloudinary.uploader.upload(req.body.image)
-		.then((result) => {
-			vehicule.idCloudinary=result.public_id;
-			vehicule.secureUrl= result.secure_url;
+		try{
+			ress= await cloudinary.uploader.upload(req.body.image)
+			.then((result) => {
+				vehicule.idCloudinary=result.public_id;
+				vehicule.secureUrl= result.secure_url;
 		
-		}).catch((error) => {
+			}); 
+		} catch(error){
 			console.log(error);
-		});
+		}
 	}
 	// Ajout d'un véhicule à la base de données
 	try {
