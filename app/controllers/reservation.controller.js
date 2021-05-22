@@ -114,6 +114,34 @@ const deleteReservationById  = async (req, res) => {
             });
         });
 };
+const selectReservationOfAGivenUser = async (req, res) => {
+    try {
+        const reservations = await Reservation.findAll({
+            where: {
+                idLocataire: +req.params.id,
+            },
+        });
+        if (reservations.length === 0) {
+            // No content with that id
+            res.status(404).send({
+                error: 'not_found',
+                message: `No content with such id: ${+req.params.id}`,
+                status: 404,
+            });
+        } else {
+            res.status(200).send(reservations);
+        }
+        res.status(200).send(reservations);
+    } catch (err) {
+        res.status(500).send({
+            error:
+                err.message ||
+                'Some error occured while retreiving reservations of this user: ' +
+                req.params.id,
+        });
+    }
+};
+
 
 export default {
     createReservation,
@@ -121,4 +149,5 @@ export default {
   findReservationById,
     deleteReservationById,
 updateReservationById,
+    selectReservationOfAGivenUser
 }

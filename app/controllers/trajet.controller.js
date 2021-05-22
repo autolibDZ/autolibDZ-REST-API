@@ -17,7 +17,7 @@ const createTrajet = async(req, res) => {
         prixAPayer: req.body.prixAPayer,
         idReservation :req.body.idReservation,
     };
-    
+
     try {
 
         let data;
