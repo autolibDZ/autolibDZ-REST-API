@@ -1,5 +1,7 @@
 const db = require("../models");
 const Borne = db.borne;
+const Vehicule = db.vehicules;
+
 /**
  * Create and save a new borne in database
  * @param {*} req The request
@@ -8,7 +10,6 @@ const Borne = db.borne;
 // Create and Save a new Borne
 
 const createBorne = async (req, res) => {
-  
   // Create a Borne
   const borne = {
     nomBorne: req.body.nomBorne,
@@ -18,7 +19,6 @@ const createBorne = async (req, res) => {
     longitude: req.body.longitude,
     nbVehicules: req.body.nbVehicules,
     nbPlaces: req.body.nbPlaces
-
   };
 
   // Save Borne in the database
@@ -195,9 +195,43 @@ const getAllBornes = async (req, res) => {
 
 };
 
+/**
+ * Return all Vehicles in borne of idBorne=id
+ * @param {*} req request 
+ * @param {*} res response
+* @returns {vehicules} liste of vehicles
+*/
+
+
+const getVehiclesInABorne = async (req, res) => {
+
+  try {
+    const vehicules = await Vehicule.findAll({
+      where: {
+        idBorne: req.params.id,
+      },
+      order: [
+        ['chargeBatterie', 'DESC']
+      ]
+    });
+    if (vehicules.length <= 0) {
+      res.status(404).send({
+        error: "No vehicles in the borne with id: ${req.params.id}"
+      });
+    } else {
+      res.status(200).send(vehicules);
+    }
+  } catch (err) {
+    res.status(500).send({
+      error: err.message || "Some error occured while retreiving vehicules borne id: " + req.params.id
+    });
+  }
+};
+
 export default {
   createBorne,
   getFilteredBornes,
   getBorne,
-  getAllBornes
+  getAllBornes,
+  getVehiclesInABorne
 }

@@ -156,4 +156,35 @@ describe('Borne route test', () => {
 				});
 		});
 	});
+
+
+	describe('Get list of all vehicles in a given borne of id 1', () => {
+		it('Should returns 200 OK when getting all vehicles in the borne', (done) => {
+			request
+				.get('/1/vehicules')
+				.set('Accept', 'application/json')
+				.expect(200)
+				.expect('Content-Type', /json/)
+				.end((err, res) => {
+					if (err) done(err);
+					expect(res.body.length).not.toEqual(0);
+					done();
+				});
+		});
+
+		it('Should returns 404 when using an non exesting id borne=3 ', (done) => {
+			request
+				.get('/3/vehicules')
+				.set('Accept', 'application/json')
+				.expect(404)
+				.expect('Content-Type', /json/)
+				.end((err, res) => {
+					if (err) done(err);
+					expect(res.body.error == 'No vehicles in the borne with id: 3')
+					done();
+				});
+		});
+	});
+
+
 });
