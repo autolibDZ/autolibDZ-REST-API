@@ -1,5 +1,7 @@
 const db = require("../models");
 const Borne = db.borne;
+const Vehicule = db.vehicules;
+
 const { Op } = require("sequelize");
 /**
  * Create and save a new borne in database
@@ -9,9 +11,14 @@ const { Op } = require("sequelize");
 // Create and Save a new Borne
 
 const createBorne = async (req, res) => {
-
-
   // Create a Borne
+
+  if (!req.body.nomBorne || !req.body.wilaya || !req.body.commune || !req.body.latitude || !req.body.longitude || !req.body.nbVehicules || !req.body.nbPlaces) {
+    res.status(400).send({
+      message: "parameters can't be empty!"
+    })
+    return;
+  }
 
   const borne = {
     nomBorne: req.body.nomBorne,
@@ -21,8 +28,8 @@ const createBorne = async (req, res) => {
     longitude: req.body.longitude,
     nbVehicules: req.body.nbVehicules,
     nbPlaces: req.body.nbPlaces
-
   };
+
 
   // Save Borne in the database
 
@@ -140,7 +147,7 @@ const getFilteredBornes = async (req, res) => {
 	        res.send(bornes);
 	    } else {
 	        res.status(404).send({
-	            error: 'there is no Born that matches your filter',
+	            error: 'there is no Borne that matches your filter',
 	        });
 	    }
     
@@ -224,6 +231,7 @@ const getAllBornes = async (req, res) => {
     if (data != null && data.length != 0) {
 
       res.send(data);
+      return;
 
     } else {
 
@@ -232,6 +240,7 @@ const getAllBornes = async (req, res) => {
         message: "Borne table is empty!"
 
       })
+      return;
     }
 
   } catch (err) {
@@ -240,15 +249,148 @@ const getAllBornes = async (req, res) => {
       error: err.message || "Some error occurred while getting Bornes."
 
     });
+    return;
   }
 
 
 
+};
+/**
+ * Return the list of all wilayas 
+ * @param {*} req request
+ * @param {*} res response
+ */
+
+const getWilaya = async (req, res) => {
+  try {
+
+    const data = await Borne.findAll({ attributes: [[Borne.sequelize.fn('DISTINCT', Borne.sequelize.col('wilaya')), 'wilaya']] });
+
+    if (data.length != 0 && data != null) {
+
+      res.send(data);
+
+
+    } else {
+      res.status(404).send({
+
+        message: "No wilaya found!"
+
+      })
+
+    }
+
+
+  } catch (err) {
+    res.status(500).send({
+
+      error: err.message || "Some error occurred while getting list of Wilaya."
+
+    });
+
+
+  }
+
+};
+/**
+ * Return all communes in database or communes by wilaya
+ * @param {*} req 
+ * @param {*} res 
+ */
+const getCommune = async (req, res) => {
+  try {
+
+    let wilaya = req.params.wilaya
+
+    if (wilaya == "all") {
+
+      const data = await Borne.findAll({ attributes: [[Borne.sequelize.fn('DISTINCT', Borne.sequelize.col('commune')), 'commune']] });
+
+      if (data.length != 0) {
+
+        res.send(data);
+
+
+      } else {
+        res.status(404).send({
+
+          message: "No Commune found!"
+
+        })
+
+      }
+
+    } else {
+
+      const data = await Borne.findAll({ attributes: [[Borne.sequelize.fn('DISTINCT', Borne.sequelize.col('commune')), 'commune']], where: { wilaya: wilaya } });
+
+      if (data.length != 0) {
+
+        res.send(data);
+
+
+      } else {
+
+        res.status(404).send({
+
+          message: "No Commune found for wilaya :" + wilaya
+
+
+        })
+
+      }
+
+    }
+
+
+  } catch (err) {
+    res.status(500).send({
+
+      error: err.message || "Some error occurred while getting list of Communes"
+
+    });
+  }
+};
+
+/**
+ * Return all Vehicles in borne of idBorne=id
+ * @param {*} req request 
+ * @param {*} res response
+* @returns {vehicules} liste of vehicles
+*/
+
+
+const getVehiclesInABorne = async (req, res) => {
+
+  try {
+    const vehicules = await Vehicule.findAll({
+      where: {
+        idBorne: req.params.id,
+      },
+      order: [
+        ['chargeBatterie', 'DESC']
+      ]
+    });
+    if (vehicules.length <= 0) {
+      res.status(404).send({
+        error: "No vehicles in the borne with id:" + req.params.id
+      });
+    } else {
+      res.status(200).send(vehicules);
+    }
+  } catch (err) {
+    res.status(500).send({
+      error: err.message || "Some error occured while retreiving vehicules borne id: " + req.params.id
+    });
+  }
 };
 
 export default {
   createBorne,
   getFilteredBornes,
   getBorne,
-  getAllBornes
+  getAllBornes,
+  getVehiclesInABorne,
+  getWilaya,
+  getCommune
 }

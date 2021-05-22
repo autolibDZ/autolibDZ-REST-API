@@ -1,8 +1,8 @@
 module.exports = {
-    HOST: "localhost",
-    USER: "sil1",
-    PASSWORD: "sil1",
-    DB: "AutoLibDZ",
+    HOST: process.env.DB_HOST,
+    USER: process.env.DB_USER,
+    PASSWORD: process.env.DB_PASS,
+    DB: process.env.DB_NAME,
     dialect: "postgres",
     pool: {
       max: 5,
