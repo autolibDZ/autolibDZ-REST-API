@@ -54,20 +54,6 @@ describe('Borne route test', () => {
 		});
 	});
 
-	describe('getFilteredBornes 2nd scenario', () => {
-		it('returns 200 OK when sending an empty filter', (done) => {
-			request
-				.post('/filter')
-				.send({ filter: '' })
-				.expect(200)
-				.expect('Content-Type', 'application/json; charset=utf-8')
-				.end((err, res) => {
-					if (err) done(err);
-					return done();
-				});
-		});
-	});
-
 	describe('createBorne 3rd scenario', () => {
 		it('returns 200 OK when sending borne params that doesn"t exist in db', (done) => {
 			request
@@ -181,13 +167,13 @@ describe('Borne route test', () => {
                 });
         });
 
-        it('returns 200 OK when sending correct filter like nbVehicules = 20 and nbVehiculesOp is >', (done) => {
+        it('returns 200 OK when sending correct filter like nbVehicules entre 10 et 50', (done) => {
             request
                 .post('/filter')
                 .send({
                     wilaya: 'Alger',
-                    nbVehicules : 20,
-                    nbVehiculesOp : ">"
+                    nbVehiculesMax : 50,
+                    nbVehiculesMin : 10
                 })
                 .set('Accept', 'application/json')
                 .expect(200)
@@ -199,19 +185,18 @@ describe('Borne route test', () => {
                     expect(res.body.length > 0).toBe(true)
                     const ele = res.body[0]
     
-                    expect(ele.nbVehicules > 20).toBe(true)
+                    expect(ele.nbVehicules >= 10 && ele.nbVehicules <= 50).toBe(true)
     
                     done();
                 });
         });
 
-        it('returns 400 bad request when using a wrong nbVehiculesOp like  >=', (done) => {
+        it('returns 400 bad request when using a wrong nbPlacesOp like  >=', (done) => {
             request
                 .post('/filter')
                 .send({
                     wilaya: 'Alger',
-                    nbVehicules : 20,
-                    nbVehiculesOp : ">="
+                    nbPlacesOp : ">="
                 })
                 .set('Accept', 'application/json')
                 .expect(400)
@@ -219,7 +204,7 @@ describe('Borne route test', () => {
                 .end((err, res) => {
                     if (err) done(err);
     
-                    expect(res.body.message).toBe("nbVehiculesOp must be > , < or = ")
+                    expect(res.body.message).toBe("nbPlacesOp must be min or max")
                     
                     done();
                 });
@@ -230,8 +215,7 @@ describe('Borne route test', () => {
                 .post('/filter')
                 .send({
                     wilaya: 'Alger',
-                    nbVehicules : 500,
-                    nbVehiculesOp : ">"
+                    nbVehiculesMin : 500,
                 })
                 .set('Accept', 'application/json')
                 .expect(404)
@@ -250,8 +234,7 @@ describe('Borne route test', () => {
                 .post('/filter')
                 .send({
                     wilaya: 'Alger',
-                    nbVehicules : "m",
-                    nbVehiculesOp : ">"
+                    nbVehiculesMax : "m",
                 })
                 .set('Accept', 'application/json')
                 .expect(500)
