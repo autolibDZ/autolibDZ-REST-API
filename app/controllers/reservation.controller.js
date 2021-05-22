@@ -141,6 +141,31 @@ const selectReservationOfAGivenUser = async (req, res) => {
         });
     }
 };
+const getReservationAnnulee = async (req, res) => {
+    try {
+        const annulee = await Reservation.findAll({
+            where: {
+                etat: 'Annulée'
+            },
+        });
+        if (annulee.length === 0) {
+
+            res.status(404).send({
+                error: 'not_found',
+                message: `No Reservation is 'Annuled'`,
+                status: 404,
+            });
+        } else {
+            res.status(200).send(annulee);
+        }
+    } catch (err) {
+        res.status(500).send({
+            error:
+                err.message ||
+                "Some error occured while retreiving annuled reservations",
+        });
+    }
+};
 
 
 export default {
@@ -149,5 +174,6 @@ export default {
   findReservationById,
     deleteReservationById,
 updateReservationById,
-    selectReservationOfAGivenUser
+    selectReservationOfAGivenUser,
+    getReservationAnnulee
 }

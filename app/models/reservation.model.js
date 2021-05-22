@@ -32,6 +32,25 @@ module.exports = function(sequelize, Sequelize) {
 
         }
     );
+    Reservation.associate = models => {
+        Reservation.hasOne(models.locataire, {
+            foreignKey: 'idLocataire',
+
+        });
+    };
+
+    Reservation.associate = models => {
+        Reservation.hasOne(models.vehicules, {
+            foreignKey: 'numChassis',
+
+        });
+    };
+    Reservation.associate = models => {
+        Reservation.hasOne(models.vehicules, {
+            foreignKey: 'numChassis',
+
+        });
+    };
     return Reservation;
     /* Reservation.associate = function(models) {
          // associations can be defined here
