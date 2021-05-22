@@ -266,4 +266,111 @@ describe('Borne route test', () => {
 		});
 	});
 
+	describe('POST filter bornes', () => {
+        it('returns 200 OK when sending correct filter like wilaya = Alger', (done) => {
+            request
+                .post('/filter')
+                .send({
+                    wilaya: 'Alger',
+                })
+                .set('Accept', 'application/json')
+                .expect(200)
+                .expect('Content-Type', /json/)
+                .end((err, res) => {
+                    if (err) done(err);
+    
+                    expect(res.body != null).toBe(true)
+                    expect(res.body.length > 0).toBe(true)
+                    const ele = res.body[0]
+    
+                    expect(ele.wilaya).toBe("Alger")
+    
+                    done();
+                });
+        });
+
+        it('returns 200 OK when sending correct filter like nbVehicules = 20 and nbVehiculesOp is >', (done) => {
+            request
+                .post('/filter')
+                .send({
+                    wilaya: 'Alger',
+                    nbVehicules : 20,
+                    nbVehiculesOp : ">"
+                })
+                .set('Accept', 'application/json')
+                .expect(200)
+                .expect('Content-Type', /json/)
+                .end((err, res) => {
+                    if (err) done(err);
+    
+                    expect(res.body != null).toBe(true)
+                    expect(res.body.length > 0).toBe(true)
+                    const ele = res.body[0]
+    
+                    expect(ele.nbVehicules > 20).toBe(true)
+    
+                    done();
+                });
+        });
+
+        it('returns 400 bad request when using a wrong nbVehiculesOp like  >=', (done) => {
+            request
+                .post('/filter')
+                .send({
+                    wilaya: 'Alger',
+                    nbVehicules : 20,
+                    nbVehiculesOp : ">="
+                })
+                .set('Accept', 'application/json')
+                .expect(400)
+                .expect('Content-Type', /json/)
+                .end((err, res) => {
+                    if (err) done(err);
+    
+                    expect(res.body.message).toBe("nbVehiculesOp must be > , < or = ")
+                    
+                    done();
+                });
+        });
+
+        it('returns 404 not found when the filter does not match any record in the db', (done) => {
+            request
+                .post('/filter')
+                .send({
+                    wilaya: 'Alger',
+                    nbVehicules : 500,
+                    nbVehiculesOp : ">"
+                })
+                .set('Accept', 'application/json')
+                .expect(404)
+                .expect('Content-Type', /json/)
+                .end((err, res) => {
+                    if (err) done(err);
+    
+                    expect(res.body.error).toBe("there is no Born that matches your filter")
+                    
+                    done();
+                });
+        });
+
+        it('returns 500 internal server error when sending a string instead of a number for nbVehicules', (done) => {
+            request
+                .post('/filter')
+                .send({
+                    wilaya: 'Alger',
+                    nbVehicules : "m",
+                    nbVehiculesOp : ">"
+                })
+                .set('Accept', 'application/json')
+                .expect(500)
+                .expect('Content-Type', /json/)
+                .end((err, res) => {
+                    if (err) done(err);
+    
+                    expect(res.body.error).toBe("invalid input syntax for type integer: \"m\"")
+                    
+                    done();
+                });
+        });
+    });
 });
