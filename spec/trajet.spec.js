@@ -1,10 +1,10 @@
 const Request = require('supertest');
 request = Request('http://localhost:4000/api');
 
-describe('Testing GET on /api/reservation endpoint', () => {
-    it('should return the list of all reservations stored in the database, at least one reservation', (done) => {
+describe('Testing GET on /api/trajet endpoint', () => {
+    it('should return the list of all trajets stored in the database, at least one trajet', (done) => {
         request
-            .get('/reservation')
+            .get('/trajet')
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(200)
@@ -19,10 +19,10 @@ describe('Testing GET on /api/reservation endpoint', () => {
     });
 });
 
-describe('Testing GET on /api/reservation/:id endpoint', () => {
-    it("should return details of the reservation with id 9", (done) => {
+describe('Testing GET on /api/trajet/:id endpoint', () => {
+    it("should return details of the trajet with id 9", (done) => {
         request
-            .get('/reservation/9')
+            .get('/trajet/9')
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(200)
@@ -30,24 +30,26 @@ describe('Testing GET on /api/reservation/:id endpoint', () => {
                 if (err) {
                     done.fail(err);
                 } else {
-                    expect(res.body.idReservation).toEqual(9);
+                    expect(res.body.idTrajet).toEqual(9);
                     done();
                 }
             });
     });
 });
 
-describe('createrReservation api', () => {
-    it('returns 200 OK when reservation doesn"t exist in db', (done) => {
+describe('creatertrajet api', () => {
+    it('returns 200 OK when trajet doesn"t exist in db', (done) => {
         request
-            .post('/reservation/')
+            .post('/trajet/')
             .send({
 
-                etat: "Active",
-                idVehicule: 2,
-                idLocataire: 3,
-                idBorneDepart: 2,
-                idBorneDestination: 100,
+                idTrajet: 100,
+                dateDebut: "2021-01-16T14:34:34.000Z",
+                dateFin: "2021-02-16T14:34:34.000Z",
+                tempsEstime: 130,
+                kmParcourue: 12,
+                prixAPayer: 200,
+                idReservation: 12
 
             })
             .set('Accept', 'application/json')
@@ -61,15 +63,17 @@ describe('createrReservation api', () => {
             });
     });
 
-    it('returns 400 When reservation exists', (done) => {
+    it('returns 400 When trajet exists', (done) => {
         request
-            .post('/reservation/')
+            .post('/trajet/')
             .send({
-                etat: "Active",
-                idVehicule: 3,
-                idLocataire: 4,
-                idBorneDepart: 2,
-                idBorneDestination: 100,
+                idTrajet: 102,
+                dateDebut: "2021-01-16T15:34:34.000Z",
+                dateFin: "2021-02-16T16:34:34.000Z",
+                tempsEstime: 3600,
+                kmParcourue: 120,
+                prixAPayer: 500,
+                idReservation: 17
             })
             .expect(400)
             .expect('Content-Type','application/json; charset=utf-8')
@@ -84,13 +88,15 @@ describe('createrReservation api', () => {
     it('returns 500 server error when sending an empty parameter', (done) => {
         request
 
-            .post('/reservation')
+            .post('/trajet')
             .send({
-                etat: "Active",
-                idVehicule: 14,
-                idLocataire:6,
-                idBorneDepart: 2,
-                idBorneDestination: 5,
+                idTrajet: 103,
+                dateDebut: "2021-01-16T14:34:34.000Z",
+                dateFin: "2021-02-16T14:34:34.000Z",
+                tempsEstime: 130,
+                kmParcourue: 12,
+                prixAPayer: 200,
+                idReservation: 15
             })
             .set('Accept', 'application/json')
             .expect(400)
@@ -105,8 +111,8 @@ describe('createrReservation api', () => {
 });
 
 
-describe('Testing GET on reservation by id locataire', () => {
-    it('should return the list of all reservations of agent with id 3', (done) => {
+describe('Testing GET on trajet by id locataire', () => {
+    it('should return the list of all trajets of agent with id 3', (done) => {
         request
             .get('/reseravtion/locataire/3')
             .set('Accept', 'application/json')

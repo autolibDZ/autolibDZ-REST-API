@@ -32,6 +32,7 @@ module.exports = function(sequelize, Sequelize) {
 
         }
     );
+    // Déclaration des clès étrangères
     Reservation.associate = models => {
         Reservation.hasOne(models.locataire, {
             foreignKey: 'idLocataire',
