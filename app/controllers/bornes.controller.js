@@ -77,8 +77,8 @@ const createBorne = async (req, res) => {
  * wilaya 
  * nomBorne
  * commune
- * nbVehicules
- * nbVehiculesOp : > , < = the default is >
+ * nbVehiculesMax
+ * nbVehiculesMin
  * nbPlaces
  * nbPlacesOp : > , < = the default is >
  */
@@ -94,18 +94,11 @@ const getFilteredBornes = async (req, res) => {
 		return;
 	}
 
-  const ops = ['<' , '>' , '=']
+  const ops = ['min' , 'max']
 
   if (req.body.nbPlacesOp != null && ! ops.includes(req.body.nbPlacesOp)) {
 		res.status(400).send({
-			message: "nbPlacesOp must be > , < or = ",
-		});
-		return;
-	}
-
-  if (req.body.nbVehiculesOp != null && ! ops.includes(req.body.nbVehiculesOp)) {
-		res.status(400).send({
-			message: "nbVehiculesOp must be > , < or = ",
+			message: "nbPlacesOp must be min or max",
 		});
 		return;
 	}
@@ -113,30 +106,21 @@ const getFilteredBornes = async (req, res) => {
   try {
     
     // setting the operator < , > , =
-    const nbVehiculesOperator = (req.body.nbVehiculesOp != null) ? req.body.nbVehiculesOp :  '>'
-    const nbPlacesOperator = (req.body.nbPlacesOp != null) ? req.body.nbPlacesOp :  '>'
+    const nbPlacesOperator = (req.body.nbPlacesOp != null) ? req.body.nbPlacesOp :  'min'
 
     // setting squelize Op
-
     var nbPlacesSquelizeOp;
 
-    if(nbPlacesOperator == '>'){
-      nbPlacesSquelizeOp = Op.gt
-    }else if(nbPlacesOperator == '<'){
-      nbPlacesSquelizeOp = Op.lt
-    }else{
-      nbPlacesSquelizeOp = Op.eq
+    if(nbPlacesOperator == 'min'){
+      nbPlacesSquelizeOp = Op.gte
+    }else if(nbPlacesOperator == 'max'){
+      nbPlacesSquelizeOp = Op.lte
     }
 
-    var nbVehiculesSquelizeOp ;
 
-    if(nbVehiculesOperator == '>'){
-      nbVehiculesSquelizeOp = Op.gt
-    }else if(nbVehiculesOperator == '<'){
-      nbVehiculesSquelizeOp = Op.lt
-    }else{
-      nbVehiculesSquelizeOp = Op.eq
-    }
+    const nbVehiculesMax = (req.body.nbVehiculesMax != null) ? req.body.nbVehiculesMax :  99999
+    const nbVehiculesMin = (req.body.nbVehiculesMin != null) ? req.body.nbVehiculesMin :  0
+
 
     const bornes = await Borne.findAll({
 			where: {
@@ -150,7 +134,7 @@ const getFilteredBornes = async (req, res) => {
           [Op.like] : (req.body.commune != null) ? req.body.commune :  '%'
         },
         nbVehicules: {
-          [nbVehiculesSquelizeOp] : (req.body.nbVehicules != null) ? req.body.nbVehicules :  0
+          [Op.between] : [nbVehiculesMin,nbVehiculesMax]
         },
         nbPlaces: {
           [nbPlacesSquelizeOp] : (req.body.nbPlaces != null) ? req.body.nbPlaces :  0
