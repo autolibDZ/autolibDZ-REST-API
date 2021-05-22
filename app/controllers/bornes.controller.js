@@ -216,7 +216,7 @@ const getVehiclesInABorne = async (req, res) => {
     });
     if (vehicules.length <= 0) {
       res.status(404).send({
-        error: "No vehicles in the borne with id: ${req.params.id}"
+        error: "No vehicles in the borne with id:" + req.params.id
       });
     } else {
       res.status(200).send(vehicules);
