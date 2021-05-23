@@ -22,7 +22,6 @@ const filterTransaction = async (req, res) => {
 
      var options = {};
 
-     //let reservation = req.body.reseravation;
      let dateTransaction = req.body.dateTransaction;
      let dateFrom = req.body.dateFrom;
      let dateTo = req.body.dateTo;
@@ -72,7 +71,6 @@ const filterTransaction = async (req, res) => {
 
      console.log(options)
 
-     // Save Transaction in the database
      try {
           const id = req.params.id
           let locataire = await Transaction.findAll({
