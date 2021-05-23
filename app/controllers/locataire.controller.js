@@ -1,3 +1,4 @@
+const { Sequelize } = require('../models');
 const db = require("../models");
 const Locataire = db.locataire;
 const validator = require('validator');
@@ -34,7 +35,8 @@ const createLocataire = async(req, res) => {
             nom: req.body.nom,
             prenom: req.body.prenom,
             email: req.body.email,
-            motDePasse: req.body.motdepasse
+            motDePasse: req.body.motdepasse,
+            Active : req.body.Active?req.body.Active:false
 
         };
         //Pour hasher le mot de passe 
@@ -86,7 +88,8 @@ const createLocataireGmail = async(req, res) => {
                 nom: payload.given_name,
                 prenom: payload.family_name,
                 email: payload.email,
-                motDePasse: payload.email //Un mot de passe par defaut
+                motDePasse: payload.email, //Un mot de passe par defaut
+                Active : false
 
             };
             //Pour hasher le mot de passe 
@@ -134,7 +137,8 @@ const findOne = async(req, res) => {
 
     Locataire.findOne({ where: { idLocataire: req.params.id } })
         .then(data => {
-            res.send(data);
+            if (!data) res.status(404).send({message: "Locataire non existant"})
+            else res.status(200).send(data);
         })
         .catch(err => {
             res.status(500).send({
@@ -143,21 +147,26 @@ const findOne = async(req, res) => {
         });
 };
 // Update a Locataire by the id in the request
-const update = (req, res) => {
+const update = async (req, res) => {
   const id = req.params.id;
-   var salt = bcrypt.genSaltSync(10);
-   var hash = bcrypt.hashSync(req.body.motDePasse, salt);
+    //Pour tester l'existance de l'email
+    const locataires = await Locataire.findOne({ where: { email: req.body.email } })
+    if (locataires != null) {
+      delete req.body.email;
+    }
+    var salt = bcrypt.genSaltSync(10);
+    var hash = bcrypt.hashSync(req.body.motDePasse, salt);
     req.body.motDePasse = hash;
     Locataire.update(req.body, {
-      where: { IdUtilisateur: id }
+      where: { idLocataire: id }
     })
       .then(num => {
         if (num == 1) {
-          res.send({
+          res.status(200).send({
             message: "Locataire was updated successfully."
           });
         } else {
-          res.send({
+          res.status(400).send({
             message: `Cannot update Locataire with id=${id}. Maybe Locataire was not found or req.body is empty!`
           });
         }
@@ -174,15 +183,15 @@ const deleteLocataire = (req, res) => {
   const id = req.params.id;
 
     Locataire.destroy({
-      where: { IdUtilisateur: id }
+      where: { idLocataire: id }
     })
       .then(num => {
         if (num == 1) {
-          res.send({
+          res.status(200).send({
             message: "Locataire was deleted successfully!"
           });
         } else {
-          res.send({
+          res.status(400).send({
             message: `Cannot delete Locataire with id=${id}. Maybe Locataire was not found!`
           });
         }
@@ -202,16 +211,16 @@ const block = (req, res) => {
     // Active: true
   }, {
     where: {
-      IdUtilisateur: id
+      idLocataire: id
     }
   }).then(num => {
     if (num == 1) {
-      res.send({
+      res.status(200).send({
         message: "Locataire was updated successfully."
       });
     } else {
-      res.send({
-        message: `Cannot update Locataire with id=${id}. Maybe Locataire was not found or req.body is empty!`
+      res.status(400).send({
+        message: `Cannot update Locataire with id=${id}. Maybe Locataire was not found!`
       });
     }
   })
