@@ -59,6 +59,7 @@ db.sequelize.sync();
 app.use('/api/vehicules',vehiculeRouter); 
 
 app.use('/api/abonnement', abonnementRouter);
+app.use('/api/abonnements', abonnementRouter);
 app.use('/api/locataire', locataireRouter);
 app.use('/api/reservation', reservationRouter);
 app.use('/api/administrateur',administrateurRouter)

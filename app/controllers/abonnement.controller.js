@@ -1,4 +1,5 @@
 	const db = require('../models');
+	var sequelize = require("sequelize");
 	const Abonnement = db.abonnement;
 
 	// get the balance
@@ -117,8 +118,73 @@ const doPayment = async (req, res) => {
 	}
 };
 
+// For a specific year, return how much Abonnements there were for each month
+const countAbonnementsByMonth = async (req, res) => {
+	// Validate request
+	if (!req.params.year) {
+		res.status(400).send({
+			message: "params 'year' can not be empty!",
+		});
+		return;
+	}
+
+	try {
+		let year=req.params.year;
+		const trajets_par_mois = await Abonnement.findAll({
+			attributes: [
+				[sequelize.fn('date_part','month',sequelize.col('createdAt')),'month'],
+				[sequelize.fn('COUNT',sequelize.col('idAbonnement')),'countAbonnements'],
+			],
+			where: sequelize.where(sequelize.fn('date_part', 'year', sequelize.col('createdAt')),year),
+			group: [sequelize.fn('date_part','month',sequelize.col('createdAt'))],
+			order: [sequelize.fn('date_part','month',sequelize.col('createdAt'))],
+        });
+		if (trajets_par_mois.length != 0) {
+			res.send(trajets_par_mois );	
+		} else {
+            res.status(404).send({
+				error: 'not_found',
+				message: 'No content',
+				status: 404,
+			});
+		}
+	} catch (err) {
+		res.status(500).send({
+			error: err.message || 'Some error occured while counting abonnements'
+		});
+	}
+};
+
+const getYears = async (req, res) => {
+	
+
+	try {
+		const years = await Abonnement.findAll({
+			attributes: [
+				[sequelize.fn('date_part','year',sequelize.col('createdAt')),'year'],
+			],
+			group: [sequelize.fn('date_part','year',sequelize.col('createdAt'))],
+			order: [sequelize.fn('date_part','year',sequelize.col('createdAt'))],
+		})
+		if (years.length != 0) {
+			res.send(years);	
+		} else {
+            res.status(404).send({
+				error: 'not_found',
+				message: 'No content',
+				status: 404,
+			});
+		}
+	} catch (err) {
+		res.status(500).send({
+			error: err.message || 'Some error occured while getting years'
+		});
+	}
+};
 
 	export default {
 	    getUserBalance,
-	    doPayment
+	    doPayment,
+		countAbonnementsByMonth,
+		getYears,
 	};
