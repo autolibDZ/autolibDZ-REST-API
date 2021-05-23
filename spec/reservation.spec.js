@@ -1,130 +1,104 @@
 const Request = require('supertest');
-request = Request('http://localhost:4000/api');
+request = Request('http://localhost:4000/api/reservation');
 
-describe('Testing GET on /api/reservation endpoint', () => {
-    it('should return the list of all reservations stored in the database, at least one reservation', (done) => {
-        request
-            .get('/reservation')
-            .set('Accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(200)
-            .end((err, res) => {
-                if (err) {
-                    done.fail(err);
-                } else {
-                    expect(res.body.length).not.toEqual(0);
+
+describe('Reservation route test', () => {
+    describe('findReservationById', () => {
+
+        it('returns 200 OK when using an exesting id 12', (done) => {
+            request
+                .get('/12')
+                .expect(200)
+                .expect('Content-Type', 'application/json; charset=utf-8')
+                .end((err, res) => {
+                    if (err) done(err);
+
+                    expect(function (res) {
+                        res.body.etat= "Active";
+                        res.body.idVehicule = 2;
+                        res.body.idLocataire = 3;
+                        res.body.idBorneDepart = 2;
+                        res.body.idBorneDestination = 100;
+
+                    })
+
                     done();
-                }
-            });
+                });
+
+        });
+
+
+
+
+        it('returns 500  server error when using a wrong id like AA55', (done) => {
+            request
+                .get('/AA55')
+                .expect(500)
+                .expect('Content-Type', 'application/json; charset=utf-8')
+                .end((err, res) => {
+                    if (err) done(err);
+
+                    expect(res.body.error)
+
+                    done();
+                });
+
+        });
     });
+
+
 });
 
-describe('Testing GET on /api/reservation/:id endpoint', () => {
-    it("should return details of the reservation with id 9", (done) => {
+
+
+
+describe('Get list of all reservations', () => {
+
+    it('returns 200 OK when getting all reservations', (done) => {
         request
-            .get('/reservation/9')
-            .set('Accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(200)
-            .end((err, res) => {
-                if (err) {
-                    done.fail(err);
-                } else {
-                    expect(res.body.idReservation).toEqual(9);
-                    done();
-                }
-            });
-    });
-});
-
-describe('createrReservation api', () => {
-    it('returns 200 OK when reservation doesn"t exist in db', (done) => {
-        request
-            .post('/reservation/')
-            .send({
-
-                etat: "Active",
-                idVehicule: 2,
-                idLocataire: 3,
-                idBorneDepart: 2,
-                idBorneDestination: 100,
-
-            })
+            .get('/')
             .set('Accept', 'application/json')
             .expect(200)
+            .expect('Content-Type', 'application/json; charset=utf-8')
+
             .end((err, res) => {
+
                 if (err) done(err);
 
-                expect(res.body.error);
-
-                done();
-            });
-    });
-
-    it('returns 400 When reservation exists', (done) => {
-        request
-            .post('/reservation/')
-            .send({
-                etat: "Active",
-                idVehicule: 3,
-                idLocataire: 4,
-                idBorneDepart: 2,
-                idBorneDestination: 100,
-            })
-            .expect(400)
-            .expect('Content-Type','application/json; charset=utf-8')
-            .end((err, res) => {
-                console.log(res.body.err);
-                if (err) done(err);
                 expect(res.body);
+                expect(res.body.length).toEqual(22);
                 done();
             });
+
     });
 
-    it('returns 500 server error when sending an empty parameter', (done) => {
-        request
-
-            .post('/reservation')
-            .send({
-                etat: "Active",
-                idVehicule: 14,
-                idLocataire:6,
-                idBorneDepart: 2,
-                idBorneDestination: 5,
-            })
-            .set('Accept', 'application/json')
-            .expect(400)
-            .end((err, res) => {
-                if (err) done(err);
-
-                expect(res.body.error);
-
-                done();
-            });
-    });
 });
 
-
-describe('Testing GET on reservation by id locataire', () => {
-    it('should return the list of all reservations of agent with id 3', (done) => {
+describe('Get list of all Reservations in a given user of id 3', () => {
+    it('Should returns 200 OK when getting all reservations', (done) => {
         request
-            .get('/reseravtion/locataire/3')
+            .get('/locataires/3')
             .set('Accept', 'application/json')
-            .expect('Content-Type', /json/)
             .expect(200)
+            .expect('Content-Type', /json/)
             .end((err, res) => {
-                if (err) {
-                    done.fail(err);
-                } else {
-
-                    res.body.forEach((reseravtion) => {
-                        expect(reseravtion.idLocataire).toEqual(1);
-                    });
-
-                    done();
-                }
+                if (err) done(err);
+                expect(res.body.length).not.toEqual(0);
+                done();
             });
     });
 
+    it('Should returns 404 when using an non exesting idLocataire=0 ', (done) => {
+        request
+            .get('/locataires/0')
+            .set('Accept', 'application/json')
+            .expect(404)
+            .expect('Content-Type', /json/)
+            .end((err, res) => {
+                if (err) done(err);
+                expect(res.body.error == 'No locataires with id: 0')
+                done();
+            });
+    });
 });
 

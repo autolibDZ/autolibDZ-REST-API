@@ -18,38 +18,61 @@ describe('Testing GET on /api/trajet endpoint', () => {
             });
     });
 });
+describe('findTrajetById', () => {
 
-describe('Testing GET on /api/trajet/:id endpoint', () => {
-    it("should return details of the trajet with id 9", (done) => {
+    it('returns 200 OK when using an exesting id 9', (done) => {
         request
             .get('/trajet/9')
-            .set('Accept', 'application/json')
-            .expect('Content-Type', /json/)
             .expect(200)
+            .expect('Content-Type', 'application/json; charset=utf-8')
             .end((err, res) => {
-                if (err) {
-                    done.fail(err);
-                } else {
-                    expect(res.body.idTrajet).toEqual(9);
-                    done();
-                }
+                if (err) done(err);
+
+                expect(function (res) {
+                    res.body.dateDebut= "2021-09-16T14:36:13.000Z";
+                    res.body.dateFin = "2021-10-16T14:36:19.000Z";
+                    res.body.tempsEstime = null;
+                    res.body.kmParcourue = null;
+                    res.body.prixAPayer = null;
+
+                })
+
+                done();
             });
+
+    });
+
+
+
+
+    it('returns 500  server error when using a wrong id like AA55', (done) => {
+        request
+            .get('/trajet/AA55')
+            .expect(500)
+            .expect('Content-Type', 'application/json; charset=utf-8')
+            .end((err, res) => {
+                if (err) done(err);
+
+                expect(res.body.error)
+
+                done();
+            });
+
     });
 });
-
 describe('creatertrajet api', () => {
     it('returns 200 OK when trajet doesn"t exist in db', (done) => {
         request
             .post('/trajet/')
             .send({
 
-                idTrajet: 100,
+                idTrajet: 39,
                 dateDebut: "2021-01-16T14:34:34.000Z",
                 dateFin: "2021-02-16T14:34:34.000Z",
-                tempsEstime: 130,
-                kmParcourue: 12,
-                prixAPayer: 200,
-                idReservation: 12
+                tempsEstime: 20,
+                kmParcourue: 2,
+                prixAPayer: 120,
+                idReservation: 15
 
             })
             .set('Accept', 'application/json')
@@ -65,15 +88,10 @@ describe('creatertrajet api', () => {
 
     it('returns 400 When trajet exists', (done) => {
         request
-            .post('/trajet/')
+            .post('/trajet')
             .send({
-                idTrajet: 102,
-                dateDebut: "2021-01-16T15:34:34.000Z",
-                dateFin: "2021-02-16T16:34:34.000Z",
-                tempsEstime: 3600,
-                kmParcourue: 120,
-                prixAPayer: 500,
-                idReservation: 17
+                idTrajet: 103,
+
             })
             .expect(400)
             .expect('Content-Type','application/json; charset=utf-8')
@@ -90,16 +108,16 @@ describe('creatertrajet api', () => {
 
             .post('/trajet')
             .send({
-                idTrajet: 103,
+                idTrajet: null,
                 dateDebut: "2021-01-16T14:34:34.000Z",
                 dateFin: "2021-02-16T14:34:34.000Z",
                 tempsEstime: 130,
                 kmParcourue: 12,
-                prixAPayer: 200,
+                prixAPayer: 120,
                 idReservation: 15
             })
             .set('Accept', 'application/json')
-            .expect(400)
+            .expect(500)
             .end((err, res) => {
                 if (err) done(err);
 
@@ -109,27 +127,24 @@ describe('creatertrajet api', () => {
             });
     });
 });
+describe('Get list of all traejt', () => {
 
-
-describe('Testing GET on trajet by id locataire', () => {
-    it('should return the list of all trajets of agent with id 3', (done) => {
+    it('returns 200 OK when getting all trajet', (done) => {
         request
-            .get('/reseravtion/locataire/3')
+            .get('/trajet')
             .set('Accept', 'application/json')
-            .expect('Content-Type', /json/)
             .expect(200)
+            .expect('Content-Type', 'application/json; charset=utf-8')
+
             .end((err, res) => {
-                if (err) {
-                    done.fail(err);
-                } else {
 
-                    res.body.forEach((reseravtion) => {
-                        expect(reseravtion.idLocataire).toEqual(1);
-                    });
+                if (err) done(err);
 
-                    done();
-                }
+                expect(res.body);
+                expect(res.body.length).toEqual(41);
+                done();
             });
+
     });
 
 });

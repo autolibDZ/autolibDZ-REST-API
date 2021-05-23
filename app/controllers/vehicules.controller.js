@@ -52,6 +52,7 @@ const createVehicule = async (req, res) => {
 			  message: "Vehicule already exists!"
 			})
 		  } else {
+		  	let data;
 				data = await Vehicule.create(vehicule).then((data) => {
 				res.send(data);
 			});
