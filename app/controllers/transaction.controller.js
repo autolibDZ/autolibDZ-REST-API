@@ -1,5 +1,6 @@
 const db = require("../models");
 const Transaction = db.transaction;
+const { Op } = require("sequelize");
 
 /**
  * Create and save a new transaction in database
@@ -92,7 +93,48 @@ const getUserTransactions = async (req, res) => {
 };
 
 
+
+
+const getTransaction = async (req, res) => {
+     // Validate request
+     if (!req.params.id) {
+          res.status(400).send({
+               message: "Id locataire can not be empty!"
+          });
+          return;
+     }
+
+     // get Transaction in the database
+     try {
+          const id = req.params.id
+          const idTransaction = req.params.idTransaction
+
+          let transaction = await Transaction.findOne({
+               where: {
+                    [Op.and]: [
+                         { idLocataire: id },
+                         { idTransaction: idTransaction }
+                    ]
+               }
+          })
+
+          if (transaction != null) {
+               res.status(200).send(transaction)
+          } else {
+               res.status(404).send({
+                    "error": "Locataire transaction with ID: " + idTransaction + " does not exist"
+               })
+          }
+     }
+     catch (err) {
+          res.status(500).send({
+               error: err.message || "Some error occurred while creating the Transaction."
+          });
+     }
+};
+
 export default {
      createTransaction,
-     getUserTransactions
+     getUserTransactions,
+     getTransaction
 }
