@@ -20,4 +20,6 @@ export default trajetRouter;
 
 
 
+router.get("/getYears", trajetController.getYears);
+
 

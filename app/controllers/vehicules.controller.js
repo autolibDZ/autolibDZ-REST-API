@@ -1,6 +1,17 @@
 const db = require('../models');
 const Vehicule = db.vehicules;
 
+const cloudinary = require('cloudinary').v2
+require('dotenv').config()
+
+// cloudinary configuration
+cloudinary.config({
+	cloud_name: process.env.CLOUD_NAME,
+	api_key: process.env.API_KEY,
+	api_secret: process.env.API_SECRET
+  });
+
+
 /**
  * Create and save a new Vehicule in database
  * @param {*} req The request
@@ -10,7 +21,8 @@ const Vehicule = db.vehicules;
 
 const createVehicule = async (req, res) => {
 	// Validate request
-	if (!req.body.numChassis) {
+	if (!req.body.numChassis || !body.numImmatriculation || !req.body.modele || !req.body.marque || !req.body.couleur
+		|| !req.body.etat ) {
 		res.status(400).send({
 			message: 'Content can not be empty!',
 		});
@@ -36,9 +48,25 @@ const createVehicule = async (req, res) => {
 		niveauMinimumHuile: req.body.niveauMinimumHuile,
 		regulateurVitesse: req.body.regulateurVitesse,
 		limiteurVitesse: req.body.limiteurVitesse,
+	    idCloudinary: "", 
+		secureUrl: ""
 	};
-	
-	// Add data to databse 
+
+	// upload image to cloudinary here
+	if (req.body.image) {
+		const image = req.body.image;
+		try{
+			ress= await cloudinary.uploader.upload(req.body.image)
+			.then((result) => {
+				vehicule.idCloudinary=result.public_id;
+				vehicule.secureUrl= result.secure_url;
+		
+			}); 
+		} catch(error){
+			console.log(error);
+		}
+	}
+	// Ajout d'un véhicule à la base de données
 	try {
 
 		let result = await Vehicule.findAll({
@@ -93,7 +121,7 @@ const deleteVehicule = async (req, res) => {
 		})
 		.catch((err) => {
 			res.status(500).send({
-				message: 'Could not delete vehicule with id=' + id,
+				message: 'Could not delete Vehicule with id=' + id,
 			});
 		});
 };
@@ -146,7 +174,11 @@ const getAllVehicule = async (req, res) => {
 		});
 };
 
-
+/**
+ * Get details of the Vehicule that has the specified ID in request body 
+ * @param {*} req The request
+ * @param {*} res The response
+ */
 const getVehiculeDetails = async (req, res, next) => {
 	try {
 		if (parseInt(req.params.numChassis, 10)) {
