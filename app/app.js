@@ -14,37 +14,12 @@ import agentRouter from './routes/agent.route'
 import dirigeantRouter from './routes/dirigeant.route'
 import reservationRouter from './routes/reservation.route'
 import trajetRouter from './routes/trajet.route'
-
-// // For documentation
-// import SwaggerUI from 'swagger-ui-express';
-
-// const swaggerJsDoc = require('swagger-jsdoc');
+import stripePaymentRouter from './routes/payment.route'
 
 dotenv.config();
 
-// Optiens for Swagger
-const options = {
-	definition: {
-		openapi: '3.0.0',
-		info: {
-			title: 'Projet 2CSSIL - AutoLib',
-			version: '1.0.0',
-			description: 'Une application de location de véhicules à libre service',
-		},
-		servers: [
-			{
-				url: 'http://localhost:4000',
-			},
-		],
-	},
-	apis: ['./routes/*.js'],
-};
-
-// const specs = swaggerJsDoc(options);
-
 const app = express();
 
-// app.use('/api-docs', SwaggerUI.serve, SwaggerUI.setup(specs));
 
 // Cross Origin Resources Sharing, Initially all whitelisted
 app.use(cors());
@@ -58,10 +33,15 @@ db.sequelize.sync();
 //vehicule router
 app.use('/api/vehicules',vehiculeRouter); 
 
+//abonnement route
 app.use('/api/abonnement', abonnementRouter);
-app.use('/api/abonnements', abonnementRouter);
+
+//locataire route
 app.use('/api/locataire', locataireRouter);
+
+//reservation route
 app.use('/api/reservation', reservationRouter);
+
 app.use('/api/administrateur',administrateurRouter)
 app.use('/api/agent',agentRouter)
 app.use('/api/operateur',operateurRouter)
@@ -71,9 +51,10 @@ app.use('/api/dirigeant',dirigeantRouter)
 //auth Router
 app.use('/api/auth', authRouter);
 
-// Borne Route
+// Borne Router
 app.use('/api/bornes', borneRoute);
 
+app.use('/api/payment', stripePaymentRouter)
 
 // Trajet Route
 app.use('/api/trajet', trajetRouter);
