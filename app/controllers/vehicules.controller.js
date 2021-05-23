@@ -1,5 +1,6 @@
 const db = require('../models');
 const Vehicule = db.vehicules;
+const Reservation = db.reservation;
 
 const cloudinary = require('cloudinary').v2
 require('dotenv').config()
@@ -180,18 +181,17 @@ const getAllVehicule = async (req, res) => {
  */
 const getVehiculeDetails = async (req, res, next) => {
 	try {
-		if (parseInt(req.params.numChassis, 10)) {
+		if (parseInt(req.params.id, 10)) {
 			const vehicule = await Vehicule.findAll({
 				where: {
-					numChassis: +req.params.numChassis,
+					numChassis: +req.params.id,
 				},
 			});
 			if (vehicule.length === 0) {
 				// No content with that numChassis
 				res.status(404).send({
 					error: 'not_found',
-					message: `No vehicule with such numero chassis: ${+req.params
-						.numChassis}`,
+					message: `No vehicule with such numero chassis: ${+req.params.id}`,
 					status: 404,
 				});
 			} else {
@@ -202,6 +202,40 @@ const getVehiculeDetails = async (req, res, next) => {
 		res.status(500).send({
 			error:
 				err.message || 'Some error occured while retreiving vehicule,s details',
+		});
+	}
+};
+
+
+/**
+ * Get reservation history of the Vehicule that has the specified ID in request body 
+ * @param {*} req The request
+ * @param {*} res The response
+ */
+const getVehiculeReservations = async (req, res, next) => {
+	try {
+		if (parseInt(req.params.id, 10)) {
+			console.log("HEEEEY I'm here");
+			const historiqueReservation = await Reservation.findAll({
+				where: {
+					idVehicule: +req.params.id,
+				},
+			});
+			if (historiqueReservation.length === 0) {
+				// Ce vehicule n'a aucune réservation 
+				res.status(404).send({
+					error: 'not_found',
+					message: `Ce véhicule n'a aucune réservation en historique: ${+req.params.numChassis}`,
+					status: 404,
+				});
+			} else {
+				res.status(200).send(historiqueReservation);
+			}
+		} else next();
+	} catch (err) {
+		res.status(500).send({
+			error:
+				err.message || 'Some error occured while retreiving vehicule"s reservation history',
 		});
 	}
 };
@@ -350,5 +384,5 @@ export default {
 	deleteVehicule,
 	updateVehicule,
 	getAllVehicule,
-	//getVehiculeByCondition
+	getVehiculeReservations
 };

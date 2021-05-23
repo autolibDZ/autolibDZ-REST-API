@@ -6,13 +6,14 @@ vehiculeRouter.post('/', vehiculeController.createVehicule);
 vehiculeRouter.delete('/:id', vehiculeController.deleteVehicule);
 vehiculeRouter.put('/:id', vehiculeController.updateVehicule);
 
-// vehiculeRouter.get("/:id",vehiculeController.getOneVehicule);
-
 // GET Details of a given vehicule's numero chassis
-vehiculeRouter.get('/:numChassis', vehiculeController.getVehiculeDetails);
+vehiculeRouter.get('/:id', vehiculeController.getVehiculeDetails);
 
 // GET All Vehicules
 vehiculeRouter.get('/', vehiculeController.getAllVehicule);
+
+// GET vehicul's reservation history
+vehiculeRouter.get('/historique-reservation/:id',vehiculeController.getVehiculeReservations);
 
 // GET Vehicules of A given agent
 vehiculeRouter.get(
