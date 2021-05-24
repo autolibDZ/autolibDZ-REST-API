@@ -1,6 +1,8 @@
 const db = require('../models');
 const Vehicule = db.vehicules;
 const Reservation = db.reservation;
+const Borne = db.Borne; 
+const Locataire= db.Locataire;
 
 const cloudinary = require('cloudinary').v2
 require('dotenv').config()
@@ -27,10 +29,6 @@ const createVehicule = async (req, res) => {
 		res.status(400).send({
 			message: 'Content can not be empty!',
 		});
-		console.log( req.body.numChassis);
-		console.log(req.body.numImmatriculation); 
-		console.log(req.body.modele); 
-		console.log(req.body.couleur);
 		return;
 	}
 	// Create a Vehicule
