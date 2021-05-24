@@ -24,7 +24,7 @@ cloudinary.config({
 
 const createVehicule = async (req, res) => {
 	// Validate request
-	if (!req.body.numChassis || !body.numImmatriculation || !req.body.modele || !req.body.marque || !req.body.couleur
+	if (!req.body.numChassis || !req.body.numImmatriculation || !req.body.modele || !req.body.marque || !req.body.couleur
 		|| !req.body.etat || !req.body.idAgentMaintenance || !req.body.idBorne || !req.body.image ) {
 		res.status(400).send({
 			message: 'Content can not be empty!',
@@ -47,6 +47,8 @@ const createVehicule = async (req, res) => {
 		niveauMinimumHuile: req.body.niveauMinimumHuile,
 		regulateurVitesse: req.body.regulateurVitesse,
 		limiteurVitesse: req.body.limiteurVitesse,
+		idBorne: req.body.idBorne, 
+		idAgentMaintenance: req.body.idAgentMaintenance,
 	    idCloudinary: "", 
 		secureUrl: ""
 	};
