@@ -55,7 +55,7 @@ const createVehicule = async (req, res) => {
 	};
 
 	// upload image to cloudinary here
-	/*if (req.body.image) {
+	if (req.body.image) {
 		const image = req.body.image;
 		try{
 			ress= await cloudinary.uploader.upload(req.body.image)
@@ -67,7 +67,7 @@ const createVehicule = async (req, res) => {
 		} catch(error){
 			console.log(error);
 		}
-	}*/
+	}
 	// Ajout d'un véhicule à la base de données
 	try {
 
