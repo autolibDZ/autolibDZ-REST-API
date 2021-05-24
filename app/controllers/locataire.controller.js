@@ -222,7 +222,7 @@ const deleteLocataire = (req, res) => {
                 message: "Could not delete Locataire with id=" + id
             });
         })
-
+}
     // Block or Unblock a locataire
     const block = (req, res) => {
         const id = req.params.id;
@@ -251,7 +251,7 @@ const deleteLocataire = (req, res) => {
             });
     };
 
-}
+
 export default {
     createLocataire,
     findAll,
