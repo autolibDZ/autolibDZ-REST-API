@@ -1,4 +1,4 @@
-const Request = require('supertest');
+/*const Request = require('supertest');
 request = Request('http://localhost:4000/api');
 
 describe('Testing GET on /api/vehicules endpoint', () => {
@@ -251,3 +251,4 @@ describe('Testing GET on /api/vehicules/hors-service', () => {
 			});
 	}); 
 });
+*/
