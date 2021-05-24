@@ -11,7 +11,7 @@ const Reclamation = db.reclamation;
 const createReclamation = async (req, res) => {
   // Create a Claim
 
-  if (!req.body.idReclamation || !req.body.description || !req.body.idLocataire ) {
+  if (!req.body.description || !req.body.emailLocataire) {
     res.status(400).send({
       message: "parameters can't be empty!"
     })
@@ -19,9 +19,8 @@ const createReclamation = async (req, res) => {
   }
 
   const reclamation = {
-    idReclamation: req.body.idReclamation,
     description: req.body.description,
-    idLocataire: req.body.idLocataire,
+    emailLocataire: req.body.emailLocataire,
   };
 
   // Save Claim in the database
@@ -29,9 +28,7 @@ const createReclamation = async (req, res) => {
   try {
     let result = await Reclamation.findAll({
       where: {
-        idReclamation: req.body.idReclamation,
         description: req.body.description,
-        idLocataire: req.body.idLocataire,
       }
     })
     if (result.length > 0) {
