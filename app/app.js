@@ -54,6 +54,7 @@ app.use('/api/auth', authRouter);
 // Borne Router
 app.use('/api/bornes', borneRoute);
 
+// Payment Router
 app.use('/api/payment', stripePaymentRouter)
 
 // Trajet Route

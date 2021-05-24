@@ -183,7 +183,7 @@ const getYears = async (req, res) => {
 };
 
 export default {
-	  getYears,
+	 getYears,
     createTrajet,
     listAllTrajets,
     findTrajetById,
