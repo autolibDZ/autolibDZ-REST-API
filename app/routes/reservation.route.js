@@ -1,5 +1,6 @@
 import reservationController from "../controllers/reservation.controller";
 
+
 var reservationRouter = require("express").Router();
 reservationRouter.post('/', reservationController.createReservation);
 
@@ -13,4 +14,7 @@ reservationRouter.post('/verifyPin', reservationController.verifyCodePin);
 
 
 
+
+reservationRouter.get('/locataires/:id', reservationController.selectReservationOfAGivenUser);
+reservationRouter.get('/annulee', reservationController.getReservationAnnulee);
 export default reservationRouter;

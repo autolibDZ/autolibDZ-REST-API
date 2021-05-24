@@ -185,6 +185,7 @@ const deleteLocataire = (req, res) => {
     const id = req.params.id;
 
     Locataire.destroy({
+<<<<<<< HEAD
 
             where: { idLocataire: id }
         })
@@ -203,6 +204,24 @@ const deleteLocataire = (req, res) => {
             res.status(500).send({
                 message: "Could not delete Locataire with id=" + id
             });
+=======
+      where: { idLocataire: id }
+    })
+      .then(num => {
+        if (num == 1) {
+          res.status(200).send({
+            message: "Locataire was deleted successfully!"
+          });
+        } else {
+          res.status(400).send({
+            message: `Cannot delete Locataire with id=${id}. Maybe Locataire was not found!`
+          });
+        }
+      })
+      .catch(err => {
+        res.status(500).send({
+          message: "Could not delete Locataire with id=" + id
+>>>>>>> e0a1b6582a7da1d25aafe829f627a0608a412131
         });
 }
 
