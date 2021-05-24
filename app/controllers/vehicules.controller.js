@@ -48,6 +48,8 @@ const createVehicule = async (req, res) => {
 		niveauMinimumHuile: req.body.niveauMinimumHuile,
 		regulateurVitesse: req.body.regulateurVitesse,
 		limiteurVitesse: req.body.limiteurVitesse,
+		idAgentMaintenance: req.body.idAgentMaintenance,
+		idBorne: req.body.idBorne,
 	    idCloudinary: "", 
 		secureUrl: ""
 	};
