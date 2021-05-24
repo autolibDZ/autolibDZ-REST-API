@@ -21,7 +21,7 @@ cloudinary.config({
 
 const createVehicule = async (req, res) => {
 	// Validate request
-	if (!req.body.numChassis || !body.numImmatriculation || !req.body.modele || !req.body.marque || !req.body.couleur
+	if (!req.body.numChassis || !req.body.numImmatriculation || !req.body.modele || !req.body.marque || !req.body.couleur
 		|| !req.body.etat ) {
 		res.status(400).send({
 			message: 'Content can not be empty!',
