@@ -249,8 +249,10 @@ const block = (req, res) => {
             res.status(500).send({
                 message: "Error updating Locataire with id=" + id
             });
+
         });
-};
+}
+
 
 
 export default {
