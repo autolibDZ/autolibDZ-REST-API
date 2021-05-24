@@ -17,7 +17,7 @@ module.exports = function (sequelize, Sequelize) {
 		{
 			freezeTableName: true,
 			tableName: 'abonnement',
-			createdAt: false,
+			createdAt: true,
 			updatedAt: false,
 		}
 	);

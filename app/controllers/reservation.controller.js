@@ -1,3 +1,4 @@
+
 const db = require('../models');
 const Reservation = db.reservation;
  const createReservation = async(req, res) => {
@@ -84,7 +85,7 @@ const updateReservationById= async (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error updating Vehicule with id=" + id
+                message: "Error updating reservation with id=" + id
             });
         });
 };
@@ -100,7 +101,7 @@ const deleteReservationById  = async (req, res) => {
         .then(num => {
             if (num == 1) {
                 res.send({
-                    message: "Reservationwas deleted successfully!"
+                    message: "Reservation was deleted successfully!"
                 });
             } else {
                 res.send({
@@ -114,6 +115,59 @@ const deleteReservationById  = async (req, res) => {
             });
         });
 };
+const selectReservationOfAGivenUser = async (req, res) => {
+    try {
+        const reservations = await Reservation.findAll({
+            where: {
+                idLocataire: +req.params.id,
+            },
+        });
+        if (reservations.length === 0) {
+            // No content with that id
+            res.status(404).send({
+                error: 'not_found',
+                message: `No content with such id: ${+req.params.id}`,
+                status: 404,
+            });
+        } else {
+            res.status(200).send(reservations);
+        }
+        res.status(200).send(reservations);
+    } catch (err) {
+        res.status(500).send({
+            error:
+                err.message ||
+                'Some error occured while retreiving reservations of this user: ' +
+                req.params.id,
+        });
+    }
+};
+const getReservationAnnulee = async (req, res) => {
+    try {
+        const annulee = await Reservation.findAll({
+            where: {
+                etat: 'Annulée'
+            },
+        });
+        if (annulee.length === 0) {
+
+            res.status(404).send({
+                error: 'not_found',
+                message: `No Reservation is 'Annuled'`,
+                status: 404,
+            });
+        } else {
+            res.status(200).send(annulee);
+        }
+    } catch (err) {
+        res.status(500).send({
+            error:
+                err.message ||
+                "Some error occured while retreiving annuled reservations",
+        });
+    }
+};
+
 
 export default {
     createReservation,
@@ -121,4 +175,6 @@ export default {
   findReservationById,
     deleteReservationById,
 updateReservationById,
+    selectReservationOfAGivenUser,
+    getReservationAnnulee
 }
