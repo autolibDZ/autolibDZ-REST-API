@@ -12,7 +12,7 @@ const createReservation = async(req, res) => {
     }
     var pin = Math.floor(Math.random() * 9000) + 1000;
     var salt = bcrypt.genSaltSync(10);
-    var hash = bcrypt.hashSync(toString(pin), salt);
+    var hash = bcrypt.hashSync(pin.toString(), salt);
     const reservation = {
 
         etat: req.body.etat,
@@ -177,12 +177,17 @@ const getReservationAnnulee = async(req, res) => {
 const verifyCodePin = async(req, res) => {
 
     const reservation = await Reservation.findOne({ where: { idVehicule: req.body.idVehicule, etat: "en cours" } })
-    const pinCorrect = await bcrypt.compare(toString(req.body.codePin), reservation.codePin)
-    if (pinCorrect) {
-        res.status(200).send({ success: true, id: reservation })
+    if (reservation != null) {
+        const pinCorrect = await bcrypt.compare(req.body.codePin.toString(), reservation.codePin)
+        if (pinCorrect) {
+            res.status(200).send({ success: true, id: reservation })
+        } else {
+            res.status(400).send({ success: false })
+        }
     } else {
         res.status(400).send({ success: false })
     }
+
 }
 
 export default {
