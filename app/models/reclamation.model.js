@@ -6,9 +6,11 @@ module.exports = function(sequelize, Sequelize) {
         },
         description: {
             type: Sequelize.STRING(50)
+            allowNull: false
         },
         idLocataire: {
             type: Sequelize.INTEGER,
+            allowNull:false
         }
     }, {
         freezeTableName: true,

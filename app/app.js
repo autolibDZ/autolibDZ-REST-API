@@ -15,6 +15,7 @@ import dirigeantRouter from './routes/dirigeant.route'
 import reservationRouter from './routes/reservation.route'
 import trajetRouter from './routes/trajet.route'
 import stripePaymentRouter from './routes/payment.route'
+import reclamationRouter from './routes/reclamation.route'
 
 dotenv.config();
 
@@ -58,6 +59,9 @@ app.use('/api/payment', stripePaymentRouter)
 
 // Trajet Route
 app.use('/api/trajet', trajetRouter);
+
+//Recalamation Router 
+app.use('/api/reclamation',reclamationRouter); 
 
 //Home
 app.use((req, res) => {
