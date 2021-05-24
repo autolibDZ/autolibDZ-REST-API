@@ -26,3 +26,37 @@ describe('add reservation', function () {
 		});
 	});
 });*/
+/*
+describe('POST : Verifier code pin', () => {
+    //Code pin valide
+    it('returns 200 OK when using a code pin', (done) => {
+        request
+            .post('/verifyPin')
+            .send({
+                idVehicule: 5,
+                codePin: 4130,
+            })
+            .expect(200)
+            .expect('Content-Type', 'application/json; charset=utf-8')
+            .end((err, res) => {
+                if (err) done(err);
+                expect(res.body.success === 'true').toBe(true);
+                done();
+            });
+    });
+    //Code pin invalide
+    it('returns 400 bad request when using invalid code pin', (done) => {
+        request
+            .post('/verifyPin')
+            .send({
+                idVehicule: 5,
+                codePin: 4131,
+            })
+            .expect(400)
+            .expect('Content-Type', 'application/json; charset=utf-8')
+            .end((err, res) => {
+                if (err) done(err);
+                expect(res.body.success === 'false').toBe(true);
+                done();
+            });
+    });*/

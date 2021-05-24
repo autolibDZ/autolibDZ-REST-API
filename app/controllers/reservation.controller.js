@@ -125,11 +125,10 @@ const deleteReservationById = async(req, res) => {
 
 const verifyCodePin = async(req, res) => {
 
-    const reservation = await Reservation.findOne({ where: { idVehicule: req.body.idVehicule, etat: "Active" } })
-        //console.log(reservation)
+    const reservation = await Reservation.findOne({ where: { idVehicule: req.body.idVehicule, etat: "en cours" } })
     const pinCorrect = await bcrypt.compare(toString(req.body.codePin), reservation.codePin)
     if (pinCorrect) {
-        res.status(200).send({ success: true })
+        res.status(200).send({ success: true, id: reservation })
     } else {
         res.status(400).send({ success: false })
     }
