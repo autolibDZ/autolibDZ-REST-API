@@ -5,7 +5,7 @@ module.exports = function(sequelize, Sequelize) {
             primaryKey: true,
         },
         description: {
-            type: Sequelize.STRING(50)
+            type: Sequelize.STRING(50),
             allowNull: false
         },
         idLocataire: {
