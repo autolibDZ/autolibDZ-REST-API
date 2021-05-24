@@ -62,7 +62,7 @@ exports.create = (req, res) => {
           
     //Initialiser les attributs de l'Dirigeant à créer
     const dirigeant = {
-        idDirigeant:req.body.id,
+        //idDirigeant:req.body.id,
         nom: req.body.nom,
         prenom: req.body.prenom,
         email: req.body.email,

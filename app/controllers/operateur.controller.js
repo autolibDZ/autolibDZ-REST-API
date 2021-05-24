@@ -62,7 +62,7 @@ exports.create = (req, res) => {
           
     //Initialiser les attributs de l'Operateur à créer
     const operateur = {
-        idOperateur:req.body.id,
+        //idOperateur:req.body.id,
         nom: req.body.nom,
         prenom: req.body.prenom,
         email: req.body.email,

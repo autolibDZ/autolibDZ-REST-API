@@ -14,9 +14,13 @@ import agentRouter from './routes/agent.route'
 import dirigeantRouter from './routes/dirigeant.route'
 import reservationRouter from './routes/reservation.route'
 import identiteRouter from './routes/identite.route'
+import trajetRouter from './routes/trajet.route'
+import stripePaymentRouter from './routes/payment.route'
 
 dotenv.config();
+
 const app = express();
+
 
 // Cross Origin Resources Sharing, Initially all whitelisted
 app.use(cors());
@@ -30,9 +34,15 @@ db.sequelize.sync();
 //vehicule router
 app.use('/api/vehicules',vehiculeRouter); 
 
+//abonnement route
 app.use('/api/abonnement', abonnementRouter);
+
+//locataire route
 app.use('/api/locataire', locataireRouter);
+
+//reservation route
 app.use('/api/reservation', reservationRouter);
+
 app.use('/api/administrateur',administrateurRouter)
 app.use('/api/agent',agentRouter)
 app.use('/api/operateur',operateurRouter)
@@ -45,8 +55,14 @@ app.use('/api/identites',identiteRouter)
 //auth Router
 app.use('/api/auth', authRouter);
 
-// Borne Route
+// Borne Router
 app.use('/api/bornes', borneRoute);
+
+// Payment Router
+app.use('/api/payment', stripePaymentRouter)
+
+// Trajet Route
+app.use('/api/trajet', trajetRouter);
 
 //Home
 app.use((req, res) => {
