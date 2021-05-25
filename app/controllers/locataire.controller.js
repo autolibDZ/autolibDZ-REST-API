@@ -11,7 +11,7 @@ const client = new OAuth2Client(CLIENT_ID);
 // La creation d'un locataire (lors de l'inscription normal)
 const createLocataire = async(req, res) => {
     // Les champs obligatoires
-    if (!req.body.nom || !req.body.prenom || !req.body.email || !req.body.motdepasse) {
+    if (!req.body.nom || !req.body.prenom || !req.body.email || !req.body.motDePasse) {
         res.status(400).send({
             message: "Missing data"
         });
@@ -35,7 +35,7 @@ const createLocataire = async(req, res) => {
             nom: req.body.nom,
             prenom: req.body.prenom,
             email: req.body.email,
-            motDePasse: req.body.motdepasse,
+            motDePasse: req.body.motDePasse,
             Active : req.body.Active?req.body.Active:false
 
         };
