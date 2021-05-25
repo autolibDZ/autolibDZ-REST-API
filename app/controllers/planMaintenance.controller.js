@@ -24,6 +24,8 @@ const addPlanMaintenance = async (req, res, next) => {
 				const planMaintenance = {
 					date,
 					action,
+					numChassis: +plan.numChassis || null,
+					idAgentMaintenance: +plan.idAgentMaintenance || null,
 				};
 				await PlanMaintenance.create(planMaintenance);
 				addedRows++;

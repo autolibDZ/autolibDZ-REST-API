@@ -55,6 +55,12 @@ module.exports = function (sequelize, Sequelize) {
 			idBorne: {
 				type: Sequelize.INTEGER,
 			},
+			idCloudinary:{
+				type: Sequelize.STRING(128),
+			} , 
+			secureUrl: {
+				type: Sequelize.STRING(128),
+			}
 		},
 		{
 			freezeTableName: true,

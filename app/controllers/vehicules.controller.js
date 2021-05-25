@@ -1,6 +1,16 @@
 const db = require('../models');
 const Vehicule = db.vehicules;
 
+const cloudinary = require('cloudinary').v2;
+require('dotenv').config();
+
+// cloudinary configuration
+cloudinary.config({
+	cloud_name: process.env.CLOUD_NAME,
+	api_key: process.env.API_KEY,
+	api_secret: process.env.API_SECRET,
+});
+
 /**
  * Create and save a new Vehicule in database
  * @param {*} req The request
@@ -10,7 +20,14 @@ const Vehicule = db.vehicules;
 
 const createVehicule = async (req, res) => {
 	// Validate request
-	if (!req.body.numChassis) {
+	if (
+		!req.body.numChassis ||
+		!req.body.numImmatriculation ||
+		!req.body.modele ||
+		!req.body.marque ||
+		!req.body.couleur ||
+		!req.body.etat
+	) {
 		res.status(400).send({
 			message: 'Content can not be empty!',
 		});
@@ -36,7 +53,24 @@ const createVehicule = async (req, res) => {
 		niveauMinimumHuile: req.body.niveauMinimumHuile,
 		regulateurVitesse: req.body.regulateurVitesse,
 		limiteurVitesse: req.body.limiteurVitesse,
+		idAgentMaintenance: req.body.idAgentMaintenance,
+		idBorne: req.body.idBorne,
+		idCloudinary: '',
+		secureUrl: '',
 	};
+
+	// upload image to cloudinary here
+	if (req.body.image) {
+		const image = req.body.image;
+		try {
+			ress = await cloudinary.uploader.upload(req.body.image).then((result) => {
+				vehicule.idCloudinary = result.public_id;
+				vehicule.secureUrl = result.secure_url;
+			});
+		} catch (error) {
+			console.log(error);
+		}
+	}
 
 	// Add data to databse
 	try {
@@ -50,6 +84,7 @@ const createVehicule = async (req, res) => {
 				message: 'Vehicule already exists!',
 			});
 		} else {
+			let data;
 			data = await Vehicule.create(vehicule).then((data) => {
 				res.send(data);
 			});
@@ -89,7 +124,7 @@ const deleteVehicule = async (req, res) => {
 		})
 		.catch((err) => {
 			res.status(500).send({
-				message: 'Could not delete vehicule with id=' + id,
+				message: 'Could not delete Vehicule with id=' + id,
 			});
 		});
 };

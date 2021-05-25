@@ -14,6 +14,7 @@ import agentRouter from './routes/agent.route';
 import dirigeantRouter from './routes/dirigeant.route';
 import reservationRouter from './routes/reservation.route';
 import trajetRouter from './routes/trajet.route';
+import stripePaymentRouter from './routes/payment.route';
 import planMaintenaceRouter from './routes/planMaintenance.route';
 
 dotenv.config();
@@ -54,6 +55,9 @@ app.use('/api/auth', authRouter);
 
 // Borne Router
 app.use('/api/bornes', borneRoute);
+
+// Payment Router
+app.use('/api/payment', stripePaymentRouter);
 
 // Trajet Route
 app.use('/api/trajet', trajetRouter);
