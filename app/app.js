@@ -16,6 +16,7 @@ import reservationRouter from './routes/reservation.route';
 import trajetRouter from './routes/trajet.route';
 import stripePaymentRouter from './routes/payment.route';
 import planMaintenaceRouter from './routes/planMaintenance.route';
+import identiteRouter from './routes/identite.route';
 
 
 dotenv.config();
