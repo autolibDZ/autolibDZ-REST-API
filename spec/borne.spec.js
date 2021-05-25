@@ -41,6 +41,8 @@ describe('Borne route test', () => {
 
                     done();
                 });
+        })
+    })
 
 	describe('createBorne 3rd scenario', () => {
 		it('returns 200 OK when sending borne params that doesn"t exist in db', (done) => {
@@ -62,6 +64,8 @@ describe('Borne route test', () => {
 					if (err) done(err);
 
         });
+        })
+
 
         it('returns 500  server error when using a wrong id like AA55', (done) => {
             request
@@ -81,7 +85,7 @@ describe('Borne route test', () => {
 
     describe('createBorne 3rd scenario', () => {
 
-        /* it('returns 200 OK when sending borne params that doesn"t exist in db', (done) => {
+        it('returns 200 OK when sending borne params that doesn"t exist in db', (done) => {
              request
                  .post('/')
                  .send({
@@ -103,7 +107,7 @@ describe('Borne route test', () => {
                      done();
                  });
  
-         });*/
+         });
 
 
         it('returns 400 When borne exists', (done) => {

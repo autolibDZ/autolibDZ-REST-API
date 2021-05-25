@@ -6,6 +6,7 @@ module.exports = function(sequelize, Sequelize) {
         idAdministrateur: {
             type: Sequelize.INTEGER,
             primaryKey: true,
+            autoIncrement: true,
         },
         nom: {
             type: Sequelize.STRING

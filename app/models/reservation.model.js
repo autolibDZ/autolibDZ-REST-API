@@ -3,7 +3,7 @@ module.exports = function(sequelize, Sequelize) {
         'reservation', {
             idReservation: {
                 type: Sequelize.INTEGER,
-            primaryKey: true,
+                primaryKey: true,
                 autoIncrement: true
             },
             etat: {
@@ -20,10 +20,12 @@ module.exports = function(sequelize, Sequelize) {
             },
             idBorneDestination: {
                 type: Sequelize.INTEGER,
+            },
+            codePin: {
+                type: Sequelize.STRING(255)
             }
 
-        },
-        {
+        }, {
             freezeTableName: true,
             tableName: 'reservation',
             timestamps: true,
@@ -67,4 +69,3 @@ module.exports = function(sequelize, Sequelize) {
      };*/
 
 };
-
