@@ -39,7 +39,7 @@ const loginAgent = async(req, res, next) => {
     const { email, motdepasse } = req.body;
 
     if (!email || !motdepasse) {
-        res.status(400).send({ success: false, error: "Please provide and email and password" })
+        res.status(400).send({ success: false, error: "Please provide  email and password" })
     }
     // check for agent
     else {
@@ -66,7 +66,7 @@ const loginAdmin = async(req, res, next) => {
     const { email, motdepasse } = req.body;
 
     if (!email || !motdepasse) {
-        res.status(400).send({ success: false, error: "Please provide and email and password" })
+        res.status(400).send({ success: false, error: "Please provide  email and password" })
     }
     // check for admin
     else {
@@ -94,4 +94,3 @@ export default {
     loginAdmin,
     loginAgent
 }
-
