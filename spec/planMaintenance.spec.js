@@ -68,7 +68,7 @@ describe('Testing POST on /api/plan-maintenance endpoint', () => {
 describe('Testing GET on /api/plan-maintenance/:numChassis endpoint', () => {
 	it('should get plan for a specific car', (done) => {
 		request
-			.get('/plan-maintenance/123456')
+			.get('/plan-maintenance/213456')
 			.set('Accept', 'application/json')
 			.expect('Content-Type', /json/)
 			.expect(200)
@@ -78,7 +78,7 @@ describe('Testing GET on /api/plan-maintenance/:numChassis endpoint', () => {
 				} else {
 					expect(res.body.lenght).not.toBe(0);
 					for (plan of res.body) {
-						expect(plan.numChassis).toEqual(123456);
+						expect(plan.numChassis).toEqual(213456);
 					}
 					done();
 				}
