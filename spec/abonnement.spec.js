@@ -1,4 +1,4 @@
-/*const Request = require('supertest');
+const Request = require('supertest');
 request = Request('http://localhost:4000/api/abonnement');
 
 describe('Abonnement route test', () => {
@@ -156,4 +156,3 @@ describe('Abonnement route test', () => {
 		});
 	});
 });
-*/

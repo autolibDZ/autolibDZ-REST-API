@@ -26,9 +26,9 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const { Op } = require("sequelize");
-const db = require("../models");
+            <pre class="prettyprint source linenums"><code>const db = require("../models");
 const Transaction = db.transaction;
+const { Op } = require("sequelize");
 
 /**
  * Create and save a new transaction in database
@@ -193,10 +193,116 @@ const getTransaction = async (req, res) => {
      }
 };
 
+/**
+ * Filter user transactions
+ * @param {*} req The request
+ * @param {*} res The response
+* @returns {object} A list of filtered transactions
+ */
+
+const filterTransaction = async (req, res) => {
+
+     // Validate request
+     if (!req.params.id) {
+          res.status(400).send({
+               message: "Id locataire can not be empty!"
+          });
+          return;
+     }
+
+     var options = {};
+
+     let dateTransaction = req.body.dateTransaction;
+     let dateFrom = req.body.dateFrom;
+     let dateTo = req.body.dateTo;
+
+     let montant = req.body.montant;
+     let montantFrom = req.body.montantFrom;
+     let montantTo = req.body.montantTo;
+
+     let moyenPayement = req.body.moyenPayement
+
+
+     if (montant) {
+          options.montant = {
+               [Op.eq]: montant
+          }
+     }
+     if (montantFrom) {
+          options.montant = {
+               [Op.gte]: montantFrom
+          }
+     }
+     if (montantTo) {
+          options.montant = {
+               [Op.lt]: montantTo
+          }
+     }
+
+     if (dateTransaction) {
+          options.dateTransaction = {
+               [Op.eq]: dateTransaction
+          }
+     }
+     if (dateFrom) {
+          options.dateTransaction = {
+               [Op.gte]: dateFrom
+          }
+     }
+     if (dateTo) {
+          options.dateTransaction = {
+               [Op.lt]: prixTo
+          }
+     }
+
+     if (moyenPayement) {
+          options.moyenPayement = moyenPayement
+     }
+
+     console.log(options)
+
+     try {
+          const id = req.params.id
+          let locataire = await Transaction.findAll({
+               where: {
+                    idLocataire: id
+               }
+          })
+          if (locataire.length > 0) {
+               let transactions = await Transaction.findAll({
+                    where: {
+                         [Op.and]: [
+                              { idLocataire: id },
+                              options
+                         ]
+                    },
+                    order: [
+                         ['dateTransaction','DESC']
+                    ]
+               })
+               if (transactions.length &lt;= 0) {
+                    res.status(404).send({
+                         error: "There is no transaction with these parameters."
+                    });
+               } else {
+                    res.status(200).send(transactions);
+               }
+          } else {
+               res.status(404).send({ "error": "le locataire avec id " + id + " n'a pas encore de transactions." })
+          }
+     }
+     catch (err) {
+          res.status(500).send({
+               error: err.message || "Some error occurred while filtering Transaction."
+          });
+     }
+};
+
 export default {
      createTransaction,
      getUserTransactions,
-     getTransaction
+     getTransaction,
+     filterTransaction
 }</code></pre>
         </article>
     </section>
@@ -207,13 +313,13 @@ export default {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#createBorne">createBorne</a></li><li><a href="global.html#createTransaction">createTransaction</a></li><li><a href="global.html#createVehicule">createVehicule</a></li><li><a href="global.html#deleteVehicule">deleteVehicule</a></li><li><a href="global.html#getAllBornes">getAllBornes</a></li><li><a href="global.html#getAllVehicule">getAllVehicule</a></li><li><a href="global.html#getBorne">getBorne</a></li><li><a href="global.html#getCommune">getCommune</a></li><li><a href="global.html#getFilteredBornes">getFilteredBornes</a></li><li><a href="global.html#getTransaction">getTransaction</a></li><li><a href="global.html#getUserTransactions">getUserTransactions</a></li><li><a href="global.html#getVehiclesInABorne">getVehiclesInABorne</a></li><li><a href="global.html#getVehiculeDetails">getVehiculeDetails</a></li><li><a href="global.html#getWilaya">getWilaya</a></li><li><a href="global.html#updateVehicule">updateVehicule</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#createTransaction">createTransaction</a></li><li><a href="global.html#filterTransaction">filterTransaction</a></li><li><a href="global.html#getTransaction">getTransaction</a></li><li><a href="global.html#getUserTransactions">getUserTransactions</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Tue May 25 2021 02:29:13 GMT+0100 (heure normale d’Europe centrale)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Tue May 25 2021 23:21:58 GMT+0200 (heure d’été d’Europe centrale)
 </footer>
 
 <script> prettyPrint(); </script>

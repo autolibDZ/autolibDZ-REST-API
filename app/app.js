@@ -61,6 +61,7 @@ app.use('/api/identites',identiteRouter)
 // Ajouter un plan de maintenace
 app.use('/api/plan-maintenance', planMaintenaceRouter);
 
+
 //Transaction Router
 app.use('/api/transaction', transactionRouter);
 
@@ -70,8 +71,12 @@ app.use('/api/auth', authRouter);
 // Borne Router
 app.use('/api/bornes', borneRoute);
 
+
 // Payment Router
 app.use('/api/payment', stripePaymentRouter);
+//Transaction Router 
+app.use('/api/transaction', transactionRouter);
+
 
 // Trajet Route
 app.use('/api/trajet', trajetRouter);
