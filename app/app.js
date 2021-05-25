@@ -17,6 +17,7 @@ import trajetRouter from './routes/trajet.route';
 import stripePaymentRouter from './routes/payment.route';
 import planMaintenaceRouter from './routes/planMaintenance.route';
 import identiteRouter from './routes/identite.route';
+import transactionRouter from './routes/transaction.route';
 
 
 dotenv.config();
@@ -41,6 +42,9 @@ app.use('/api/abonnement', abonnementRouter);
 //locataire route
 app.use('/api/locataire', locataireRouter);
 
+// Vehicule Route
+app.use('/api/vehicules', vehiculeRouter);
+
 //reservation route
 app.use('/api/reservation', reservationRouter);
 
@@ -57,6 +61,8 @@ app.use('/api/identites',identiteRouter)
 // Ajouter un plan de maintenace
 app.use('/api/plan-maintenance', planMaintenaceRouter);
 
+//Transaction Router
+app.use('/api/transaction', transactionRouter);
 
 //auth Router
 app.use('/api/auth', authRouter);

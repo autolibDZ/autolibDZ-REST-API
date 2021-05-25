@@ -263,7 +263,6 @@ const selectVehicuesOfAGivenAgent = async (req, res, done) => {
  *
  * @param {*} req The client requeest
  * @param {*} res The server response
- * @returns
  */
 const setEtatVehicule = async (req, res) => {
 	try {
