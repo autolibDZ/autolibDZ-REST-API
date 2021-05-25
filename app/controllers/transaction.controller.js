@@ -11,8 +11,10 @@ const { Op } = require("sequelize");
 
 const createTransaction = async (req, res) => {
      // Validate request
+
      if (!req.body.idReservation) {
           res.status(400).send({
+               error: "validation_error",
                message: "Id reservation can not be empty!"
           });
           return;

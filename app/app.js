@@ -40,8 +40,9 @@ app.use('/api/abonnement', abonnementRouter);
 
 //locataire route
 app.use('/api/locataire', locataireRouter);
+
 // Vehicule Route
-app.use('/api/vehicules', vehiculesRouter);
+app.use('/api/vehicules', vehiculeRouter);
 
 //reservation route
 app.use('/api/reservation', reservationRouter);
@@ -50,7 +51,10 @@ app.use('/api/administrateur',administrateurRouter)
 app.use('/api/agent',agentRouter)
 app.use('/api/operateur',operateurRouter)
 app.use('/api/dirigeant',dirigeantRouter)
+ 
 
+//Transaction Router
+app.use('/api/transaction', transactionRouter);
 
 //auth Router
 app.use('/api/auth', authRouter);
@@ -62,9 +66,6 @@ app.use('/api/payment', stripePaymentRouter)
 
 // Trajet Route
 app.use('/api/trajet', trajetRouter);
-
-//Transaction Router
-app.use('/api/transaction', transactionRouter);
 
 //Home
 app.use((req, res) => {
