@@ -25,7 +25,6 @@ module.exports = function (sequelize, Sequelize) {
 				type: Sequelize.ENUM,
 				values: ['circulation', 'en service', 'reserve', 'hors service'],
 			},
-
 			tempsDeRefroidissement: {
 				type: Sequelize.INTEGER,
 			},

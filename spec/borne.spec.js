@@ -1,4 +1,4 @@
-const Request = require('supertest');
+/*const Request = require('supertest');
 request = Request('http://localhost:4000/api/bornes');
 
 
@@ -372,3 +372,4 @@ describe('Borne route test', () => {
         });
     });
 });
+*/
