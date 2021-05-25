@@ -18,6 +18,9 @@ router.get("/wilaya/:wilaya/commune",bornesCtrl.getCommune);
 router.get("/:id",bornesCtrl.getBorne);
 // GET all vehicles in a borne
 router.get("/:id/vehicules", bornesCtrl.getVehiclesInABorne)
+// Update Borne
+router.put("/:id", bornesCtrl.updateBorne)
+
 export default router;
 
 

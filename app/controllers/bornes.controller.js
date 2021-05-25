@@ -380,9 +380,34 @@ const getVehiclesInABorne = async (req, res) => {
     }
   } catch (err) {
     res.status(500).send({
-      error: err.message || "Some error occured while retreiving vehicules borne id: " + req.params.id
+      message: err.message || "Some error occured while getting vehicles in borne id: " + req.params.id
     });
   }
+};
+
+
+const updateBorne = async (req, res) => {
+	const id = req.params.id;
+
+	Borne.update(req.body, {
+		where: { idBorne: id },
+	})
+		.then((num) => {
+			if (num == 1) {
+				res.send({
+					message: 'Borne was updated successfully.',
+				});
+			} else {
+				res.send({
+					message: "Cannot update borne with id "+ id
+				});
+			}
+		})
+		.catch((err) => {
+			res.status(500).send({
+      message: err.message || "Some error occured while updating borne id: " + req.params.id
+			});
+		});
 };
 
 export default {
@@ -392,5 +417,6 @@ export default {
   getAllBornes,
   getVehiclesInABorne,
   getWilaya,
-  getCommune
+  getCommune,
+  updateBorne
 }
