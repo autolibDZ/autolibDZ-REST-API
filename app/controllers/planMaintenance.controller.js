@@ -28,7 +28,7 @@ const addPlanMaintenance = async (req, res, next) => {
 				addedRows++;
 				plans.push(plan);
 			}
-			res.send({ addedRows, plans });
+			res.status(200).send({ addedRows, plans });
 		} else {
 			res.status(400).send({
 				message: 'Content can not be empty!',
