@@ -76,7 +76,7 @@ describe('createVehicule api', () => {
 	it('returns 500 server error when sending an empty parameter', (done) => {
 		request
 		
-			.post('/vehicules')
+			.post('/')
 			.send({
 				// description:'Ceci est une 2éme autre réclamation ', 
                 emailLocataire:"hm_chbieb@esi.dz"	
