@@ -29,7 +29,7 @@ describe('Transaction route test', () => {
                     });
           });
 
-          it('returns 404 Error when deplicat id reservation', (done) => {
+          it('returns 400  when deplicat id reservation', (done) => {
                request
                     .post('/')
                     .send({
@@ -39,11 +39,11 @@ describe('Transaction route test', () => {
                          "idReservation": 9
                     })
                     .set('Accept', 'application/json')
-                    .expect(404)
+                    .expect(400)
                     .expect('Content-Type', /json/)
                     .end((err, res) => {
                          if (err) done(err);
-                         expect(res.body.error).toBe('Reservation already paid.')
+                         expect(res.body.message).toBe('Reservation already paid.')
                          done();
                     });
           });
@@ -131,7 +131,7 @@ describe('Transaction route test', () => {
                     .expect('Content-Type', 'application/json; charset=utf-8')
                     .end((err, res) => {
                          if (err) done(err);
-                         expect(res.body.error == 'le locataire avec id 5 n\'a pas encore de transactions').toBe(true)
+                         expect(res.body.message).toBe('Locataire with ID 5 has no transaction yet');
                          done();
                     });
           });
@@ -177,7 +177,7 @@ describe('Transaction route test', () => {
                     .expect('Content-Type', 'application/json; charset=utf-8')
                     .end((err, res) => {
                          if (err) done(err);
-                         expect(res.body.error == "Locataire transaction with ID: 5 does not exist").toBe(true)
+                         expect(res.body.message).toBe("Locataire transaction with ID: 5 does not exist")
                          done();
                     });
           });

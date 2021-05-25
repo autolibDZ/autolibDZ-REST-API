@@ -28,7 +28,7 @@ const createTransaction = async (req, res) => {
           return;
      }
 
-     if (typeof(req.body.montant)!=="number") {
+     if (typeof (req.body.montant) !== "number") {
           res.status(400).send({
                error: "validation_error",
                message: "montant must be a number",
@@ -62,8 +62,8 @@ const createTransaction = async (req, res) => {
                }
           })
           if (reseravation.length > 0) {
-               res.status(404).send({
-                    error: "Reservation already paid."
+               res.status(400).send({
+                    message: "Reservation already paid."
                });
           } else {
                let data = await Transaction.create(transaction)
@@ -94,7 +94,6 @@ const getUserTransactions = async (req, res) => {
           return;
      }
 
-     // get Transactions in the database
      try {
           const id = req.params.id
           let transactions = await Transaction.findAll({
@@ -106,7 +105,8 @@ const getUserTransactions = async (req, res) => {
                res.status(200).send(transactions)
           } else {
                res.status(404).send({
-                    "error": "le locataire avec id " + id + " n'a pas encore de transactions"
+                    error: "not_found",
+                    message: "Locataire with ID " + id + " has no transaction yet"
                })
           }
      }
@@ -147,7 +147,8 @@ const getTransaction = async (req, res) => {
                res.status(200).send(transaction)
           } else {
                res.status(404).send({
-                    "error": "Locataire transaction with ID: " + idTransaction + " does not exist"
+                    error: "not_found",
+                    message: "Locataire transaction with ID: " + idTransaction + " does not exist"
                })
           }
      }
