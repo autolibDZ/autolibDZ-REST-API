@@ -1,3 +1,4 @@
+const { planMaintenance } = require('../models');
 const db = require('../models');
 const PlanMaintenance = db.planMaintenance;
 /**
@@ -44,7 +45,41 @@ const addPlanMaintenance = async (req, res, next) => {
 		});
 	}
 };
+/**
+ * This function allows to get plan de maintenance for a given car numChassis
+ *
+ * @param {*} req The client request
+ * @param {*} res The server response
+ * @param {*} next Used if ecessary to move on into the next middleare
+ */
+const getPlanMaintenance = async (req, res, next) => {
+	try {
+		if (parseInt(req.params.numChassis, 10)) {
+			const plans = await planMaintenance.findAll({
+				where: {
+					numChassis: +req.params.numChassis,
+				},
+			});
+			if (plans.length === 0) {
+				// No content with that numChassis
+				res.status(404).send({
+					error: 'not_found',
+					message: `No plans de maintenance with such numero chassis ${+req
+						.params.numChassis} found.`,
+					status: 404,
+				});
+			} else {
+				res.status(200).send(plans);
+			}
+		} else next();
+	} catch (err) {
+		res.status(500).send({
+			error: err.message,
+		});
+	}
+};
 
 module.exports = {
 	addPlanMaintenance,
+	getPlanMaintenance,
 };
