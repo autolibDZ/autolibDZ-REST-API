@@ -17,6 +17,7 @@ import trajetRouter from './routes/trajet.route';
 import stripePaymentRouter from './routes/payment.route';
 import planMaintenaceRouter from './routes/planMaintenance.route';
 
+
 dotenv.config();
 
 const app = express();
@@ -47,8 +48,14 @@ app.use('/api/agent', agentRouter);
 app.use('/api/operateur', operateurRouter);
 app.use('/api/dirigeant', dirigeantRouter);
 
+
+//identite router
+app.use('/api/identites',identiteRouter)
+
+
 // Ajouter un plan de maintenace
 app.use('/api/plan-maintenance', planMaintenaceRouter);
+
 
 //auth Router
 app.use('/api/auth', authRouter);
