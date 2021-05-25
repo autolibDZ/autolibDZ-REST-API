@@ -5,6 +5,7 @@ module.exports = function (sequelize, Sequelize) {
 			idPlan: {
 				type: Sequelize.INTEGER,
 				primaryKey: true,
+				autoIncrement: true,
 			},
 			date: {
 				type: Sequelize.DATEONLY,
