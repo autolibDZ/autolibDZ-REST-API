@@ -64,3 +64,40 @@ describe('Testing POST on /api/plan-maintenance endpoint', () => {
 			});
 	});
 });
+
+describe('Testing GET on /api/plan-maintenance/:numChassis endpoint', () => {
+	it('should get plan for a specific car', (done) => {
+		request
+			.get('/plan-maintenance/123456')
+			.set('Accept', 'application/json')
+			.expect('Content-Type', /json/)
+			.expect(200)
+			.end((err, res) => {
+				if (err) {
+					done.fail(err);
+				} else {
+					expect(res.body.lenght).not.toBe(0);
+					for (plan of res.body) {
+						expect(plan.numChassis).toEqual(123456);
+					}
+					done();
+				}
+			});
+	});
+
+	it('should return a 404 error if numChassis does nort exist', (done) => {
+		request
+			.get('/plan-maintenance/-1')
+			.set('Accept', 'application/json')
+			.expect('Content-Type', /json/)
+			.expect(404)
+			.end((err, res) => {
+				if (err) {
+					done.fail(err);
+				} else {
+					expect(res.body.error).toBe('not_found');
+					done();
+				}
+			});
+	});
+});
