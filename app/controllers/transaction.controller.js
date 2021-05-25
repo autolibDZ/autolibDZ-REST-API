@@ -20,6 +20,30 @@ const createTransaction = async (req, res) => {
           return;
      }
 
+     if (!req.body.idLocataire) {
+          res.status(400).send({
+               error: "validation_error",
+               message: "Id locataire can not be empty!"
+          });
+          return;
+     }
+
+     if (typeof(req.body.montant)!=="number") {
+          res.status(400).send({
+               error: "validation_error",
+               message: "montant must be a number",
+          });
+          return;
+     }
+
+     if (req.body.montant < 0) {
+          res.status(400).send({
+               message: "montant must be a positive number",
+          });
+          return;
+     }
+
+
      // Create a transaction
      const transaction = {
           idLocataire: req.body.idLocataire,   //sinon through session
@@ -28,7 +52,6 @@ const createTransaction = async (req, res) => {
           moyenPayement: req.body.moyenPayement,
           dateTransaction: req.body.dateTransaction ? req.body.dateTransaction : Date.now(),
      };
-
 
 
      // Save Transaction in the database

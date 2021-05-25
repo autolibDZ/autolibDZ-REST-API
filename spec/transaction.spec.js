@@ -43,10 +43,61 @@ describe('Transaction route test', () => {
                     .expect('Content-Type', /json/)
                     .end((err, res) => {
                          if (err) done(err);
-                         expect(res.body.error == 'Reservation already paid.')
+                         expect(res.body.error).toBe('Reservation already paid.')
                          done();
                     });
           });
+
+          it('returns 400 when when not sending an idReservation or idLocataire or "montant"', (done) => {
+               request
+                    .post('/')
+                    .send({
+                         "moyenPayement": "Stripe",
+                    })
+                    .expect(400)
+                    .expect('Content-Type', 'application/json; charset=utf-8')
+                    .end((err, res) => {
+                         if (err) done(err);
+                         expect(res.body.error).toBe('validation_error')
+                         done();
+                    });
+          });
+
+
+          it('returns 400 when sending a negative number in "montant"', (done) => {
+               request
+                    .post('/')
+                    .send({
+                         "idLocataire": 1,
+                         "montant": -222,
+                         "moyenPayement": "Stripe",
+                         "idReservation": 9
+                    })
+                    .expect(400)
+                    .expect('Content-Type', 'application/json; charset=utf-8')
+                    .end((err, res) => {
+                         if (err) done(err);
+                         expect(res.body.message).toBe('montant must be a positive number')
+                         done();
+                    });
+          });
+
+          it('returns 400 when sending a string value in "montant"', (done) => {
+			request
+				.post('/')
+				.send({
+                         "idLocataire": 1,
+                         "montant": "22",
+                         "idReservation": 9
+				})
+				.expect(400)
+				.expect('Content-Type', 'application/json; charset=utf-8')
+				.end((err, res) => {
+					if (err) done(err);
+                         expect(res.body.message).toBe("montant must be a number")
+					done();
+				});
+		});
      })
 
 
