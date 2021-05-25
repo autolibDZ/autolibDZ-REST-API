@@ -30,6 +30,7 @@
 const Borne = db.borne;
 const Vehicule = db.vehicules;
 
+const { Op } = require("sequelize");
 /**
  * Create and save a new borne in database
  * @param {*} req The request
@@ -46,7 +47,6 @@ const createBorne = async (req, res) => {
     })
     return;
   }
-
 
   const borne = {
     nomBorne: req.body.nomBorne,
@@ -101,36 +101,84 @@ const createBorne = async (req, res) => {
  * Return a list of borne according to parameter filter in body request
  * @param {*} req The request
  * @param {*} res The response
+ * body elements : if nothing is provided it matches all
+ * wilaya 
+ * nomBorne
+ * commune
+ * nbVehiculesMax
+ * nbVehiculesMin
+ * nbPlaces
+ * nbPlacesOp : > , &lt; = the default is >
  */
 
 //Returne list of Bornes
 
 const getFilteredBornes = async (req, res) => {
 
+  if (!req.body) {
+		res.status(400).send({
+			message: "body can not be empty!",
+		});
+		return;
+	}
+
+  const ops = ['min' , 'max']
+
+  if (req.body.nbPlacesOp != null &amp;&amp; ! ops.includes(req.body.nbPlacesOp)) {
+		res.status(400).send({
+			message: "nbPlacesOp must be min or max",
+		});
+		return;
+	}
+
   try {
+    
+    // setting the operator &lt; , > , =
+    const nbPlacesOperator = (req.body.nbPlacesOp != null) ? req.body.nbPlacesOp :  'min'
 
-    // Get all bornes in database
+    // setting squelize Op
+    var nbPlacesSquelizeOp;
 
-    if (req.body.filter == "") {
-
-      const data = await Borne.findAll()
-
-      console.log(data)
-
-      if (data != null &amp;&amp; data.length != 0) {
-
-        res.send(data);
-
-      } else {
-
-        res.status(404).send({
-
-          message: "Borne table is empty!"
-
-        })
-      }
-
+    if(nbPlacesOperator == 'min'){
+      nbPlacesSquelizeOp = Op.gte
+    }else if(nbPlacesOperator == 'max'){
+      nbPlacesSquelizeOp = Op.lte
     }
+
+
+    const nbVehiculesMax = (req.body.nbVehiculesMax != null) ? req.body.nbVehiculesMax :  99999
+    const nbVehiculesMin = (req.body.nbVehiculesMin != null) ? req.body.nbVehiculesMin :  0
+
+
+    const bornes = await Borne.findAll({
+			where: {
+				nomBorne: {
+          [Op.like] : (req.body.nomBorne != null) ? req.body.nomBorne :  '%'
+        },
+        wilaya: {
+          [Op.like] : (req.body.wilaya != null) ? req.body.wilaya :  '%'
+        },
+        commune: {
+          [Op.like] : (req.body.commune != null) ? req.body.commune :  '%'
+        },
+        nbVehicules: {
+          [Op.between] : [nbVehiculesMin,nbVehiculesMax]
+        },
+        nbPlaces: {
+          [nbPlacesSquelizeOp] : (req.body.nbPlaces != null) ? req.body.nbPlaces :  0
+        }
+			},
+			
+		});
+
+     if (bornes.length != 0) {
+	        res.send(bornes);
+	    } else {
+	        res.status(404).send({
+	            error: 'there is no Borne that matches your filter',
+	        });
+	    }
+    
   }
   catch (err) {
 
@@ -204,32 +252,6 @@ const getBorne = async (req, res) => {
 const getAllBornes = async (req, res) => {
   try {
 
-
-    const data = await Borne.findAll()
-
-    //console.log(data)
-
-    if (data != null &amp;&amp; data.length != 0) {
-
-      res.send(data);
-
-    } else {
-
-      res.status(404).send({
-
-        message: "Borne table is empty!"
-
-      })
-    }
-
-  } catch (err) {
-    res.status(500).send({
-
-      error: err.message || "Some error occurred while getting Bornes."
-
-    });
-
-
     const data = await Borne.findAll()
 
     //console.log(data)
@@ -256,21 +278,11 @@ const getAllBornes = async (req, res) => {
 
     });
     return;
-
   }
 
 
 
 };
-
-
-/**
- * Return all Vehicles in borne of idBorne=id
- * @param {*} req request 
- * @param {*} res response
-* @returns {vehicules} liste of vehicles
-*/
-
 /**
  * Return the list of all wilayas 
  * @param {*} req request
@@ -290,31 +302,7 @@ const getWilaya = async (req, res) => {
     } else {
       res.status(404).send({
 
-
         message: "No wilaya found!"
-
-
-const getVehiclesInABorne = async (req, res) => {
-
-  try {
-    const vehicules = await Vehicule.findAll({
-      where: {
-        idBorne: req.params.id,
-      },
-      order: [
-        ['chargeBatterie', 'DESC']
-      ]
-    });
-    if (vehicules.length &lt;= 0) {
-      res.status(404).send({
-        error: "No vehicles in the borne with id: ${req.params.id}"
-      });
-    } else {
-      res.status(200).send(vehicules);
-    }
-  } catch (err) {
-    res.status(500).send({
-      error: err.message || "Some error occured while retreiving vehicules borne id: " + req.params.id
 
       })
 
@@ -340,7 +328,6 @@ const getVehiclesInABorne = async (req, res) => {
 const getCommune = async (req, res) => {
   try {
 
-    // let wilaya = req.body.wilaya
     let wilaya = req.params.wilaya
 
     if (wilaya == "all") {
@@ -393,20 +380,49 @@ const getCommune = async (req, res) => {
   }
 };
 
+/**
+ * Return all Vehicles in borne of idBorne=id
+ * @param {*} req request 
+ * @param {*} res response
+* @returns {vehicules} liste of vehicles
+*/
+
+
+const getVehiclesInABorne = async (req, res) => {
+
+  try {
+    const vehicules = await Vehicule.findAll({
+      where: {
+        idBorne: req.params.id,
+      },
+      order: [
+        ['chargeBatterie', 'DESC']
+      ]
+    });
+    if (vehicules.length &lt;= 0) {
+      res.status(404).send({
+        error: "No vehicles in the borne with id:" + req.params.id
+      });
+    } else {
+      res.status(200).send(vehicules);
+    }
+  } catch (err) {
+    res.status(500).send({
+      error: err.message || "Some error occured while retreiving vehicules borne id: " + req.params.id
+    });
+  }
+};
+
 export default {
   createBorne,
   getFilteredBornes,
   getBorne,
   getAllBornes,
-
-  getVehiclesInABorne
-}
-</code></pre>
-
+  getVehiclesInABorne,
   getWilaya,
   getCommune
-}</code></pre>
-
+}
+</code></pre>
         </article>
     </section>
 
@@ -416,27 +432,13 @@ export default {
 </div>
 
 <nav>
-
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#createBorne">createBorne</a></li><li><a href="global.html#getAllBornes">getAllBornes</a></li><li><a href="global.html#getBorne">getBorne</a></li><li><a href="global.html#getFilteredBornes">getFilteredBornes</a></li><li><a href="global.html#getVehiclesInABorne">getVehiclesInABorne</a></li></ul>
-
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#createBorne">createBorne</a></li><li><a href="global.html#getAllBornes">getAllBornes</a></li><li><a href="global.html#getBorne">getBorne</a></li><li><a href="global.html#getCommune">getCommune</a></li><li><a href="global.html#getFilteredBornes">getFilteredBornes</a></li><li><a href="global.html#getWilaya">getWilaya</a></li></ul>
-
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#createBorne">createBorne</a></li><li><a href="global.html#createTransaction">createTransaction</a></li><li><a href="global.html#createVehicule">createVehicule</a></li><li><a href="global.html#deleteVehicule">deleteVehicule</a></li><li><a href="global.html#getAllBornes">getAllBornes</a></li><li><a href="global.html#getAllVehicule">getAllVehicule</a></li><li><a href="global.html#getBorne">getBorne</a></li><li><a href="global.html#getCommune">getCommune</a></li><li><a href="global.html#getFilteredBornes">getFilteredBornes</a></li><li><a href="global.html#getTransaction">getTransaction</a></li><li><a href="global.html#getUserTransactions">getUserTransactions</a></li><li><a href="global.html#getVehiclesInABorne">getVehiclesInABorne</a></li><li><a href="global.html#getVehiculeDetails">getVehiculeDetails</a></li><li><a href="global.html#getWilaya">getWilaya</a></li><li><a href="global.html#updateVehicule">updateVehicule</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-
-
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Mon May 17 2021 20:14:52 GMT+0200 (GMT+02:00)
-
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Thu May 20 2021 16:25:44 GMT+0100 (heure normale d’Afrique de l’Ouest)
-
-
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Sat May 22 2021 11:54:06 GMT+0200 (heure d’été d’Europe centrale)
-
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Fri May 21 2021 22:58:55 GMT+0200 (heure d’été d’Europe centrale)
-
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Tue May 25 2021 02:29:13 GMT+0100 (heure normale d’Europe centrale)
 </footer>
 
 <script> prettyPrint(); </script>

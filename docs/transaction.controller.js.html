@@ -26,9 +26,9 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const db = require("../models");
+            <pre class="prettyprint source linenums"><code>const { Op } = require("sequelize");
+const db = require("../models");
 const Transaction = db.transaction;
-const { Op } = require("sequelize");
 
 /**
  * Create and save a new transaction in database
@@ -39,12 +39,38 @@ const { Op } = require("sequelize");
 
 const createTransaction = async (req, res) => {
      // Validate request
+
      if (!req.body.idReservation) {
           res.status(400).send({
+               error: "validation_error",
                message: "Id reservation can not be empty!"
           });
           return;
      }
+
+     if (!req.body.idLocataire) {
+          res.status(400).send({
+               error: "validation_error",
+               message: "Id locataire can not be empty!"
+          });
+          return;
+     }
+
+     if (typeof (req.body.montant) !== "number") {
+          res.status(400).send({
+               error: "validation_error",
+               message: "montant must be a number",
+          });
+          return;
+     }
+
+     if (req.body.montant &lt; 0) {
+          res.status(400).send({
+               message: "montant must be a positive number",
+          });
+          return;
+     }
+
 
      // Create a transaction
      const transaction = {
@@ -56,7 +82,6 @@ const createTransaction = async (req, res) => {
      };
 
 
-
      // Save Transaction in the database
      try {
           let reseravation = await Transaction.findAll({
@@ -65,8 +90,8 @@ const createTransaction = async (req, res) => {
                }
           })
           if (reseravation.length > 0) {
-               res.status(404).send({
-                    error: "Reservation already paid."
+               res.status(400).send({
+                    message: "Reservation already paid."
                });
           } else {
                let data = await Transaction.create(transaction)
@@ -97,7 +122,6 @@ const getUserTransactions = async (req, res) => {
           return;
      }
 
-     // get Transactions in the database
      try {
           const id = req.params.id
           let transactions = await Transaction.findAll({
@@ -109,7 +133,8 @@ const getUserTransactions = async (req, res) => {
                res.status(200).send(transactions)
           } else {
                res.status(404).send({
-                    "error": "le locataire avec id " + id + " n'a pas encore de transactions"
+                    error: "not_found",
+                    message: "Locataire with ID " + id + " has no transaction yet"
                })
           }
      }
@@ -121,6 +146,12 @@ const getUserTransactions = async (req, res) => {
 };
 
 
+/**
+ * Visualize transaction details 
+ * @param {*} req The request
+ * @param {*} res The response
+* @returns {object}  Transaction 
+ */
 
 
 const getTransaction = async (req, res) => {
@@ -150,7 +181,8 @@ const getTransaction = async (req, res) => {
                res.status(200).send(transaction)
           } else {
                res.status(404).send({
-                    "error": "Locataire transaction with ID: " + idTransaction + " does not exist"
+                    error: "not_found",
+                    message: "Locataire transaction with ID: " + idTransaction + " does not exist"
                })
           }
      }
@@ -175,13 +207,13 @@ export default {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#createBorne">createBorne</a></li><li><a href="global.html#createTransaction">createTransaction</a></li><li><a href="global.html#createVehicule">createVehicule</a></li><li><a href="global.html#deleteVehicule">deleteVehicule</a></li><li><a href="global.html#getAllBornes">getAllBornes</a></li><li><a href="global.html#getAllVehicule">getAllVehicule</a></li><li><a href="global.html#getBorne">getBorne</a></li><li><a href="global.html#getCommune">getCommune</a></li><li><a href="global.html#getFilteredBornes">getFilteredBornes</a></li><li><a href="global.html#getUserTransactions">getUserTransactions</a></li><li><a href="global.html#getVehiclesInABorne">getVehiclesInABorne</a></li><li><a href="global.html#getVehiculeDetails">getVehiculeDetails</a></li><li><a href="global.html#getWilaya">getWilaya</a></li><li><a href="global.html#updateVehicule">updateVehicule</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#createBorne">createBorne</a></li><li><a href="global.html#createTransaction">createTransaction</a></li><li><a href="global.html#createVehicule">createVehicule</a></li><li><a href="global.html#deleteVehicule">deleteVehicule</a></li><li><a href="global.html#getAllBornes">getAllBornes</a></li><li><a href="global.html#getAllVehicule">getAllVehicule</a></li><li><a href="global.html#getBorne">getBorne</a></li><li><a href="global.html#getCommune">getCommune</a></li><li><a href="global.html#getFilteredBornes">getFilteredBornes</a></li><li><a href="global.html#getTransaction">getTransaction</a></li><li><a href="global.html#getUserTransactions">getUserTransactions</a></li><li><a href="global.html#getVehiclesInABorne">getVehiclesInABorne</a></li><li><a href="global.html#getVehiculeDetails">getVehiculeDetails</a></li><li><a href="global.html#getWilaya">getWilaya</a></li><li><a href="global.html#updateVehicule">updateVehicule</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon May 24 2021 01:05:49 GMT+0100 (heure normale d’Europe centrale)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Tue May 25 2021 02:29:13 GMT+0100 (heure normale d’Europe centrale)
 </footer>
 
 <script> prettyPrint(); </script>

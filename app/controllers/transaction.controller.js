@@ -118,6 +118,12 @@ const getUserTransactions = async (req, res) => {
 };
 
 
+/**
+ * Visualize transaction details 
+ * @param {*} req The request
+ * @param {*} res The response
+* @returns {object}  Transaction 
+ */
 
 
 const getTransaction = async (req, res) => {
