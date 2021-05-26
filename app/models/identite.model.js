@@ -13,6 +13,9 @@ module.exports = function(sequelize, Sequelize) {
         },
         idOperateur: {
             type: Sequelize.INTEGER,
+        },
+        valide: {
+            type : Sequelize.INTEGER
         }
     }, {
         freezeTableName: true,
@@ -21,6 +24,14 @@ module.exports = function(sequelize, Sequelize) {
         updatedAt: false
     });
 
-
+    // Déclaration des clès étrangères
+    Identite.associate = (models) => {
+        Identite.belongsTo(models.Operateur, {
+       foreignKey: 'idOperateur',
+        });
+   Identite.belongsTo(models.Locataire, {
+          foreignKey: 'idLocataire',
+        });
+   }
     return Identite;
 };
