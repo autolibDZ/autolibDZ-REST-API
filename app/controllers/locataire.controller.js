@@ -9,7 +9,7 @@ const client = new OAuth2Client(CLIENT_ID);
 
 
 // La creation d'un locataire (lors de l'inscription normal)
-const createLocataire = async(req, res) => {
+const createLocataire = async (req, res) => {
     // Les champs obligatoires
     if (!req.body.nom || !req.body.prenom || !req.body.email || !req.body.motdepasse) {
         res.status(400).send({
@@ -64,7 +64,7 @@ const createLocataire = async(req, res) => {
 };
 // La creation d'un locataire via gmail
 
-const createLocataireGmail = async(req, res) => {
+const createLocataireGmail = async (req, res) => {
     var token = req.body.token;
     async function verify() {
         const ticket = await client.verifyIdTokenAsync({
@@ -131,7 +131,7 @@ const findAll = (req, res) => {
         });
 };
 
-const findOne = async(req, res) => {
+const findOne = async (req, res) => {
 
     Locataire.findOne({ where: { idLocataire: req.params.id } })
         .then(data => {
@@ -146,7 +146,7 @@ const findOne = async(req, res) => {
 };
 // Update a Locataire by the id in the request
 
-const update = async(req, res) => {
+const update = async (req, res) => {
     const id = req.params.id;
     //Pour tester l'existance de l'email
     const locataires = await Locataire.findOne({ where: { email: req.body.email } })
@@ -158,8 +158,8 @@ const update = async(req, res) => {
     req.body.motDePasse = hash;
     Locataire.update(req.body, {
 
-            where: { idLocataire: id }
-        })
+        where: { idLocataire: id }
+    })
         .then(num => {
             if (num == 1) {
                 res.status(200).send({
@@ -186,8 +186,8 @@ const deleteLocataire = (req, res) => {
 
     Locataire.destroy({
 
-            where: { idLocataire: id }
-        })
+        where: { idLocataire: id }
+    })
         .then(num => {
             if (num == 1) {
                 res.status(200).send({
@@ -228,23 +228,23 @@ const deleteLocataire = (req, res) => {
 const block = (req, res) => {
     const id = req.params.id;
     Locataire.update({
-            Active: Sequelize.literal('not "Active"')
-                // Active: true
-        }, {
-            where: {
-                idLocataire: id
-            }
-        }).then(num => {
-            if (num == 1) {
-                res.status(200).send({
-                    message: "Locataire was updated successfully."
-                });
-            } else {
-                res.status(400).send({
-                    message: `Cannot update Locataire with id=${id}. Maybe Locataire was not found!`
-                });
-            }
-        })
+        Active: Sequelize.literal('not "Active"')
+        // Active: true
+    }, {
+        where: {
+            idLocataire: id
+        }
+    }).then(num => {
+        if (num == 1) {
+            res.status(200).send({
+                message: "Locataire was updated successfully."
+            });
+        } else {
+            res.status(400).send({
+                message: `Cannot update Locataire with id=${id}. Maybe Locataire was not found!`
+            });
+        }
+    })
         .catch(err => {
             res.status(500).send({
                 message: "Error updating Locataire with id=" + id
