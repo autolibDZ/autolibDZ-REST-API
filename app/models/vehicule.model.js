@@ -54,11 +54,9 @@ module.exports = function (sequelize, Sequelize) {
 			},
 			idAgentMaintenance: {
 				type: Sequelize.INTEGER,
-				allowNull: false,
 			},
 			idBorne: {
 				type: Sequelize.INTEGER,
-				allowNull: false,
 			},
 			idCloudinary:{
 				type: Sequelize.STRING(128),
@@ -83,6 +81,9 @@ module.exports = function (sequelize, Sequelize) {
 			foreignKey: 'idBorne',
 		});
 	};
+
+
+	
 
 	return Vehicule;
 };

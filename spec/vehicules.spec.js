@@ -99,7 +99,7 @@ describe('createVehicule api', () => {
 			});
 	});
 
-	it('returns 500 server error when sending an empty parameter', (done) => {
+	it('returns 400 server error when sending an empty parameter', (done) => {
 		request
 		
 			.post('/vehicules')
