@@ -24,7 +24,7 @@ cloudinary.config({
 
 const createVehicule = async (req, res) => {
 	// Validate request
-	if (!req.body.numChassis || !body.numImmatriculation || !req.body.modele || !req.body.marque || !req.body.couleur
+	if (!req.body.numChassis || !req.body.numImmatriculation || !req.body.modele || !req.body.marque || !req.body.couleur
 		|| !req.body.etat || !req.body.idAgentMaintenance || !req.body.idBorne || !req.body.image ) {
 		res.status(400).send({
 			message: 'Content can not be empty!',
@@ -211,9 +211,15 @@ const getVehiculeDetails = async (req, res, next) => {
  * @param {*} res The response
  */
 const getVehiculeReservations = async (req, res, next) => {
+	const historyObject = {
+		idReservaion: "", 
+		nomBorneDepart:"", 
+		nomBorneArrive: "", 
+		nomLocataire: "", 
+		etatReservation:"",
+	};
 	try {
 		if (parseInt(req.params.id, 10)) {
-			console.log("HEEEEY I'm here");
 			const historiqueReservation = await Reservation.findAll({
 				where: {
 					idVehicule: +req.params.id,
@@ -223,11 +229,21 @@ const getVehiculeReservations = async (req, res, next) => {
 				// Ce vehicule n'a aucune réservation 
 				res.status(404).send({
 					error: 'not_found',
-					message: `Ce véhicule n'a aucune réservation en historique: ${+req.params.numChassis}`,
+					message: `Ce véhicule n'a aucune réservation en historique: ${+req.params.id}`,
 					status: 404,
 				});
 			} else {
-				res.status(200).send(historiqueReservation);
+				//res.status(200).send(historiqueReservation[0]);
+				for(const historique of historiqueReservation)
+					{ 
+					   console.log(historique.idBorneDepart);
+					
+						const reser = await Borne.findAll({
+							where: {
+								idBorne: historique.idBorneDepart,
+							},
+						});
+					}
 			}
 		} else next();
 	} catch (err) {
