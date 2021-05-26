@@ -29,7 +29,7 @@
             <pre class="prettyprint source linenums"><code>const db = require("../models");
 const Borne = db.borne;
 const Vehicule = db.vehicules;
-
+const jwt = require('jsonwebtoken');
 const { Op } = require("sequelize");
 /**
  * Create and save a new borne in database
@@ -39,6 +39,51 @@ const { Op } = require("sequelize");
 // Create and Save a new Borne
 
 const createBorne = async (req, res) => {
+
+  // verify access
+  const authHeader = req.headers['authorization']
+  const token = authHeader &amp;&amp; authHeader.split(' ')[1]
+
+
+  if (token == null) {
+
+    res.status(403).send({
+      message: "Access Forbidden,invalide token",
+    });
+    return;
+  }
+
+  try {
+
+    const user = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (user != undefined) {
+
+      const role = user.role
+
+      // Only admin can create Borne
+
+      if (role != "admin") {
+
+        res.status(403).send({
+          message: "Access Forbidden,you can't do this operation",
+        });
+
+        return;
+      }
+    }
+
+  } catch (err) {
+
+    res.status(403).send({
+      message: "Access Forbidden,invalide token",
+    });
+
+    return;
+
+  }
+
+
   // Create a Borne
 
   if (!req.body.nomBorne || !req.body.wilaya || !req.body.commune || !req.body.latitude || !req.body.longitude || !req.body.nbVehicules || !req.body.nbPlaces) {
@@ -116,69 +161,69 @@ const createBorne = async (req, res) => {
 const getFilteredBornes = async (req, res) => {
 
   if (!req.body) {
-		res.status(400).send({
-			message: "body can not be empty!",
-		});
-		return;
-	}
+    res.status(400).send({
+      message: "body can not be empty!",
+    });
+    return;
+  }
 
-  const ops = ['min' , 'max']
+  const ops = ['min', 'max']
 
-  if (req.body.nbPlacesOp != null &amp;&amp; ! ops.includes(req.body.nbPlacesOp)) {
-		res.status(400).send({
-			message: "nbPlacesOp must be min or max",
-		});
-		return;
-	}
+  if (req.body.nbPlacesOp != null &amp;&amp; !ops.includes(req.body.nbPlacesOp)) {
+    res.status(400).send({
+      message: "nbPlacesOp must be min or max",
+    });
+    return;
+  }
 
   try {
-    
+
     // setting the operator &lt; , > , =
-    const nbPlacesOperator = (req.body.nbPlacesOp != null) ? req.body.nbPlacesOp :  'min'
+    const nbPlacesOperator = (req.body.nbPlacesOp != null) ? req.body.nbPlacesOp : 'min'
 
     // setting squelize Op
     var nbPlacesSquelizeOp;
 
-    if(nbPlacesOperator == 'min'){
+    if (nbPlacesOperator == 'min') {
       nbPlacesSquelizeOp = Op.gte
-    }else if(nbPlacesOperator == 'max'){
+    } else if (nbPlacesOperator == 'max') {
       nbPlacesSquelizeOp = Op.lte
     }
 
 
-    const nbVehiculesMax = (req.body.nbVehiculesMax != null) ? req.body.nbVehiculesMax :  99999
-    const nbVehiculesMin = (req.body.nbVehiculesMin != null) ? req.body.nbVehiculesMin :  0
+    const nbVehiculesMax = (req.body.nbVehiculesMax != null) ? req.body.nbVehiculesMax : 99999
+    const nbVehiculesMin = (req.body.nbVehiculesMin != null) ? req.body.nbVehiculesMin : 0
 
 
     const bornes = await Borne.findAll({
-			where: {
-				nomBorne: {
-          [Op.like] : (req.body.nomBorne != null) ? req.body.nomBorne :  '%'
+      where: {
+        nomBorne: {
+          [Op.like]: (req.body.nomBorne != null) ? req.body.nomBorne : '%'
         },
         wilaya: {
-          [Op.like] : (req.body.wilaya != null) ? req.body.wilaya :  '%'
+          [Op.like]: (req.body.wilaya != null) ? req.body.wilaya : '%'
         },
         commune: {
-          [Op.like] : (req.body.commune != null) ? req.body.commune :  '%'
+          [Op.like]: (req.body.commune != null) ? req.body.commune : '%'
         },
         nbVehicules: {
-          [Op.between] : [nbVehiculesMin,nbVehiculesMax]
+          [Op.between]: [nbVehiculesMin, nbVehiculesMax]
         },
         nbPlaces: {
-          [nbPlacesSquelizeOp] : (req.body.nbPlaces != null) ? req.body.nbPlaces :  0
+          [nbPlacesSquelizeOp]: (req.body.nbPlaces != null) ? req.body.nbPlaces : 0
         }
-			},
-			
-		});
+      },
 
-     if (bornes.length != 0) {
-	        res.send(bornes);
-	    } else {
-	        res.status(404).send({
-	            error: 'there is no Borne that matches your filter',
-	        });
-	    }
-    
+    });
+
+    if (bornes.length != 0) {
+      res.send(bornes);
+    } else {
+      res.status(404).send({
+        error: 'there is no Borne that matches your filter',
+      });
+    }
+
   }
   catch (err) {
 
@@ -198,7 +243,6 @@ const getFilteredBornes = async (req, res) => {
 //Returne borne with idBorne = id
 
 const getBorne = async (req, res) => {
-
 
   // Validate request
 
@@ -412,6 +456,93 @@ const getVehiclesInABorne = async (req, res) => {
     });
   }
 };
+/**
+ * Delete Borne by ID
+ * @param {*} req request
+ * @param {*} res response
+ * 
+ */
+//Delete borne from database
+const deleteBorne = async (req, res) => {
+
+  // verify access
+
+  const authHeader = req.headers['authorization']
+  const token = authHeader &amp;&amp; authHeader.split(' ')[1]
+
+
+  if (token == null) {
+
+    res.status(403).send({
+      message: "Access Forbidden,invalide token",
+    });
+
+    return;
+  }
+
+  try {
+
+    const user = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (user != undefined) {
+
+      const role = user.role
+
+      // Only admin can delete Borne
+
+      if (role != "admin") {
+
+        res.status(403).send({
+          message: "Access Forbidden,you can't do this operation",
+        });
+
+        return;
+      }
+    }
+
+  } catch (err) {
+
+    res.status(403).send({
+      message: "Access Forbidden,invalide token",
+    });
+
+    return;
+  }
+
+  try {
+    const data = await Borne.destroy({
+      where: {
+        idBorne: req.params.id
+      }
+    })
+    if (data == 1) {
+      res.status(201).send({
+        message: "Borne with id : " + req.params.id + " was deleted succefully!"
+      })
+      //update list of véhicule
+      const vehicule = await Vehicule.update(
+        { idBorne: null },
+        { where: { idBorne: req.params.id } }
+      )
+
+
+    } else {
+      res.status(404).send({
+
+        message: "Borne with id : " + req.params.id + " does not exist!"
+
+      })
+    }
+
+  } catch (err) {
+    res.status(500).send({
+      error: err.message || "Some error occured while deleting borne with id: " + req.params.id
+    });
+  }
+
+
+
+};
 
 export default {
   createBorne,
@@ -420,7 +551,8 @@ export default {
   getAllBornes,
   getVehiclesInABorne,
   getWilaya,
-  getCommune
+  getCommune,
+  deleteBorne
 }
 </code></pre>
         </article>
@@ -432,13 +564,13 @@ export default {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#createBorne">createBorne</a></li><li><a href="global.html#getAllBornes">getAllBornes</a></li><li><a href="global.html#getBorne">getBorne</a></li><li><a href="global.html#getCommune">getCommune</a></li><li><a href="global.html#getFilteredBornes">getFilteredBornes</a></li><li><a href="global.html#getVehiclesInABorne">getVehiclesInABorne</a></li><li><a href="global.html#getWilaya">getWilaya</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addPlanMaintenance">addPlanMaintenance</a></li><li><a href="global.html#createAdmin">createAdmin</a></li><li><a href="global.html#createAgent">createAgent</a></li><li><a href="global.html#createBorne">createBorne</a></li><li><a href="global.html#createDirigeant">createDirigeant</a></li><li><a href="global.html#createIdentite">createIdentite</a></li><li><a href="global.html#createOperateur">createOperateur</a></li><li><a href="global.html#createTransaction">createTransaction</a></li><li><a href="global.html#createVehicule">createVehicule</a></li><li><a href="global.html#deleteAdmin">deleteAdmin</a></li><li><a href="global.html#deleteAgent">deleteAgent</a></li><li><a href="global.html#deleteAllAdmins">deleteAllAdmins</a></li><li><a href="global.html#deleteAllAgents">deleteAllAgents</a></li><li><a href="global.html#deleteAllDirigeants">deleteAllDirigeants</a></li><li><a href="global.html#deleteAllOperateurs">deleteAllOperateurs</a></li><li><a href="global.html#deleteBorne">deleteBorne</a></li><li><a href="global.html#deleteDirigeant">deleteDirigeant</a></li><li><a href="global.html#deleteIdentite">deleteIdentite</a></li><li><a href="global.html#deleteOperateur">deleteOperateur</a></li><li><a href="global.html#deleteVehicule">deleteVehicule</a></li><li><a href="global.html#filterTransaction">filterTransaction</a></li><li><a href="global.html#getAdmin">getAdmin</a></li><li><a href="global.html#getAgent">getAgent</a></li><li><a href="global.html#getAllAdmins">getAllAdmins</a></li><li><a href="global.html#getAllAgents">getAllAgents</a></li><li><a href="global.html#getAllBornes">getAllBornes</a></li><li><a href="global.html#getAllDirigeants">getAllDirigeants</a></li><li><a href="global.html#getAllIdentite">getAllIdentite</a></li><li><a href="global.html#getAllOperateurs">getAllOperateurs</a></li><li><a href="global.html#getAllVehicule">getAllVehicule</a></li><li><a href="global.html#getBorne">getBorne</a></li><li><a href="global.html#getCommune">getCommune</a></li><li><a href="global.html#getDirigeant">getDirigeant</a></li><li><a href="global.html#getFilteredBornes">getFilteredBornes</a></li><li><a href="global.html#getLocataireOfIdentity">getLocataireOfIdentity</a></li><li><a href="global.html#getOneIdentite">getOneIdentite</a></li><li><a href="global.html#getOperateur">getOperateur</a></li><li><a href="global.html#getOperatorOfIdentity">getOperatorOfIdentity</a></li><li><a href="global.html#getPlanMaintenance">getPlanMaintenance</a></li><li><a href="global.html#getTransaction">getTransaction</a></li><li><a href="global.html#getUserTransactions">getUserTransactions</a></li><li><a href="global.html#getVehiclesInABorne">getVehiclesInABorne</a></li><li><a href="global.html#getVehiculeDetails">getVehiculeDetails</a></li><li><a href="global.html#getVehiculesEnServiceOfAGivenAgent">getVehiculesEnServiceOfAGivenAgent</a></li><li><a href="global.html#getVehiculesHorsServiceOfAGivenAgent">getVehiculesHorsServiceOfAGivenAgent</a></li><li><a href="global.html#getWilaya">getWilaya</a></li><li><a href="global.html#invalider">invalider</a></li><li><a href="global.html#selectIdentitiesOfAGivenOperateur">selectIdentitiesOfAGivenOperateur</a></li><li><a href="global.html#selectVehicuesOfAGivenAgent">selectVehicuesOfAGivenAgent</a></li><li><a href="global.html#setEtatVehicule">setEtatVehicule</a></li><li><a href="global.html#updateAdmin">updateAdmin</a></li><li><a href="global.html#updateAgent">updateAgent</a></li><li><a href="global.html#updateDirigeant">updateDirigeant</a></li><li><a href="global.html#updateOperateur">updateOperateur</a></li><li><a href="global.html#updateVehicule">updateVehicule</a></li><li><a href="global.html#valider">valider</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Tue May 25 2021 23:18:41 GMT+0200 (heure d’été d’Europe centrale)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed May 26 2021 19:32:24 GMT+0200 (heure d’été d’Europe centrale)
 </footer>
 
 <script> prettyPrint(); </script>

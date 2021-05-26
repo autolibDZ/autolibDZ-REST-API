@@ -41,32 +41,7 @@ describe('Borne route test', () => {
 
                     done();
                 });
-        })
-    })
-
-	describe('createBorne 3rd scenario', () => {
-		it('returns 200 OK when sending borne params that doesn"t exist in db', (done) => {
-			request
-				.post('/')
-				.send({
-					nomBorne: 'Bab El Oued',
-					wilaya: 'Alger',
-					commune: 'Bab El Oued',
-					latitude: 59.99,
-					longitude: 60,
-					nbVehicule: 30,
-					nbPlaces: 5,
-				})
-				.set('Accept', 'application/json')
-				.expect(200)
-				.expect('Content-Type', /json/)
-				.end((err, res) => {
-					if (err) done(err);
-
         });
-        })
-
-
         it('returns 500  server error when using a wrong id like AA55', (done) => {
             request
                 .get('/AA55')
@@ -81,33 +56,33 @@ describe('Borne route test', () => {
                 });
 
         });
-    });
+    })
 
     describe('createBorne 3rd scenario', () => {
 
-        it('returns 200 OK when sending borne params that doesn"t exist in db', (done) => {
-             request
-                 .post('/')
-                 .send({
-                     nomBorne: 'Bab El Oued - 2',
-                     wilaya: 'Alger',
-                     commune: 'Bab El Oued',
-                     latitude: 36.7927,
-                     longitude: 3.0513,
-                     nbVehicules: 30,
-                     nbPlaces: 5
-                 })
-                 .expect(200)
-                 .expect('Content-Type', 'application/json; charset=utf-8')
-                 .end((err, res) => {
-                     if (err) done(err);
- 
-                     expect(res.body.error)
- 
-                     done();
-                 });
- 
-         });
+        it("returns 200 OK when sending borne params that doesn't exist in db", (done) => {
+            request
+                .post('/')
+                .send({
+                    nomBorne: 'Bab El Oued - 2',
+                    wilaya: 'Alger',
+                    commune: 'Bab El Oued',
+                    latitude: 36.7927,
+                    longitude: 3.0513,
+                    nbVehicules: 30,
+                    nbPlaces: 5
+                })
+                .expect(200)
+                .expect('Content-Type', 'application/json; charset=utf-8')
+                .end((err, res) => {
+                    if (err) done(err);
+
+                    expect(res.body.error)
+
+                    done();
+                });
+
+        });
 
 
         it('returns 400 When borne exists', (done) => {
@@ -148,6 +123,7 @@ describe('Borne route test', () => {
 
         });
 
+
     });
 
 
@@ -165,7 +141,7 @@ describe('Borne route test', () => {
                     if (err) done(err);
 
                     expect(res.body);
-                    expect(res.body.length).toEqual(17);
+                    expect(res.body.length).toEqual(16);
                     done();
                 });
 
@@ -203,7 +179,7 @@ describe('Borne route test', () => {
                 .end((err, res) => {
 
                     if (err) done(err);
-                    expect(res.body.length).toEqual(16);
+                    expect(res.body.length).toEqual(15);
                     done();
                 });
 
@@ -241,37 +217,37 @@ describe('Borne route test', () => {
 
         });
 
-	});
-	
-	describe('Get list of all vehicles in a given borne of id 1', () => {
-		it('Should returns 200 OK when getting all vehicles in the borne', (done) => {
-			request
-				.get('/1/vehicules')
-				.set('Accept', 'application/json')
-				.expect(200)
-				.expect('Content-Type', /json/)
-				.end((err, res) => {
-					if (err) done(err);
-					expect(res.body.length).not.toEqual(0);
-					done();
-				});
-		});
+    });
 
-		it('Should returns 404 when using an non exesting id borne=3 ', (done) => {
-			request
-				.get('/3/vehicules')
-				.set('Accept', 'application/json')
-				.expect(404)
-				.expect('Content-Type', /json/)
-				.end((err, res) => {
-					if (err) done(err);
-					expect(res.body.error == 'No vehicles in the borne with id: 3')
-					done();
-				});
-		});
-	});
+    describe('Get list of all vehicules in a given borne of id 1', () => {
+        it('Should returns 200 OK when getting all vehicles in the borne', (done) => {
+            request
+                .get('/1/vehicules')
+                .set('Accept', 'application/json')
+                .expect(200)
+                .expect('Content-Type', /json/)
+                .end((err, res) => {
+                    if (err) done(err);
+                    expect(res.body.length).not.toEqual(0);
+                    done();
+                });
+        });
 
-	describe('POST filter bornes', () => {
+        it('Should returns 404 when using an non exesting id borne=3 ', (done) => {
+            request
+                .get('/3/vehicules')
+                .set('Accept', 'application/json')
+                .expect(404)
+                .expect('Content-Type', /json/)
+                .end((err, res) => {
+                    if (err) done(err);
+                    expect(res.body.error == 'No vehicles in the borne with id: 3')
+                    done();
+                });
+        });
+    });
+
+    describe('POST filter bornes', () => {
         it('returns 200 OK when sending correct filter like wilaya = Alger', (done) => {
             request
                 .post('/filter')
@@ -283,13 +259,13 @@ describe('Borne route test', () => {
                 .expect('Content-Type', /json/)
                 .end((err, res) => {
                     if (err) done(err);
-    
+
                     expect(res.body != null).toBe(true)
                     expect(res.body.length > 0).toBe(true)
                     const ele = res.body[0]
-    
+
                     expect(ele.wilaya).toBe("Alger")
-    
+
                     done();
                 });
         });
@@ -299,21 +275,21 @@ describe('Borne route test', () => {
                 .post('/filter')
                 .send({
                     wilaya: 'Alger',
-                    nbVehiculesMax : 50,
-                    nbVehiculesMin : 10
+                    nbVehiculesMax: 50,
+                    nbVehiculesMin: 10
                 })
                 .set('Accept', 'application/json')
                 .expect(200)
                 .expect('Content-Type', /json/)
                 .end((err, res) => {
                     if (err) done(err);
-    
+
                     expect(res.body != null).toBe(true)
                     expect(res.body.length > 0).toBe(true)
                     const ele = res.body[0]
-    
+
                     expect(ele.nbVehicules >= 10 && ele.nbVehicules <= 50).toBe(true)
-    
+
                     done();
                 });
         });
@@ -323,16 +299,16 @@ describe('Borne route test', () => {
                 .post('/filter')
                 .send({
                     wilaya: 'Alger',
-                    nbPlacesOp : ">="
+                    nbPlacesOp: ">="
                 })
                 .set('Accept', 'application/json')
                 .expect(400)
                 .expect('Content-Type', /json/)
                 .end((err, res) => {
                     if (err) done(err);
-    
+
                     expect(res.body.message).toBe("nbPlacesOp must be min or max")
-                    
+
                     done();
                 });
         });
@@ -342,16 +318,16 @@ describe('Borne route test', () => {
                 .post('/filter')
                 .send({
                     wilaya: 'Alger',
-                    nbVehiculesMin : 500,
+                    nbVehiculesMin: 500,
                 })
                 .set('Accept', 'application/json')
                 .expect(404)
                 .expect('Content-Type', /json/)
                 .end((err, res) => {
                     if (err) done(err);
-    
+
                     expect(res.body.error).toBe("there is no Born that matches your filter")
-                    
+
                     done();
                 });
         });
@@ -361,18 +337,49 @@ describe('Borne route test', () => {
                 .post('/filter')
                 .send({
                     wilaya: 'Alger',
-                    nbVehiculesMax : "m",
+                    nbVehiculesMax: "m",
                 })
                 .set('Accept', 'application/json')
                 .expect(500)
                 .expect('Content-Type', /json/)
                 .end((err, res) => {
                     if (err) done(err);
-    
+
                     expect(res.body.error).toBe("invalid input syntax for type integer: \"m\"")
-                    
+
                     done();
                 });
         });
+    });
+
+    describe('DELETE bornes', () => {
+        it('returns 201 when borne with id is deleted succefully ', (done) => {
+            request
+                .delete('/19')
+                .set('Accept', 'application/json')
+                .expect(201)
+                .expect('Content-Type', 'application/json; charset=utf-8')
+
+                .end((err, res) => {
+
+                    if (err) done(err);
+                    expect(res.body.message).toBe("Borne with id : 19 was deleted succefully!");
+                    done();
+                });
+        });
+        it('returns 404 when borne with id does not exist ', (done) => {
+            request
+                .delete('/400')
+                .set('Accept', 'application/json')
+                .expect(404)
+                .expect('Content-Type', 'application/json; charset=utf-8')
+
+                .end((err, res) => {
+                    if (err) done(err);
+                    expect(res.body.message).toBe("Borne with id : 400 does not exist!");
+                    done();
+                });
+        });
+
     });
 });
