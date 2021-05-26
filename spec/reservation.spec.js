@@ -66,7 +66,7 @@ describe('Get list of all reservations', () => {
                 if (err) done(err);
 
                 expect(res.body);
-                expect(res.body.length).toEqual(22);
+                expect(res.body.length).toEqual(23);
                 done();
             });
 

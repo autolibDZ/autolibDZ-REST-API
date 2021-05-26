@@ -3,7 +3,7 @@ const db = require('../models');
 const Reservation = db.reservation;
  const createReservation = async(req, res) => {
 
-        if (!req.body.etat || !req.body.idVehicule || !req.body.idLocataire|| !req.body.idBorneDepart|| !req.body.idBorneDestination) {
+        if (!req.body.etat || !req.body.idVehicule || !req.body.idLocataire|| !req.body.idBorneDepart|| !req.body.idBorneDestination|| !req.body.tempsEstime|| !req.body.distanceEstime|| !req.body.prixEstime) {
             res.status(400).send({
                 message: "Content can not be empty!"
             });
@@ -16,6 +16,9 @@ const Reservation = db.reservation;
             idLocataire: req.body. idLocataire,
             idBorneDepart: req.body. idBorneDepart,
             idBorneDestination: req.body.  idBorneDestination,
+            tempsEstime: req.body.tempsEstime,
+            distanceEstime: req.body.distanceEstime,
+            prixEstime: req.body.prixEstime,
         };
        try {
 
@@ -38,7 +41,9 @@ const listAllReservations = (req, res) => {
 
     Reservation.findAll({ where: condition })
         .then(data => {
-            res.send(data);
+            console.log(data)
+            res.send({ "etat": data[0].etat})
+
         })
         .catch(err => {
             res.status(500).send({

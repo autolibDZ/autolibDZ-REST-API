@@ -20,9 +20,21 @@ module.exports = function(sequelize, Sequelize) {
             },
             idBorneDestination: {
                 type: Sequelize.INTEGER,
-            }
+            },
+            tempsEstime: {
+                type: Sequelize.INTEGER,
 
+            },
+            distanceEstime: {
+                type: Sequelize.FLOAT,
+
+            },
+            prixEstime: {
+                type: Sequelize.FLOAT,
+
+            },
         },
+
         {
             freezeTableName: true,
             tableName: 'reservation',
@@ -46,10 +58,10 @@ module.exports = function(sequelize, Sequelize) {
 
         });
     };
-    Reservation.associate = models => {
-        Reservation.hasOne(models.vehicules, {
-            foreignKey: 'numChassis',
-
+  /*  Reservation.associate = function(models) {
+        Reservation.hasOne(models.Locataire, {
+            foreignKey: 'idLocataire',
+            as: 'idLocataire',
         });
     };
     return Reservation;

@@ -11,6 +11,7 @@ trajetRouter.get('/:id', trajetController.findTrajetById);
 trajetRouter.put('/:id', trajetController.updateTrajetById);
 trajetRouter.delete('/:id', trajetController.deleteTrajetById);
 trajetRouter.get("/countByMonth/:year", trajetController.countTrajetsByMonth);
+trajetRouter.get("/getYears", trajetController.getYears);
 module.exports=trajetRouter;
 export default trajetRouter;
 
@@ -20,6 +21,6 @@ export default trajetRouter;
 
 
 
-router.get("/getYears", trajetController.getYears);
+
 
 
