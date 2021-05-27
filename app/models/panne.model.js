@@ -1,9 +1,10 @@
-module.exports = function(sequelize, Sequelize) {
+module.exports = function (sequelize, Sequelize) {
 
     const Panne = sequelize.define("panne", {
         idPanne: {
             type: Sequelize.INTEGER,
             primaryKey: true,
+            autoIncrement: true,
         },
         description: {
             type: Sequelize.STRING(255)
