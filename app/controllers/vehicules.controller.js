@@ -1,8 +1,8 @@
 const db = require('../models');
 const Vehicule = db.vehicules;
 const Reservation = db.reservation;
-const Borne = db.Borne; 
-const Locataire= db.Locataire;
+const Borne = db.borne; 
+const Locataire= db.locataire;
 
 const cloudinary = require('cloudinary').v2
 require('dotenv').config()
@@ -211,13 +211,7 @@ const getVehiculeDetails = async (req, res, next) => {
  * @param {*} res The response
  */
 const getVehiculeReservations = async (req, res, next) => {
-	const historyObject = {
-		idReservaion: "", 
-		nomBorneDepart:"", 
-		nomBorneArrive: "", 
-		nomLocataire: "", 
-		etatReservation:"",
-	};
+	const historytable= []; 
 	try {
 		if (parseInt(req.params.id, 10)) {
 			const historiqueReservation = await Reservation.findAll({
@@ -233,16 +227,64 @@ const getVehiculeReservations = async (req, res, next) => {
 					status: 404,
 				});
 			} else {
-				//res.status(200).send(historiqueReservation[0]);
-				for(const historique of historiqueReservation)
-					{ 
-					   console.log(historique.idBorneDepart);
+				
+				//res.status(200).send(historiqueReservation);
+				var i=0;
+				for ( i=0;i<historiqueReservation.length ; i++){
+					 let reservationDetails={
+							"idReservation": "", 
+							"nomBorneDepart" : "",
+							"nomBorneDestination" : "",
+							"nomLocataire":"", 
+							"prenomLocataire": "", 
+							"etatReservation":""
+						}; 
+				
+					console.log(i);
+		
+					   console.log(historiqueReservation[i].idBorneDepart);
+					   reservationDetails.idReservation=historiqueReservation[i].idReservation;
+					   reservationDetails.etatReservation=historiqueReservation[i].etat;
 					
-						const reser = await Borne.findAll({
+						//Récuperer le nom de la borne de départ 
+						const result = await Borne.findAll({
 							where: {
-								idBorne: historique.idBorneDepart,
+								idBorne: historiqueReservation[i].idBorneDepart,
 							},
-						});
+						}); 
+							var rows = JSON.parse(JSON.stringify(result[0]));
+							console.log(rows.nomBorne); 
+							reservationDetails.nomBorneDepart=rows.nomBorne; 
+							
+							//res.send();
+
+						// Récupérer le nom de la borne d'arrivée
+						const result1 = await Locataire.findAll({
+							where: {
+								idLocataire: historiqueReservation[i].idLocataire,
+							},
+						}); 
+							var rows1 = JSON.parse(JSON.stringify(result1[0]));
+							//console.log(rows1.nom); 
+							reservationDetails.nomLocataire=rows1.nom;
+							reservationDetails.prenomLocataire=rows1.prenom;
+							//res.send();
+
+							const result2 = await Borne.findAll({
+							where: {
+								idBorne: historiqueReservation[i].idBorneDestination,
+							},
+						}); 	
+							var rows2 = JSON.parse(JSON.stringify(result2[0]));
+
+							//console.log(rows2.nomBorne); 
+							reservationDetails.nomBorneDestination=rows2.nomBorne;
+							historytable.push(reservationDetails); 
+							//res.send();
+
+							console.log(historytable[i].nomBorneDepart);
+							console.log(historytable[i].nomBorneDestination);
+							console.log(historytable[i].nomLocataire);
 					}
 			}
 		} else next();
