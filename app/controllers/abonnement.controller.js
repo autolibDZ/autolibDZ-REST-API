@@ -13,7 +13,7 @@ const getUserBalance = async (req, res) => {
 	if (token == null) {
 
 		res.status(403).send({
-			message: "Access Forbidden,invalide token",
+			message: "Access Forbidden,invalid token",
 		});
 		return;
 	}
@@ -40,7 +40,7 @@ const getUserBalance = async (req, res) => {
 
 	} catch (err) {
 		res.status(403).send({
-			message: "Access Forbidden,invalide token",
+			message: "Access Forbidden,invalid token",
 		});
 		return;
 	}
@@ -87,7 +87,7 @@ const doPayment = async (req, res) => {
 	if (token == null) {
 
 		res.status(403).send({
-			message: "Access Forbidden,invalide token",
+			message: "Access Forbidden,invalid token",
 		});
 		return;
 	}
@@ -114,7 +114,7 @@ const doPayment = async (req, res) => {
 
 	} catch (err) {
 		res.status(403).send({
-			message: "Access Forbidden,invalide token",
+			message: "Access Forbidden,invalid token",
 		});
 		return;
 	}
