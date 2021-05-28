@@ -53,5 +53,11 @@ module.exports = function (sequelize, Sequelize) {
   }
   );
 
+  Borne.associate = function (modals) {
+		Borne.hasMany(modals.Vehicule, {
+			foreignKey: 'idBorne',
+		});
+	};
+
   return Borne;
 }

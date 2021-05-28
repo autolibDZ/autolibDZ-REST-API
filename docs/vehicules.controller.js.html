@@ -28,6 +28,20 @@
         <article>
             <pre class="prettyprint source linenums"><code>const db = require('../models');
 const Vehicule = db.vehicules;
+const Reservation = db.reservation;
+const Borne = db.Borne; 
+const Locataire= db.Locataire;
+
+const cloudinary = require('cloudinary').v2
+require('dotenv').config()
+
+// cloudinary configuration
+cloudinary.config({
+	cloud_name: process.env.CLOUD_NAME,
+	api_key: process.env.API_KEY,
+	api_secret: process.env.API_SECRET
+  });
+
 
 const cloudinary = require('cloudinary').v2;
 require('dotenv').config();
@@ -48,14 +62,8 @@ cloudinary.config({
 
 const createVehicule = async (req, res) => {
 	// Validate request
-	if (
-		!req.body.numChassis ||
-		!req.body.numImmatriculation ||
-		!req.body.modele ||
-		!req.body.marque ||
-		!req.body.couleur ||
-		!req.body.etat
-	) {
+	if (!req.body.numChassis || !req.body.numImmatriculation || !req.body.modele || !req.body.marque || !req.body.couleur
+		|| !req.body.etat || !req.body.idAgentMaintenance || !req.body.idBorne || !req.body.image ) {
 		res.status(400).send({
 			message: 'Content can not be empty!',
 		});
@@ -81,42 +89,45 @@ const createVehicule = async (req, res) => {
 		niveauMinimumHuile: req.body.niveauMinimumHuile,
 		regulateurVitesse: req.body.regulateurVitesse,
 		limiteurVitesse: req.body.limiteurVitesse,
+		idBorne: req.body.idBorne, 
 		idAgentMaintenance: req.body.idAgentMaintenance,
-		idBorne: req.body.idBorne,
-		idCloudinary: '',
-		secureUrl: '',
+	    idCloudinary: "", 
+		secureUrl: ""
 	};
 
 	// upload image to cloudinary here
 	if (req.body.image) {
 		const image = req.body.image;
-		try {
-			ress = await cloudinary.uploader.upload(req.body.image).then((result) => {
-				vehicule.idCloudinary = result.public_id;
-				vehicule.secureUrl = result.secure_url;
-			});
-		} catch (error) {
+		try{
+			ress= await cloudinary.uploader.upload(req.body.image)
+			.then((result) => {
+				vehicule.idCloudinary=result.public_id;
+				vehicule.secureUrl= result.secure_url;
+		
+			}); 
+		} catch(error){
 			console.log(error);
 		}
 	}
-
-	// Add data to databse
+	// Ajout d'un véhicule à la base de données
 	try {
+
 		let result = await Vehicule.findAll({
 			where: {
 				numChassis: req.body.numChassis,
-			},
-		});
-		if (result.length > 0) {
-			res.status(400).send({
-				message: 'Vehicule already exists!',
-			});
-		} else {
-			let data;
-			data = await Vehicule.create(vehicule).then((data) => {
+			}
+	  
+		  })
+		  if (result.length > 0) {
+			  res.status(400).send({
+			  message: "Vehicule already exists!"
+			})
+		  } else {
+				data = await Vehicule.create(vehicule).then((data) => {
 				res.send(data);
 			});
-		}
+		  }
+		  
 	} catch (err) {
 		res.status(500).send({
 			error: err.message || 'Some error occurred while creating the Vehicule.',
@@ -217,18 +228,17 @@ const getAllVehicule = async (req, res) => {
 
 const getVehiculeDetails = async (req, res, next) => {
 	try {
-		if (parseInt(req.params.numChassis, 10)) {
+		if (parseInt(req.params.id, 10)) {
 			const vehicule = await Vehicule.findAll({
 				where: {
-					numChassis: +req.params.numChassis,
+					numChassis: +req.params.id,
 				},
 			});
 			if (vehicule.length === 0) {
 				// No content with that numChassis
 				res.status(404).send({
 					error: 'not_found',
-					message: `No vehicule with such numero chassis: ${+req.params
-						.numChassis}`,
+					message: `No vehicule with such numero chassis: ${+req.params.id}`,
 					status: 404,
 				});
 			} else {
@@ -243,6 +253,41 @@ const getVehiculeDetails = async (req, res, next) => {
 	}
 };
 
+
+/**
+ * Get reservation history of the Vehicule that has the specified ID in request body 
+ * @param {*} req The request
+ * @param {*} res The response
+ */
+const getVehiculeReservations = async (req, res, next) => {
+	try {
+		if (parseInt(req.params.id, 10)) {
+			console.log("HEEEEY I'm here");
+			const historiqueReservation = await Reservation.findAll({
+				where: {
+					idVehicule: +req.params.id,
+				},
+			});
+			if (historiqueReservation.length === 0) {
+				// Ce vehicule n'a aucune réservation 
+				res.status(404).send({
+					error: 'not_found',
+					message: `Ce véhicule n'a aucune réservation en historique: ${+req.params.numChassis}`,
+					status: 404,
+				});
+			} else {
+				res.status(200).send(historiqueReservation);
+			}
+		} else next();
+	} catch (err) {
+		res.status(500).send({
+			error:
+				err.message || 'Some error occured while retreiving vehicule"s reservation history',
+		});
+	}
+};
+
+const selectVehicuesOfAGivenAgent = async (req, res) => {
 /**
  * This function returns all vehicules of a given agent de maintenace, identified by it's id
  * returns 404 status with not-found error message if nothing is found
@@ -428,7 +473,7 @@ export default {
 	deleteVehicule,
 	updateVehicule,
 	getAllVehicule,
-	//getVehiculeByCondition
+	getVehiculeReservations
 };
 </code></pre>
         </article>
@@ -440,12 +485,14 @@ export default {
 </div>
 
 <nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#createBorne">createBorne</a></li><li><a href="global.html#createReclamation">createReclamation</a></li><li><a href="global.html#createVehicule">createVehicule</a></li><li><a href="global.html#deleteReclamation">deleteReclamation</a></li><li><a href="global.html#deleteVehicule">deleteVehicule</a></li><li><a href="global.html#getAllBornes">getAllBornes</a></li><li><a href="global.html#getAllReclamations">getAllReclamations</a></li><li><a href="global.html#getAllVehicule">getAllVehicule</a></li><li><a href="global.html#getBorne">getBorne</a></li><li><a href="global.html#getCommune">getCommune</a></li><li><a href="global.html#getFilteredBornes">getFilteredBornes</a></li><li><a href="global.html#getReclamationDetails">getReclamationDetails</a></li><li><a href="global.html#getVehiclesInABorne">getVehiclesInABorne</a></li><li><a href="global.html#getVehiculeDetails">getVehiculeDetails</a></li><li><a href="global.html#getVehiculeReservations">getVehiculeReservations</a></li><li><a href="global.html#getWilaya">getWilaya</a></li><li><a href="global.html#updateVehicule">updateVehicule</a></li></ul>
     <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#createVehicule">createVehicule</a></li><li><a href="global.html#deleteVehicule">deleteVehicule</a></li><li><a href="global.html#getAllVehicule">getAllVehicule</a></li><li><a href="global.html#getVehiculeDetails">getVehiculeDetails</a></li><li><a href="global.html#getVehiculesEnServiceOfAGivenAgent">getVehiculesEnServiceOfAGivenAgent</a></li><li><a href="global.html#getVehiculesHorsServiceOfAGivenAgent">getVehiculesHorsServiceOfAGivenAgent</a></li><li><a href="global.html#selectVehicuesOfAGivenAgent">selectVehicuesOfAGivenAgent</a></li><li><a href="global.html#setEtatVehicule">setEtatVehicule</a></li><li><a href="global.html#updateVehicule">updateVehicule</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Tue May 25 2021 17:37:05 GMT+0000 (GMT)
     Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Tue May 25 2021 23:01:15 GMT+0200 (heure d’été d’Europe centrale)
 </footer>
 
