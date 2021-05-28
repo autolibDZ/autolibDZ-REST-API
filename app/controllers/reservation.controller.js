@@ -258,7 +258,6 @@ const getHistoriqueReservationsLocataire = async(req, res) => {
 
 
 
-
 export default {
     createReservation,
     listAllReservations,
