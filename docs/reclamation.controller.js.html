@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: reclamation.controller.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: reclamation.controller.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const db = require("../models");
+const Reclamation = db.reclamation;
+
+/**
+ * Create and save a new claim in database
+ * @param {*} req The request
+ * @param {*} res The response
+ */
+// Create and Save a new Claim
+
+const createReclamation = async (req, res) => {
+  // Create a Claim
+
+  if (!req.body.description || !req.body.emailLocataire) {
+    res.status(400).send({
+      message: "parameters can't be empty!"
+    })
+    return;
+  }
+
+  const reclamation = {
+    description: req.body.description,
+    emailLocataire: req.body.emailLocataire,
+  };
+
+  // Save Claim in the database
+
+  try {
+    let result = await Reclamation.findAll({
+      where: {
+        description: req.body.description,
+      }
+    })
+    if (result.length > 0) {
+      res.status(400).send({
+        message: "Reclamation already exists!"
+      })
+    } else {
+      let data = await Reclamation.create(reclamation)
+      res.send(data);
+    }
+  }
+  catch (err) {
+
+    res.status(500).send({
+
+      error: err.message || "Some error occurred while creating the Claim."
+
+    });
+
+  }
+
+};
+
+/**
+ * Return a claim with the specified ID in request body
+ * @param {*} req The request
+ * @param {*} res The response
+ */
+//Return claim with idReclamation = id
+
+const getReclamationDetails = async (req, res) => {
+
+  if (!req.params.id) {
+
+    res.status(400).send({
+
+      message: "params 'id' can not be empty!"
+
+    });
+
+    return;
+  }
+
+  try {
+    const id = req.params.id;
+
+    const data = await Reclamation.findByPk(id)
+
+    if (data != null &amp;&amp; data.length != 0) {
+
+      res.send(data);
+
+    } else {
+
+      res.status(404).send({
+
+        message: "Reclamation with id " + id + " does not exist"
+
+      })
+    }
+  }
+  catch (err) {
+
+    res.status(500).send({
+
+      error: err.message || "Some internal error occurred while getting Reclamation."
+    });
+  }
+
+};
+/**
+ * Return all reclamations in database
+ * @param {*} req request 
+ * @param {*} res response
+ */
+const getAllReclamations = async (req, res) => {
+  try {
+
+    const data = await Reclamation.findAll()
+    if (data != null &amp;&amp; data.length != 0) {
+
+      res.send(data);
+      return;
+
+    } else {
+
+      res.status(404).send({
+
+        message: "Reclamation table is empty!"
+
+      })
+      return;
+    }
+
+  } catch (err) {
+    res.status(500).send({
+
+      error: err.message || "Some error occurred while getting Reclamations."
+
+    });
+    return;
+  }
+};
+
+
+/**
+ * Delete a claim with the specified ID in request body
+ * @param {*} req The request
+ * @param {*} res The response
+ */
+//Delete claim with idReclamaton = id
+
+const deleteReclamation = async (req, res) => {
+	const id = req.params.id;
+
+	Reclamation.destroy({
+		where: { idReclamation: id },
+	})
+		.then((num) => {
+			if (num == 1) {
+				res.send({
+					message: 'Claim was deleted successfully!',
+				});
+			} else {
+				res.send({
+					message: `Cannot delete Claim with id=${id}. Maybe Claim was not found!`,
+				});
+			}
+		})
+		.catch((err) => {
+			res.status(500).send({
+				message: 'Could not delete Claim with id=' + id,
+			});
+		});
+};
+export default {
+    createReclamation,
+    getReclamationDetails,
+    getAllReclamations, 
+    deleteReclamation
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#createBorne">createBorne</a></li><li><a href="global.html#createReclamation">createReclamation</a></li><li><a href="global.html#createVehicule">createVehicule</a></li><li><a href="global.html#deleteReclamation">deleteReclamation</a></li><li><a href="global.html#deleteVehicule">deleteVehicule</a></li><li><a href="global.html#getAllBornes">getAllBornes</a></li><li><a href="global.html#getAllReclamations">getAllReclamations</a></li><li><a href="global.html#getAllVehicule">getAllVehicule</a></li><li><a href="global.html#getBorne">getBorne</a></li><li><a href="global.html#getCommune">getCommune</a></li><li><a href="global.html#getFilteredBornes">getFilteredBornes</a></li><li><a href="global.html#getReclamationDetails">getReclamationDetails</a></li><li><a href="global.html#getVehiclesInABorne">getVehiclesInABorne</a></li><li><a href="global.html#getVehiculeDetails">getVehiculeDetails</a></li><li><a href="global.html#getVehiculeReservations">getVehiculeReservations</a></li><li><a href="global.html#getWilaya">getWilaya</a></li><li><a href="global.html#updateVehicule">updateVehicule</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Tue May 25 2021 17:37:05 GMT+0000 (GMT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

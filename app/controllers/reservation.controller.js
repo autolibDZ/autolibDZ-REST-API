@@ -5,6 +5,8 @@ const Borne = db.borne;
 const Vehicule = db.vehicules;
 const Trajet = db.trajet;
 
+
+
 const createReservation = async(req, res) => {
 
     if (!req.body.etat || !req.body.idVehicule || !req.body.idLocataire || !req.body.idBorneDepart || !req.body.idBorneDestination) {
@@ -203,7 +205,7 @@ const getHistoriqueReservationsLocataire = async(req, res) => {
 
     let historiqueReser = []
 
-    let i = 0
+
     if (reservations != null) {
         for(const reservation of reservations){
             if(reservation.etat=="Terminée"){
@@ -213,6 +215,7 @@ const getHistoriqueReservationsLocataire = async(req, res) => {
             reservationFinale.idReservation = reservation.idReservation
 
             reservationFinale.etat = reservation.etat
+
             //Recuperation nom borne de départ
             const borneDepart = await Borne.findOne({where: {idBorne: reservation.idBorneDepart}})
             reservationFinale.nomBorneDepart  = borneDepart.nomBorne
@@ -236,7 +239,6 @@ const getHistoriqueReservationsLocataire = async(req, res) => {
             }
             historiqueReser.push(reservationFinale)
 
-            i++
 
         }
             else{
@@ -263,9 +265,15 @@ const getHistoriqueReservationsLocataire = async(req, res) => {
 
                 historiqueReser.push(reservationFinale)
 
-                i++
+       
 
             }}
+
+            historiqueReser.push(reservationFinale)
+           
+        
+
+        }
         res.status(200).send(historiqueReser)
 
     } else {
@@ -288,4 +296,6 @@ export default {
     getReservationAnnulee,
     getHistoriqueReservationsLocataire
 }
+
+
 

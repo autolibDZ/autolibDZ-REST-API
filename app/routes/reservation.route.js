@@ -14,6 +14,7 @@ reservationRouter.post('/verifyPin', reservationController.verifyCodePin);
 reservationRouter.get('/historique/locataires/:id', reservationController.getHistoriqueReservationsLocataire);
 //reservationRouter.get('/details/:id', reservationController.detailsReservation);
 
+
 reservationRouter.get('/locataires/:id', reservationController.selectReservationOfAGivenUser);
 reservationRouter.get('/annulee', reservationController.getReservationAnnulee);
 export default reservationRouter;
