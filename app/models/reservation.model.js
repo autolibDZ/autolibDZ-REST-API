@@ -23,7 +23,19 @@ module.exports = function(sequelize, Sequelize) {
             },
             codePin: {
                 type: Sequelize.STRING(255)
-            }
+            },
+            tempsEstime: {
+                type: Sequelize.INTEGER,
+
+            },
+            distanceEstime: {
+                type: Sequelize.FLOAT,
+
+            },
+            prixEstime: {
+                type: Sequelize.FLOAT,
+
+            },
 
         }, {
             freezeTableName: true,

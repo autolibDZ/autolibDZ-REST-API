@@ -25,7 +25,10 @@ const createReservation = async(req, res) => {
         idLocataire: req.body.idLocataire,
         idBorneDepart: req.body.idBorneDepart,
         idBorneDestination: req.body.idBorneDestination,
-        codePin: hash
+        codePin: hash,
+        tempsEstime: req.body.tempsEstime,
+        distanceEstime: req.body.distanceEstime,
+        prixEstime: req.body.prixEstime,
     };
     try {
 
@@ -205,7 +208,7 @@ const getHistoriqueReservationsLocataire = async(req, res) => {
 
     if (reservations != null) {
         for(const reservation of reservations){
-            
+
             let reservationFinale = {idReservation:0,etat:"", nomBorneDepart:"", numChassisVehicule:0,
                 numImmatriculationVehicule:0,modeleVehicule:"",marqueVehicule:"",nomBorneDestination:"",
                 dateReservation:null,dure:null,distance:null}
@@ -229,20 +232,20 @@ const getHistoriqueReservationsLocataire = async(req, res) => {
                 reservationFinale.marqueVehicule = vehiculeInfo.marque
             }
             if(reservation.etat=="Terminée"){
-            const trajetInfo = await Trajet.findOne({where: {idReservation: reservation.idReservation}})
-            if (trajetInfo != null) {
-                reservationFinale.dateReservation = trajetInfo.dateDebut
-                reservationFinale.dure = trajetInfo.tempsEstime
-                reservationFinale.distance = trajetInfo.kmParcourue
+                const trajetInfo = await Trajet.findOne({where: {idReservation: reservation.idReservation}})
+                if (trajetInfo != null) {
+                    reservationFinale.dateReservation = trajetInfo.dateDebut
+                    reservationFinale.dure = trajetInfo.tempsEstime
+                    reservationFinale.distance = trajetInfo.kmParcourue
 
+                }
             }
-        }
             historiqueReser.push(reservationFinale)
 
 
-        
-           }
-           
+
+        }
+
         res.status(200).send(historiqueReser)
 
     } else {
@@ -251,6 +254,7 @@ const getHistoriqueReservationsLocataire = async(req, res) => {
     console.log(historiqueReser)
 
 }
+
 
 
 
