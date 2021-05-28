@@ -4,7 +4,7 @@ const Reservation = db.reservation;
 const Borne = db.Borne; 
 const Locataire= db.Locataire;
 
-const cloudinary = require('cloudinary').v2
+/*const cloudinary = require('cloudinary').v2
 require('dotenv').config()
 
 // cloudinary configuration
@@ -12,7 +12,7 @@ cloudinary.config({
 	cloud_name: process.env.CLOUD_NAME,
 	api_key: process.env.API_KEY,
 	api_secret: process.env.API_SECRET
-  });
+  });*/ 
 
 
 /**
@@ -49,12 +49,12 @@ const createVehicule = async (req, res) => {
 		limiteurVitesse: req.body.limiteurVitesse,
 		idBorne: req.body.idBorne, 
 		idAgentMaintenance: req.body.idAgentMaintenance,
-	    idCloudinary: "", 
-		secureUrl: ""
+	    idCloudinary: req.body.idCloudinary, 
+		secureUrl: req.body.secureUrl
 	};
 
 	// upload image to cloudinary here
-	if (req.body.image) {
+	/*if (req.body.image) {
 		const image = req.body.image;
 		try{
 			ress= await cloudinary.uploader.upload(req.body.image)
@@ -66,7 +66,7 @@ const createVehicule = async (req, res) => {
 		} catch(error){
 			console.log(error);
 		}
-	}
+	}*/ 
 	// Ajout d'un véhicule à la base de données
 	try {
 
@@ -213,7 +213,7 @@ const getVehiculeDetails = async (req, res, next) => {
  * @param {*} res The response
  */
 const getVehiculeReservations = async (req, res, next) => {
-	try {
+	/*try {
 		if (parseInt(req.params.id, 10)) {
 			console.log("HEEEEY I'm here");
 			const historiqueReservation = await Reservation.findAll({
@@ -237,7 +237,7 @@ const getVehiculeReservations = async (req, res, next) => {
 			error:
 				err.message || 'Some error occured while retreiving vehicule"s reservation history',
 		});
-	}
+	}*/ 
 };
 
 const selectVehicuesOfAGivenAgent = async (req, res) => {
