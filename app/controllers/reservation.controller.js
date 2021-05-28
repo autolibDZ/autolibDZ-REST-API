@@ -23,7 +23,10 @@ const createReservation = async(req, res) => {
         idLocataire: req.body.idLocataire,
         idBorneDepart: req.body.idBorneDepart,
         idBorneDestination: req.body.idBorneDestination,
-        codePin: hash
+        codePin: hash,
+        tempsEstime: req.body.tempsEstime,
+        distanceEstime: req.body.distanceEstime,
+        prixEstime: req.body.prixEstime,
     };
     try {
 
