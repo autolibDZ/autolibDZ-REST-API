@@ -3,7 +3,7 @@ module.exports = function(sequelize, Sequelize) {
         'reservation', {
             idReservation: {
                 type: Sequelize.INTEGER,
-            primaryKey: true,
+                primaryKey: true,
                 autoIncrement: true
             },
             etat: {
@@ -20,10 +20,12 @@ module.exports = function(sequelize, Sequelize) {
             },
             idBorneDestination: {
                 type: Sequelize.INTEGER,
+            },
+            codePin: {
+                type: Sequelize.STRING(255)
             }
 
-        },
-        {
+        }, {
             freezeTableName: true,
             tableName: 'reservation',
             timestamps: true,
@@ -32,6 +34,26 @@ module.exports = function(sequelize, Sequelize) {
 
         }
     );
+    // Déclaration des clès étrangères
+    Reservation.associate = models => {
+        Reservation.hasOne(models.locataire, {
+            foreignKey: 'idLocataire',
+
+        });
+    };
+
+    Reservation.associate = models => {
+        Reservation.hasOne(models.vehicules, {
+            foreignKey: 'numChassis',
+
+        });
+    };
+    Reservation.associate = models => {
+        Reservation.hasOne(models.vehicules, {
+            foreignKey: 'numChassis',
+
+        });
+    };
     return Reservation;
     /* Reservation.associate = function(models) {
          // associations can be defined here
@@ -47,4 +69,3 @@ module.exports = function(sequelize, Sequelize) {
      };*/
 
 };
-

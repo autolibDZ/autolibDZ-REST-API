@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: identite.controller.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: identite.controller.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const db = require("../models");
+const Identite = db.identites;
+const Operator = db.operateur;
+const Locataire = db.locataire;
+
+/**
+ * Creer une identité
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
+const createIdentite = async (req, res) => {
+    // Validate request
+    if (!req.body.numeroPermis) {
+      res.status(400).send({
+        message: "Content can not be empty!"
+      });
+      return;
+    }
+    // Create an identite
+    const identite = {
+        numeroPermis: req.body.numeroPermis,
+        photo: req.body.photo,
+        valide: req.body.valide,
+        idLocataire: req.body.idLocataire,
+        idOperateur: req.body.idOperateur
+    };
+
+    // Ajout d'une identité à la base de données
+    if(identite.idLocataire==undefined || identite.idOperateur==undefined){
+      res.status(500).send({
+          message:"Les champs idLocataire et idOperateur sont requis!"             
+      });
+      return;
+    }
+    else{
+      try{
+        data = await Identite.create(identite)
+       .then(data => {
+        res.status(200).send(data);
+       }); 
+      }
+      catch(err){
+          res.status(500).send({
+              error : err.message || "Some error occurred while creating the Identity."
+          });
+      }
+    }
+     
+  };
+
+/**
+ * Supprimer une identité
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
+  const deleteIdentite = async (req, res) => {
+      const numeroPermis = req.params.numeroPermis;
+     
+
+      Identite.destroy({
+        where: { numeroPermis: numeroPermis }
+      })
+        .then(num => {
+          if (num == 1) {
+            res.status(200).send({
+              message: "Identity was deleted successfully!"
+            });
+          } else {
+            res.send({
+              message: `Cannot delete Identity with licence driver=${numeroPermis}. Maybe identity was not found!`
+            });
+          }
+        })
+        .catch(err => {
+          res.status(500).send({
+            message: "Could not delete Tutorial with id=" + id
+          });
+        });
+    };
+
+/**
+ * valider une identité
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
+  const valider= async (req, res) => {
+    const numeroPermis = req.params.numeroPermis;
+  
+    req.body = {
+        valide: 1
+    }
+
+    Identite.update(req.body, {
+      where: { numeroPermis: numeroPermis }
+    })
+      .then(num => {
+        if (num == 1) {
+          res.status(200).send({
+            message: "identity was validated successfully."
+          });
+        } else {
+          res.send({
+            message: `Cannot validate identity with numPermis=${numeroPermis}. Maybe Identity was not found!`
+          });
+        }
+      })
+      .catch(err => {
+        res.status(500).send({
+          message: "Error validating identity with numPermis=" + numeroPermis
+        });
+      });
+  };
+/**
+ * Invalider une identité
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
+  const invalider= async (req, res) => {
+    const numeroPermis = req.params.numeroPermis;
+  
+    req.body = {
+        valide: 0
+    }
+
+    Identite.update(req.body, {
+      where: { numeroPermis: numeroPermis }
+    })
+      .then(num => {
+        if (num == 1) {
+          res.status(200).send({
+            message:  "identity was invalidated successfully."
+          });
+        } else {
+          res.send({
+            message: `Cannot invalidate identity with numPermis=${numeroPermis}. Maybe Identity was not found!`
+          });
+        }
+      })
+      .catch(err => {
+        res.status(500).send({
+          message: "Error invalidating identity with numPermis=" + numeroPermis
+        });
+      });
+  };
+/**
+ * Afficher les informations de l'opérateur ayant validé l'identité
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
+const getOperatorOfIdentity = async (req, res) =>{
+  //Récupérer le numéro de permis validé
+  const numeroPermis = req.params.numeroPermis;
+  Identite.findByPk(numeroPermis)
+  .then(data => {
+    const idOperateur = data.dataValues.idOperateur;
+    Operator.findByPk(idOperateur)
+    .then(data => {
+      res.status(200).send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: "Erreur lors de la récupération de l'Operateur ayant validé le permis =" + numeroPermis
+      });
+    });
+  })
+  .catch(err => {
+    res.status(500).send({
+      message: "Erreur lors de la récupération de l'Operateur ayant validé le permis =" + numeroPermis
+    });
+  });
+}
+
+
+/**
+ * Afficher les informations du locataire ayant l'identité
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
+
+const getLocataireOfIdentity = async (req, res) =>{
+  //Récupérer le numéro de permis validé
+  const numeroPermis = req.params.numeroPermis;
+  Identite.findByPk(numeroPermis)
+  .then(data => {
+    const idLocataire = data.dataValues.idLocataire;
+    Locataire.findByPk(idLocataire)
+    .then(data => {
+       res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: "Erreur lors de la récupération de l'Operateur ayant validé le permis =" + numeroPermis
+      });
+    });
+  })
+  .catch(err => {
+    res.status(500).send({
+      message: "Erreur lors de la récupération de l'Operateur ayant validé le permis =" + numeroPermis
+    });
+  });
+}
+
+
+
+
+
+/**
+ * Afficher les détails d'une seule identité
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
+const getOneIdentite= async (req, res) => {
+  const numeroPermis = req.params.numeroPermis;
+  
+  Identite.findByPk(numeroPermis)
+  .then(data => {
+    res.status(200).send(data);
+  })
+  .catch(err => {
+    res.status(500).send({
+      message: "Error retrieving Identity with numeroPermis=" + numeroPermis
+    });
+  });
+};
+
+
+
+/**
+ * GET All Identities 
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
+const getAllIdentite = async (req,res)=> {
+    
+  Identite.findAll()
+  .then(data => {
+    res.send(data);
+  })
+  .catch(err => {
+    res.status(500).send({
+        message: "Error while retrieving identities"
+    });
+  });
+}
+
+/**
+ * GET All Identities for a certain operator
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
+const selectIdentitiesOfAGivenOperateur = async (req, res) => {
+	try {
+		const identities = await Identite.findAll({
+			where: {
+				idOperateur: +req.params.id,
+			},
+		});
+		res.status(200).send(identities);
+	} catch (err) {
+		res.status(500).send({
+			error:
+				err.message ||
+				'Some error occured while retreiving identities operator id: ' +
+					req.params.id,
+		});
+	}
+};
+
+export default {
+    selectIdentitiesOfAGivenOperateur,
+    createIdentite, 
+    deleteIdentite,
+    getAllIdentite,
+    getOneIdentite,
+    getOperatorOfIdentity,
+    getLocataireOfIdentity,
+    valider,
+    invalider
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#createAdmin">createAdmin</a></li><li><a href="global.html#createAgent">createAgent</a></li><li><a href="global.html#createBorne">createBorne</a></li><li><a href="global.html#createDirigeant">createDirigeant</a></li><li><a href="global.html#createIdentite">createIdentite</a></li><li><a href="global.html#createOperateur">createOperateur</a></li><li><a href="global.html#createVehicule">createVehicule</a></li><li><a href="global.html#deleteAdmin">deleteAdmin</a></li><li><a href="global.html#deleteAgent">deleteAgent</a></li><li><a href="global.html#deleteAllAdmins">deleteAllAdmins</a></li><li><a href="global.html#deleteAllAgents">deleteAllAgents</a></li><li><a href="global.html#deleteAllDirigeants">deleteAllDirigeants</a></li><li><a href="global.html#deleteAllOperateurs">deleteAllOperateurs</a></li><li><a href="global.html#deleteDirigeant">deleteDirigeant</a></li><li><a href="global.html#deleteIdentite">deleteIdentite</a></li><li><a href="global.html#deleteOperateur">deleteOperateur</a></li><li><a href="global.html#deleteVehicule">deleteVehicule</a></li><li><a href="global.html#getAdmin">getAdmin</a></li><li><a href="global.html#getAgent">getAgent</a></li><li><a href="global.html#getAllAdmins">getAllAdmins</a></li><li><a href="global.html#getAllAgents">getAllAgents</a></li><li><a href="global.html#getAllBornes">getAllBornes</a></li><li><a href="global.html#getAllDirigeants">getAllDirigeants</a></li><li><a href="global.html#getAllIdentite">getAllIdentite</a></li><li><a href="global.html#getAllOperateurs">getAllOperateurs</a></li><li><a href="global.html#getAllVehicule">getAllVehicule</a></li><li><a href="global.html#getBorne">getBorne</a></li><li><a href="global.html#getCommune">getCommune</a></li><li><a href="global.html#getDirigeant">getDirigeant</a></li><li><a href="global.html#getFilteredBornes">getFilteredBornes</a></li><li><a href="global.html#getLocataireOfIdentity">getLocataireOfIdentity</a></li><li><a href="global.html#getOneIdentite">getOneIdentite</a></li><li><a href="global.html#getOperateur">getOperateur</a></li><li><a href="global.html#getOperatorOfIdentity">getOperatorOfIdentity</a></li><li><a href="global.html#getVehiclesInABorne">getVehiclesInABorne</a></li><li><a href="global.html#getVehiculeDetails">getVehiculeDetails</a></li><li><a href="global.html#getWilaya">getWilaya</a></li><li><a href="global.html#invalider">invalider</a></li><li><a href="global.html#selectIdentitiesOfAGivenOperateur">selectIdentitiesOfAGivenOperateur</a></li><li><a href="global.html#updateAdmin">updateAdmin</a></li><li><a href="global.html#updateAgent">updateAgent</a></li><li><a href="global.html#updateDirigeant">updateDirigeant</a></li><li><a href="global.html#updateOperateur">updateOperateur</a></li><li><a href="global.html#updateVehicule">updateVehicule</a></li><li><a href="global.html#valider">valider</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Tue May 25 2021 18:04:46 GMT+0200 (heure d’été d’Europe centrale)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -27,7 +27,6 @@ module.exports = function (sequelize, Sequelize) {
 				values: ['circulation', 'en service', 'reserve', 'hors service'],
 				allowNull: false,
 			},
-
 			tempsDeRefroidissement: {
 				type: Sequelize.INTEGER,
 			},

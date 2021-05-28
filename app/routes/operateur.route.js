@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const operateurControleur= require('../controllers/operateur.controller')
 
-router.get('/', operateurControleur.findAll);
-router.get('/:id', operateurControleur.findOne);
-router.post('/',operateurControleur.create);
-router.put("/:id", operateurControleur.update);
-router.delete("/:id", operateurControleur.delete);
-router.delete("/", operateurControleur.deleteAll);
+import operateurControleur from "../controllers/operateur.controller";
+
+router.get('/', operateurControleur.getAllOperateurs);
+router.get('/:id', operateurControleur.getOperateur);
+router.post('/',operateurControleur.createOperateur);
+router.put("/:id", operateurControleur.updateOperateur);
+router.delete("/:id", operateurControleur.deleteOperateur);
+router.delete("/", operateurControleur.deleteAllOperateurs);
 
 module.exports = router;

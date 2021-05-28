@@ -4,16 +4,26 @@ const Reservation = db.reservation;
 const Borne = db.Borne; 
 const Locataire= db.Locataire;
 
+<<<<<<< HEAD
 /*const cloudinary = require('cloudinary').v2
 require('dotenv').config()
+=======
+const cloudinary = require('cloudinary').v2;
+require('dotenv').config();
+>>>>>>> develop
 
 // cloudinary configuration
 cloudinary.config({
 	cloud_name: process.env.CLOUD_NAME,
 	api_key: process.env.API_KEY,
+<<<<<<< HEAD
 	api_secret: process.env.API_SECRET
   });*/ 
 
+=======
+	api_secret: process.env.API_SECRET,
+});
+>>>>>>> develop
 
 /**
  * Create and save a new Vehicule in database
@@ -56,36 +66,33 @@ const createVehicule = async (req, res) => {
 	// upload image to cloudinary here
 	/*if (req.body.image) {
 		const image = req.body.image;
-		try{
-			ress= await cloudinary.uploader.upload(req.body.image)
-			.then((result) => {
-				vehicule.idCloudinary=result.public_id;
-				vehicule.secureUrl= result.secure_url;
-		
-			}); 
-		} catch(error){
+		try {
+			ress = await cloudinary.uploader.upload(req.body.image).then((result) => {
+				vehicule.idCloudinary = result.public_id;
+				vehicule.secureUrl = result.secure_url;
+			});
+		} catch (error) {
 			console.log(error);
 		}
 	}*/ 
-	// Ajout d'un véhicule à la base de données
+	
+	// Add data to databse
 	try {
-
 		let result = await Vehicule.findAll({
 			where: {
 				numChassis: req.body.numChassis,
-			}
-	  
-		  })
-		  if (result.length > 0) {
-			  res.status(400).send({
-			  message: "Vehicule already exists!"
-			})
-		  } else {
-				data = await Vehicule.create(vehicule).then((data) => {
+			},
+		});
+		if (result.length > 0) {
+			res.status(400).send({
+				message: 'Vehicule already exists!',
+			});
+		} else {
+			let data;
+			data = await Vehicule.create(vehicule).then((data) => {
 				res.send(data);
 			});
-		  }
-		  
+		}
 	} catch (err) {
 		res.status(500).send({
 			error: err.message || 'Some error occurred while creating the Vehicule.',
@@ -158,7 +165,7 @@ const updateVehicule = async (req, res) => {
 
 /**
  * Return details of all vehicules thar are stored in database
- * @param {*} req request 
+ * @param {*} req request
  * @param {*} res response
  */
 
@@ -175,10 +182,15 @@ const getAllVehicule = async (req, res) => {
 };
 
 /**
- * Get details of the Vehicule that has the specified ID in request body 
- * @param {*} req The request
- * @param {*} res The response
+ * This function displays the details of a given car, identified by it's num chassis
+ * return 404 status with not_found error as json if it doesn't exist
+ * return 200 status with the actual car oin json if it exists
+ *
+ * @param {*} req The request of the client
+ * @param {*} res The response from the server
+ * @param {*} next Used to move on to the next middleware
  */
+
 const getVehiculeDetails = async (req, res, next) => {
 	try {
 		if (parseInt(req.params.id, 10)) {
@@ -242,22 +254,24 @@ const getVehiculeReservations = async (req, res, next) => {
 
 const selectVehicuesOfAGivenAgent = async (req, res) => {
 	try {
-		const vehicules = await Vehicule.findAll({
-			where: {
-				idAgentMaintenance: +req.params.id,
-			},
-		});
-		if (vehicules.length === 0) {
-			// No content with that id
-			res.status(404).send({
-				error: 'not_found',
-				message: `No content with such id: ${+req.params.id}`,
-				status: 404,
+		if (parseInt(req.params.id, 10)) {
+			const vehicules = await Vehicule.findAll({
+				where: {
+					idAgentMaintenance: +req.params.id,
+				},
 			});
-		} else {
+			if (vehicules.length === 0) {
+				// No content with that id
+				res.status(404).send({
+					error: 'not_found',
+					message: `No content with such id: ${+req.params.id}`,
+					status: 404,
+				});
+			} else {
+				res.status(200).send(vehicules);
+			}
 			res.status(200).send(vehicules);
-		}
-		res.status(200).send(vehicules);
+		} else done();
 	} catch (err) {
 		res.status(500).send({
 			error:
@@ -268,6 +282,15 @@ const selectVehicuesOfAGivenAgent = async (req, res) => {
 	}
 };
 
+/**
+ * This function gets fired on a PUT request to /api/vehicules/etat/:numChassis
+ * the request should have an attribute 'etat' set to either 'en-service' or 'hors-service', no other values are accepted
+ * returns a 404 status with not-found error message if the num chasiis given doesn't exist
+ * returns an object {Updated rows, UpdatedVehicule} contained numer of rows affected (modified) and the actual cars which have been affected
+ *
+ * @param {*} req The client requeest
+ * @param {*} res The server response
+ */
 const setEtatVehicule = async (req, res) => {
 	try {
 		let state = req.body.etat;
@@ -321,11 +344,21 @@ const setEtatVehicule = async (req, res) => {
 	}
 };
 
-const getVehiculesEnService = async (req, res) => {
+/**
+ * returns all 'en-service' cars of a given agent de maintenace, identified by id
+ * returns 404 status with not-found error message if no id is found
+ * return 200 status with all the concerned cars in form of json
+ *
+ * @param {*} req The client request
+ * @param {*} res The server response
+ */
+
+const getVehiculesEnServiceOfAGivenAgent = async (req, res) => {
 	try {
 		const vehiculesEnService = await Vehicule.findAll({
 			where: {
 				etat: 'en service',
+				idAgentMaintenance: +req.params.id,
 			},
 		});
 		if (vehiculesEnService.length === 0) {
@@ -347,11 +380,21 @@ const getVehiculesEnService = async (req, res) => {
 	}
 };
 
-const getVehiculesHorsService = async (req, res) => {
+/**
+ * This function returns all 'hors-service' cars of a given aget de maintenace, identified by it's id
+ * returns 404 status with not-found error message if no such id exist
+ * returns 200 status with all the concerned cars in form of json
+ *
+ * @param {*} req The client request
+ * @param {*} res The server response
+ */
+
+const getVehiculesHorsServiceOfAGivenAgent = async (req, res) => {
 	try {
 		const vehiculesHorsService = await Vehicule.findAll({
 			where: {
 				etat: 'hors service',
+				idAgentMaintenance: +req.params.id,
 			},
 		});
 		if (vehiculesHorsService.length === 0) {
@@ -377,8 +420,8 @@ export default {
 	setEtatVehicule,
 	getVehiculeDetails,
 	selectVehicuesOfAGivenAgent,
-	getVehiculesEnService,
-	getVehiculesHorsService,
+	getVehiculesEnServiceOfAGivenAgent,
+	getVehiculesHorsServiceOfAGivenAgent,
 
 	createVehicule,
 	deleteVehicule,

@@ -25,9 +25,15 @@ vehiculeRouter.get(
 vehiculeRouter.put('/etat/:numChassis', vehiculeController.setEtatVehicule);
 
 // GET All vehicules which are - en service
-vehiculeRouter.get('/en-service', vehiculeController.getVehiculesEnService);
+vehiculeRouter.get(
+	'/agents/:id/en-service',
+	vehiculeController.getVehiculesEnServiceOfAGivenAgent
+);
 
 // GET All vehicules which are - hors service
-vehiculeRouter.get('/hors-service', vehiculeController.getVehiculesHorsService);
+vehiculeRouter.get(
+	'/agents/:id/hors-service',
+	vehiculeController.getVehiculesHorsServiceOfAGivenAgent
+);
 
 export default vehiculeRouter;
