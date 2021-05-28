@@ -268,9 +268,6 @@ const getHistoriqueReservationsLocataire = async(req, res) => {
 
             historiqueReser.push(reservationFinale)
            
-        
-
-        }
         res.status(200).send(historiqueReser)
 
     } else {
