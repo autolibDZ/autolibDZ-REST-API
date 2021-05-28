@@ -198,12 +198,12 @@ const getHistoriqueReservationsLocataire = async(req, res) => {
     const reservations = await Reservation.findAll({ where: { idLocataire: req.params.id} })
     
     let historiqueReser = []
-    let reservationFinale = {idReservation:0,etat:"", nomBorneDepart:"", nomBorneDepart:"",numChassisVehicule:0,
-    numImmatriculationVehicule:0,modeleVehicule:"",marqueVehicule:""}
+    
     let i = 0
     if (reservations != null) {
         for(const reservation of reservations){
-            console.log(reservation.etat)
+            let reservationFinale = {idReservation:0,etat:"", nomBorneDepart:"", nomBorneDepart:"",numChassisVehicule:0,
+            numImmatriculationVehicule:0,modeleVehicule:"",marqueVehicule:""}
             
             reservationFinale.idReservation = reservation.idReservation  
 
