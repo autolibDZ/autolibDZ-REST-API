@@ -4,26 +4,17 @@ const Reservation = db.reservation;
 const Borne = db.Borne; 
 const Locataire= db.Locataire;
 
-<<<<<<< HEAD
-/*const cloudinary = require('cloudinary').v2
-require('dotenv').config()
-=======
+
 const cloudinary = require('cloudinary').v2;
 require('dotenv').config();
->>>>>>> develop
+
 
 // cloudinary configuration
 cloudinary.config({
 	cloud_name: process.env.CLOUD_NAME,
 	api_key: process.env.API_KEY,
-<<<<<<< HEAD
-	api_secret: process.env.API_SECRET
-  });*/ 
-
-=======
 	api_secret: process.env.API_SECRET,
 });
->>>>>>> develop
 
 /**
  * Create and save a new Vehicule in database

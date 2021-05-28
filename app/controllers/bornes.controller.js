@@ -1,7 +1,7 @@
 const db = require("../models");
 const Borne = db.borne;
 const Vehicule = db.vehicules;
-
+ 
 const { Op } = require("sequelize");
 /**
  * Create and save a new borne in database
