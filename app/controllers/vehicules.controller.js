@@ -1,8 +1,13 @@
 const db = require('../models');
 const Vehicule = db.vehicules;
+const Reservation = db.reservation;
+const Borne = db.Borne; 
+const Locataire= db.Locataire;
+
 
 const cloudinary = require('cloudinary').v2;
 require('dotenv').config();
+
 
 // cloudinary configuration
 cloudinary.config({
@@ -20,21 +25,11 @@ cloudinary.config({
 
 const createVehicule = async (req, res) => {
 	// Validate request
-	if (
-		!req.body.numChassis ||
-		!req.body.numImmatriculation ||
-		!req.body.modele ||
-		!req.body.marque ||
-		!req.body.couleur ||
-		!req.body.etat
-	) {
+	if (!req.body.numChassis || !req.body.numImmatriculation || !req.body.modele || !req.body.marque || !req.body.couleur
+		|| !req.body.etat || !req.body.idAgentMaintenance || !req.body.idBorne || !req.body.image ) {
 		res.status(400).send({
 			message: 'Content can not be empty!',
 		});
-		console.log(req.body.numChassis);
-		console.log(req.body.numImmatriculation);
-		console.log(req.body.modele);
-		console.log(req.body.couleur);
 		return;
 	}
 	// Create a Vehicule
@@ -53,14 +48,14 @@ const createVehicule = async (req, res) => {
 		niveauMinimumHuile: req.body.niveauMinimumHuile,
 		regulateurVitesse: req.body.regulateurVitesse,
 		limiteurVitesse: req.body.limiteurVitesse,
+		idBorne: req.body.idBorne, 
 		idAgentMaintenance: req.body.idAgentMaintenance,
-		idBorne: req.body.idBorne,
-		idCloudinary: '',
-		secureUrl: '',
+	    idCloudinary: req.body.idCloudinary, 
+		secureUrl: req.body.secureUrl
 	};
 
 	// upload image to cloudinary here
-	if (req.body.image) {
+	/*if (req.body.image) {
 		const image = req.body.image;
 		try {
 			ress = await cloudinary.uploader.upload(req.body.image).then((result) => {
@@ -70,8 +65,8 @@ const createVehicule = async (req, res) => {
 		} catch (error) {
 			console.log(error);
 		}
-	}
-
+	}*/ 
+	
 	// Add data to databse
 	try {
 		let result = await Vehicule.findAll({
@@ -189,18 +184,17 @@ const getAllVehicule = async (req, res) => {
 
 const getVehiculeDetails = async (req, res, next) => {
 	try {
-		if (parseInt(req.params.numChassis, 10)) {
+		if (parseInt(req.params.id, 10)) {
 			const vehicule = await Vehicule.findAll({
 				where: {
-					numChassis: +req.params.numChassis,
+					numChassis: +req.params.id,
 				},
 			});
 			if (vehicule.length === 0) {
 				// No content with that numChassis
 				res.status(404).send({
 					error: 'not_found',
-					message: `No vehicule with such numero chassis: ${+req.params
-						.numChassis}`,
+					message: `No vehicule with such numero chassis: ${+req.params.id}`,
 					status: 404,
 				});
 			} else {
@@ -215,17 +209,41 @@ const getVehiculeDetails = async (req, res, next) => {
 	}
 };
 
-/**
- * This function returns all vehicules of a given agent de maintenace, identified by it's id
- * returns 404 status with not-found error message if nothing is found
- * returns 200 status with the actuals cars if the car(s) exist(s)
- *
- * @param {*} req The client request
- * @param {*} res The server response
- * @param {*} done Used to move on into the next middleware
- */
 
-const selectVehicuesOfAGivenAgent = async (req, res, done) => {
+/**
+ * Get reservation history of the Vehicule that has the specified ID in request body 
+ * @param {*} req The request
+ * @param {*} res The response
+ */
+const getVehiculeReservations = async (req, res, next) => {
+	/*try {
+		if (parseInt(req.params.id, 10)) {
+			console.log("HEEEEY I'm here");
+			const historiqueReservation = await Reservation.findAll({
+				where: {
+					idVehicule: +req.params.id,
+				},
+			});
+			if (historiqueReservation.length === 0) {
+				// Ce vehicule n'a aucune réservation 
+				res.status(404).send({
+					error: 'not_found',
+					message: `Ce véhicule n'a aucune réservation en historique: ${+req.params.numChassis}`,
+					status: 404,
+				});
+			} else {
+				res.status(200).send(historiqueReservation);
+			}
+		} else next();
+	} catch (err) {
+		res.status(500).send({
+			error:
+				err.message || 'Some error occured while retreiving vehicule"s reservation history',
+		});
+	}*/ 
+};
+
+const selectVehicuesOfAGivenAgent = async (req, res) => {
 	try {
 		if (parseInt(req.params.id, 10)) {
 			const vehicules = await Vehicule.findAll({
@@ -400,5 +418,5 @@ export default {
 	deleteVehicule,
 	updateVehicule,
 	getAllVehicule,
-	//getVehiculeByCondition
+	getVehiculeReservations
 };
