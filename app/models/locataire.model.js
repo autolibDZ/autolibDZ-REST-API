@@ -31,7 +31,7 @@ module.exports = function(sequelize, Sequelize) {
         createdAt: false,
         updatedAt: false
     });
-
+    
     return Locataire;
 };
 /*
