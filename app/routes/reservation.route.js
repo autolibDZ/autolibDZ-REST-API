@@ -12,7 +12,7 @@ reservationRouter.delete('/:id', reservationController.deleteReservationById);
 
 reservationRouter.post('/verifyPin', reservationController.verifyCodePin);
 
-
+reservationRouter.get('/historiqueReservation/:id', reservationController.getHistoriqueReservationsLocataire)
 
 
 reservationRouter.get('/locataires/:id', reservationController.selectReservationOfAGivenUser);

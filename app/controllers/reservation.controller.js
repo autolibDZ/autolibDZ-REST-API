@@ -1,6 +1,9 @@
 const db = require('../models');
 var bcrypt = require('bcryptjs');
 const Reservation = db.reservation;
+const Borne = db.borne;
+const Vehicule = db.vehicules;
+
 
 const createReservation = async(req, res) => {
 
@@ -190,6 +193,51 @@ const verifyCodePin = async(req, res) => {
 
 }
 
+const getHistoriqueReservationsLocataire = async(req, res) => {
+
+    const reservations = await Reservation.findAll({ where: { idLocataire: req.params.id} })
+    
+    let historiqueReser = []
+    let reservationFinale = {idReservation:0,etat:"", nomBorneDepart:"", nomBorneDepart:"",numChassisVehicule:0,
+    numImmatriculationVehicule:0,modeleVehicule:"",marqueVehicule:""}
+    let i = 0
+    if (reservations != null) {
+        for(const reservation of reservations){
+            console.log(reservation.etat)
+            
+            reservationFinale.idReservation = reservation.idReservation  
+
+            reservationFinale.etat = reservation.etat  
+            //Recuperation nom borne de départ
+            const borneDepart = await Borne.findOne({where: {idBorne: reservation.idBorneDepart}})
+            reservationFinale.nomBorneDepart  = borneDepart.nomBorne
+            //Recuperation nom borne de destination
+            const borneDesti = await Borne.findOne({where: {idBorne: reservation.idBorneDestination}})
+            reservationFinale.nomBorneDestination  = borneDesti.nomBorne
+            //Recuperation des infos du véhicules
+            const vehiculeInfo = await Vehicule.findOne({where: {numChassis: reservation.idVehicule}})
+            if(vehiculeInfo != null){
+                reservationFinale.numChassisVehicule = vehiculeInfo.numChassis
+                reservationFinale.numImmatriculationVehicule = vehiculeInfo.numImmatriculation
+                reservationFinale.modeleVehicule = vehiculeInfo.modele
+                reservationFinale.marqueVehicule = vehiculeInfo.marque
+            }
+            historiqueReser.push(reservationFinale)
+           
+            i++ 
+
+        }
+        res.status(200).send(historiqueReser)
+
+    } else {
+        res.status(404).send({ message :"This user has no reservation "})
+    }
+    console.log(historiqueReser)
+
+}
+
+
+
 export default {
     createReservation,
     listAllReservations,
@@ -198,5 +246,6 @@ export default {
     updateReservationById,
     verifyCodePin,
     selectReservationOfAGivenUser,
-    getReservationAnnulee
+    getReservationAnnulee,
+    getHistoriqueReservationsLocataire
 }
