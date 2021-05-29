@@ -3,6 +3,7 @@ const Vehicule = db.vehicules;
 const Reservation = db.reservation;
 const Borne = db.borne; 
 const Locataire= db.locataire;
+const Trajet= db.trajet;
 
 const cloudinary = require('cloudinary').v2
 require('dotenv').config()
@@ -25,7 +26,7 @@ cloudinary.config({
 const createVehicule = async (req, res) => {
 	// Validate request
 	if (!req.body.numChassis || !req.body.numImmatriculation || !req.body.modele || !req.body.marque || !req.body.couleur
-		|| !req.body.etat || !req.body.idAgentMaintenance || !req.body.idBorne || !req.body.image ) {
+		|| !req.body.etat || !req.body.idAgentMaintenance || !req.body.idBorne) {
 		res.status(400).send({
 			message: 'Content can not be empty!',
 		});
@@ -52,7 +53,7 @@ const createVehicule = async (req, res) => {
 	};
 
 	// upload image to cloudinary here
-	if (req.body.image) {
+	/* if (req.body.image) {
 		const image = req.body.image;
 		try{
 			ress= await cloudinary.uploader.upload(req.body.image)
@@ -64,7 +65,7 @@ const createVehicule = async (req, res) => {
 		} catch(error){
 			console.log(error);
 		}
-	}
+	}*/ 
 	// Ajout d'un véhicule à la base de données
 	try {
 
@@ -234,13 +235,17 @@ const getVehiculeReservations = async (req, res, next) => {
 					 let reservationDetails={
 							"idReservation": "", 
 							"nomBorneDepart" : "",
+							"wilayaBorneDepart":"",
 							"nomBorneDestination" : "",
+							"WilayaBorneDestination":"",
 							"nomLocataire":"", 
 							"prenomLocataire": "", 
-							"etatReservation":""
+							"etatReservation":"", 
+							"dateDebut":"", 
+							"dateFin":""
 						}; 
 				
-					console.log(i);
+					  console.log(i);
 		
 					   console.log(historiqueReservation[i].idBorneDepart);
 					   reservationDetails.idReservation=historiqueReservation[i].idReservation;
@@ -255,8 +260,7 @@ const getVehiculeReservations = async (req, res, next) => {
 							var rows = JSON.parse(JSON.stringify(result[0]));
 							console.log(rows.nomBorne); 
 							reservationDetails.nomBorneDepart=rows.nomBorne; 
-							
-							//res.send();
+							reservationDetails.wilayaBorneDepart=rows.wilaya; 
 
 						// Récupérer le nom de la borne d'arrivée
 						const result1 = await Locataire.findAll({
@@ -265,10 +269,8 @@ const getVehiculeReservations = async (req, res, next) => {
 							},
 						}); 
 							var rows1 = JSON.parse(JSON.stringify(result1[0]));
-							//console.log(rows1.nom); 
 							reservationDetails.nomLocataire=rows1.nom;
 							reservationDetails.prenomLocataire=rows1.prenom;
-							//res.send();
 
 							const result2 = await Borne.findAll({
 							where: {
@@ -276,16 +278,28 @@ const getVehiculeReservations = async (req, res, next) => {
 							},
 						}); 	
 							var rows2 = JSON.parse(JSON.stringify(result2[0]));
-
-							//console.log(rows2.nomBorne); 
 							reservationDetails.nomBorneDestination=rows2.nomBorne;
-							historytable.push(reservationDetails); 
-							//res.send();
+							reservationDetails.WilayaBorneDestination=rows2.wilaya; 
 
+							if (reservationDetails.etatReservation=="Terminée" || reservationDetails.etatReservation=="Active" ){
+
+								const result3 = await Trajet.findAll({
+									where: {
+										idReservation: historiqueReservation[i].idReservation,
+									},
+								}); 	
+									var rows3 = JSON.parse(JSON.stringify(result3[0]));
+									if(rows3.dateDebut != null) {reservationDetails.dateDebut= rows3.dateDebut }
+									if(rows3.dateFin != null ) {reservationDetails.dateFin= rows3.dateFin }
+							}
+							historytable.push(reservationDetails); 
 							console.log(historytable[i].nomBorneDepart);
 							console.log(historytable[i].nomBorneDestination);
 							console.log(historytable[i].nomLocataire);
+
+							
 					}
+					res.send(historytable);
 			}
 		} else next();
 	} catch (err) {
