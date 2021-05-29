@@ -87,17 +87,39 @@ const createBorne = async (req, res) => {
         latitude: req.body.latitude,
         longitude: req.body.longitude,
         nbVehicules: req.body.nbVehicules,
-        nbPlaces: req.body.nbPlaces
+        nbPlaces: req.body.nbPlaces,
+       // etat:1
       }
 
     })
-
+   console.log("resultt" + result);
     if (result.length > 0) {
-      res.status(400).send({
+      if(result[0].etat==0){
+          const updatedBorne = Borne.update(
+            {etat : 1},
+            
+             { where: {
+                nomBorne: req.body.nomBorne,
+                wilaya: req.body.wilaya,
+                commune: req.body.commune,
+                latitude: req.body.latitude,
+                longitude: req.body.longitude,
+                nbVehicules: req.body.nbVehicules,
+                nbPlaces: req.body.nbPlaces,
+                etat:0
+            }
+          }
+          )
+          result[0].etat =1 
+          res.send(result)
+      }else{
+        res.status(400).send({
 
-        message: "Borne already exists!"
-
-      })
+          message: "Borne already exists!"
+  
+        })
+      }
+      
     } else {
       let data = await Borne.create(borne)
       res.send(data);
@@ -183,7 +205,9 @@ const getFilteredBornes = async (req, res) => {
         },
         nbPlaces: {
           [nbPlacesSquelizeOp]: (req.body.nbPlaces != null) ? req.body.nbPlaces : 0
-        }
+        },
+        etat:1
+  
       },
 
     });
@@ -232,7 +256,13 @@ const getBorne = async (req, res) => {
   try {
     const id = req.params.id;
 
-    const data = await Borne.findByPk(id)
+    const data = await Borne.findAll({
+      where: {
+        idBorne: id,
+        etat:1
+      }
+
+    })
 
     console.log(data)
 
@@ -268,7 +298,11 @@ const getBorne = async (req, res) => {
 const getAllBornes = async (req, res) => {
   try {
 
-    const data = await Borne.findAll()
+    const data = await Borne.findAll({
+      where :{
+        etat : 1
+      }
+    })
 
     //console.log(data)
 
@@ -308,7 +342,7 @@ const getAllBornes = async (req, res) => {
 const getWilaya = async (req, res) => {
   try {
 
-    const data = await Borne.findAll({ attributes: [[Borne.sequelize.fn('DISTINCT', Borne.sequelize.col('wilaya')), 'wilaya']] });
+    const data = await Borne.findAll({ attributes: [[Borne.sequelize.fn('DISTINCT', Borne.sequelize.col('wilaya')), 'wilaya']] , where :  {etat:1}}); 
 
     if (data.length != 0 && data != null) {
 
@@ -348,7 +382,7 @@ const getCommune = async (req, res) => {
 
     if (wilaya == "all") {
 
-      const data = await Borne.findAll({ attributes: [[Borne.sequelize.fn('DISTINCT', Borne.sequelize.col('commune')), 'commune']] });
+      const data = await Borne.findAll({ attributes: [[Borne.sequelize.fn('DISTINCT', Borne.sequelize.col('commune')), 'commune']] , where: {etat: 1} }); 
 
       if (data.length != 0) {
 
@@ -366,7 +400,7 @@ const getCommune = async (req, res) => {
 
     } else {
 
-      const data = await Borne.findAll({ attributes: [[Borne.sequelize.fn('DISTINCT', Borne.sequelize.col('commune')), 'commune']], where: { wilaya: wilaya } });
+      const data = await Borne.findAll({ attributes: [[Borne.sequelize.fn('DISTINCT', Borne.sequelize.col('commune')), 'commune']], where: { wilaya: wilaya ,etat:1} });
 
       if (data.length != 0) {
 
@@ -410,6 +444,7 @@ const getVehiclesInABorne = async (req, res) => {
     const vehicules = await Vehicule.findAll({
       where: {
         idBorne: req.params.id,
+                   
       },
       order: [
         ['chargeBatterie', 'DESC']
@@ -482,11 +517,15 @@ const deleteBorne = async (req, res) => {
   }
 
   try {
-    const data = await Borne.destroy({
-      where: {
-        idBorne: req.params.id
+    const data = await Borne.update(
+      {etat : 0},
+      {
+        where: {
+        idBorne: req.params.id,
+        etat : 1
       }
-    })
+    }
+    )
     if (data == 1) {
       res.status(201).send({
         message: "Borne with id : " + req.params.id + " was deleted succefully!"

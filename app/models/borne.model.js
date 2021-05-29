@@ -41,6 +41,10 @@ module.exports = function (sequelize, Sequelize) {
       type: Sequelize.INTEGER,
       allowNull: false
     },
+    etat:{
+      type: Sequelize.INTEGER,
+      defaultValue : 1
+    }
   },
   {
 
