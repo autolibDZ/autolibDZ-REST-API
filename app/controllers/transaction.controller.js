@@ -1,6 +1,8 @@
 const db = require("../models");
-const Transaction = db.transaction;
 const { Op } = require("sequelize");
+const jwt = require('jsonwebtoken');
+const Transaction = db.transaction;
+
 
 /**
  * Create and save a new transaction in database
@@ -10,6 +12,40 @@ const { Op } = require("sequelize");
  */
 
 const createTransaction = async (req, res) => {
+
+     const authHeader = req.headers['authorization']
+     const token = authHeader && authHeader.split(' ')[1]
+
+     if (token == null) {
+          res.status(403).send({
+               error: "invalid_access_token",
+               message: "Access Forbidden,invalid token",
+          });
+          return;
+     }
+
+     try {
+          const user = jwt.verify(token, process.env.JWT_SECRET);
+          if (user != undefined) {
+               const role = user.role
+               if (role == "locataire") {
+                    res.status(403).send({
+                         error: "authorization_required",
+                         message: "Access Forbidden,you can't do this operation",
+                    });
+                    return;
+               }
+          }
+
+     } catch (err) {
+          res.status(403).send({
+               error: "invalid_access_token",
+               message: "Access Forbidden,invalid token",
+          });
+          return;
+     }
+
+
      // Validate request
 
      if (!req.body.idReservation) {
@@ -46,7 +82,7 @@ const createTransaction = async (req, res) => {
 
      // Create a transaction
      const transaction = {
-          idLocataire: req.body.idLocataire,   //sinon through session
+          idLocataire: req.body.idLocataire,
           idReservation: req.body.idReservation,
           montant: req.body.montant,
           moyenPayement: req.body.moyenPayement,
@@ -86,6 +122,37 @@ const createTransaction = async (req, res) => {
  */
 
 const getUserTransactions = async (req, res) => {
+
+     const authHeader = req.headers['authorization']
+     const token = authHeader && authHeader.split(' ')[1]
+
+     if (token == null) {
+          res.status(403).send({
+               error: "invalid_access_token",
+               message: "Access Forbidden,invalid token",
+          });
+          return;
+     }
+     try {
+          const user = jwt.verify(token, process.env.JWT_SECRET);
+          if (user != undefined) {
+               const role = user.role
+               if (role == "locataire") {
+                    res.status(403).send({
+                         error: "authorization_required",
+                         message: "Access Forbidden,you can't do this operation",
+                    });
+                    return;
+               }
+          }
+     } catch (err) {
+          res.status(403).send({
+               error: "invalid_access_token",
+               message: "Access Forbidden,invalid token",
+          });
+          return;
+     }
+
      // Validate request
      if (!req.params.id) {
           res.status(400).send({
@@ -112,7 +179,7 @@ const getUserTransactions = async (req, res) => {
      }
      catch (err) {
           res.status(500).send({
-               error: err.message || "Some error occurred while creating the Transaction."
+               error: err.message || "Some error occurred while getting Transactions."
           });
      }
 };
@@ -127,6 +194,37 @@ const getUserTransactions = async (req, res) => {
 
 
 const getTransaction = async (req, res) => {
+     const authHeader = req.headers['authorization']
+     const token = authHeader && authHeader.split(' ')[1]
+
+     if (token == null) {
+          res.status(403).send({
+               error: "invalid_access_token",
+               message: "Access Forbidden,invalid token",
+          });
+          return;
+     }
+
+     try {
+          const user = jwt.verify(token, process.env.JWT_SECRET);
+          if (user != undefined) {
+               const role = user.role
+               if (role == "locataire") {
+                    res.status(403).send({
+                         error: "authorization_required",
+                         message: "Access Forbidden,you can't do this operation",
+                    });
+                    return;
+               }
+          }
+     } catch (err) {
+          res.status(403).send({
+               error: "invalid_access_token",
+               message: "Access Forbidden,invalid token",
+          });
+          return;
+     }
+
      // Validate request
      if (!req.params.id) {
           res.status(400).send({
@@ -160,7 +258,7 @@ const getTransaction = async (req, res) => {
      }
      catch (err) {
           res.status(500).send({
-               error: err.message || "Some error occurred while creating the Transaction."
+               error: err.message || "Some error occurred while getting the Transaction."
           });
      }
 };
@@ -173,6 +271,36 @@ const getTransaction = async (req, res) => {
  */
 
 const filterTransaction = async (req, res) => {
+     const authHeader = req.headers['authorization']
+     const token = authHeader && authHeader.split(' ')[1]
+
+     if (token == null) {
+          res.status(403).send({
+               error: "invalid_access_token",
+               message: "Access Forbidden,invalid token",
+          });
+          return;
+     }
+
+     try {
+          const user = jwt.verify(token, process.env.JWT_SECRET);
+          if (user != undefined) {
+               const role = user.role
+               if (role == "locataire") {
+                    res.status(403).send({
+                         error: "authorization_required",
+                         message: "Access Forbidden,you can't do this operation",
+                    });
+                    return;
+               }
+          }
+     } catch (err) {
+          res.status(403).send({
+               error: "invalid_access_token",
+               message: "Access Forbidden,invalid token",
+          });
+          return;
+     }
 
      // Validate request
      if (!req.params.id) {
@@ -249,7 +377,7 @@ const filterTransaction = async (req, res) => {
                          ]
                     },
                     order: [
-                         ['dateTransaction','DESC']
+                         ['dateTransaction', 'DESC']
                     ]
                })
                if (transactions.length <= 0) {
@@ -260,7 +388,10 @@ const filterTransaction = async (req, res) => {
                     res.status(200).send(transactions);
                }
           } else {
-               res.status(404).send({ "error": "le locataire avec id " + id + " n'a pas encore de transactions." })
+               res.status(404).send({
+                    error: "not_found",
+                    message: "Locataire with ID " + id + " has no transaction yet"
+               })
           }
      }
      catch (err) {

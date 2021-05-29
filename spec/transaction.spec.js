@@ -263,7 +263,7 @@ describe('Transaction route test', () => {
                     .expect('Content-Type', /json/)
                     .end((err, res) => {
                          if (err) done(err);
-                         expect(res.body.error == 'le locataire avec id 144 n\'a pas encore de transactions.').toBe(true);
+                         expect(res.body.message).toBe('Locataire with ID 144 has no transaction yet');
                          done();
                     });
           });
