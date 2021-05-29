@@ -1,8 +1,9 @@
-module.exports = function(sequelize, Sequelize) {
+module.exports = function (sequelize, Sequelize) {
     const Transaction = sequelize.define("transaction", {
         idTransaction: {
             type: Sequelize.INTEGER,
-            primaryKey: true
+            primaryKey: true,
+            autoIncrement: true
         },
         dateTransaction: {
             type: Sequelize.DATE,
@@ -14,7 +15,7 @@ module.exports = function(sequelize, Sequelize) {
         },
         moyenPayement: {
             type: Sequelize.DataTypes.ENUM({
-                values: ['Paypal', 'Carte d\'abonnement']
+                values: ['Stripe', 'Carte d\'abonnement']
             })
         },
         idLocataire: { //not sure if we need it
@@ -22,6 +23,8 @@ module.exports = function(sequelize, Sequelize) {
         },
         idReservation: {
             type: Sequelize.INTEGER,
+            unique: true,
+            allowNull: false
         },
     }, {
         freezeTableName: true,

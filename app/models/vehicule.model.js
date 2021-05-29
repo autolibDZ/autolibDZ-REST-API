@@ -8,6 +8,7 @@ module.exports = function (sequelize, Sequelize) {
 			},
 			numImmatriculation: {
 				type: Sequelize.INTEGER,
+				allowNull: false,
 			},
 			modele: {
 				type: Sequelize.STRING(50),
@@ -24,6 +25,7 @@ module.exports = function (sequelize, Sequelize) {
 			etat: {
 				type: Sequelize.ENUM,
 				values: ['circulation', 'en service', 'reserve', 'hors service'],
+				allowNull: false,
 			},
 			tempsDeRefroidissement: {
 				type: Sequelize.INTEGER,
@@ -69,6 +71,16 @@ module.exports = function (sequelize, Sequelize) {
 			updatedAt: false,
 		}
 	);
+
+	// Déclaration des clès étrangères
+	Vehicule.associate = (models) => {
+		Vehicule.hasOne(models.utilisateur, {
+			foreignKey: 'idAgentMaintenace',
+		});
+		Vehicule.hasOne(models.borne, {
+			foreignKey: 'idBorne',
+		});
+	};
 
 	return Vehicule;
 };

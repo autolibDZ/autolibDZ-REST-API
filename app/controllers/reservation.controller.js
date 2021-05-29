@@ -1,6 +1,11 @@
 const db = require('../models');
 var bcrypt = require('bcryptjs');
 const Reservation = db.reservation;
+const Borne = db.borne;
+const Vehicule = db.vehicules;
+const Trajet = db.trajet;
+
+
 
 const createReservation = async(req, res) => {
 
@@ -20,7 +25,10 @@ const createReservation = async(req, res) => {
         idLocataire: req.body.idLocataire,
         idBorneDepart: req.body.idBorneDepart,
         idBorneDestination: req.body.idBorneDestination,
-        codePin: hash
+        codePin: hash,
+        tempsEstime: req.body.tempsEstime,
+        distanceEstime: req.body.distanceEstime,
+        prixEstime: req.body.prixEstime,
     };
     try {
 
@@ -77,8 +85,8 @@ const updateReservationById = async(req, res) => {
     const id = req.params.id;
 
     Reservation.update(req.body, {
-            where: { idReservation: id }
-        })
+        where: { idReservation: id }
+    })
         .then(num => {
             if (num == 1) {
                 res.send({
@@ -103,8 +111,8 @@ const deleteReservationById = async(req, res) => {
     console.log(id);
 
     Reservation.destroy({
-            where: { idReservation: id }
-        })
+        where: { idReservation: id }
+    })
         .then(num => {
             if (num == 1) {
                 res.send({
@@ -190,6 +198,66 @@ const verifyCodePin = async(req, res) => {
 
 }
 
+
+const getHistoriqueReservationsLocataire = async(req, res) => {
+
+    const reservations = await Reservation.findAll({ where: { idLocataire: req.params.id} })
+
+    let historiqueReser = []
+
+
+    if (reservations != null) {
+        for(const reservation of reservations){
+
+            let reservationFinale = {idReservation:0,etat:"", nomBorneDepart:"", numChassisVehicule:0,
+                numImmatriculationVehicule:0,modeleVehicule:"",marqueVehicule:"",nomBorneDestination:"",
+                dateReservation:null,dure:null,distance:null}
+
+            reservationFinale.idReservation = reservation.idReservation
+
+            reservationFinale.etat = reservation.etat
+
+            //Recuperation nom borne de départ
+            const borneDepart = await Borne.findOne({where: {idBorne: reservation.idBorneDepart}})
+            reservationFinale.nomBorneDepart  = borneDepart.nomBorne
+            //Recuperation nom borne de destination
+            const borneDesti = await Borne.findOne({where: {idBorne: reservation.idBorneDestination}})
+            reservationFinale.nomBorneDestination  = borneDesti.nomBorne
+            //Recuperation des infos du véhicules
+            const vehiculeInfo = await Vehicule.findOne({where: {numChassis: reservation.idVehicule}})
+            if(vehiculeInfo != null){
+                reservationFinale.numChassisVehicule = vehiculeInfo.numChassis
+                reservationFinale.numImmatriculationVehicule = vehiculeInfo.numImmatriculation
+                reservationFinale.modeleVehicule = vehiculeInfo.modele
+                reservationFinale.marqueVehicule = vehiculeInfo.marque
+            }
+            if(reservation.etat=="Terminée"){
+                const trajetInfo = await Trajet.findOne({where: {idReservation: reservation.idReservation}})
+                if (trajetInfo != null) {
+                    reservationFinale.dateReservation = trajetInfo.dateDebut
+                    reservationFinale.dure = trajetInfo.tempsEstime
+                    reservationFinale.distance = trajetInfo.kmParcourue
+
+                }
+            }
+            historiqueReser.push(reservationFinale)
+
+
+
+        }
+
+        res.status(200).send(historiqueReser)
+
+    } else {
+        res.status(404).send({ message :"This user has no reservation "})
+    }
+    console.log(historiqueReser)
+
+}
+
+
+
+
 export default {
     createReservation,
     listAllReservations,
@@ -198,5 +266,9 @@ export default {
     updateReservationById,
     verifyCodePin,
     selectReservationOfAGivenUser,
-    getReservationAnnulee
+    getReservationAnnulee,
+    getHistoriqueReservationsLocataire
 }
+
+
+
