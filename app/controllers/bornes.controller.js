@@ -13,7 +13,7 @@ const { Op } = require("sequelize");
 const createBorne = async (req, res) => {
 
   // verify access
-  const authHeader = req.headers['authorization']
+ /* const authHeader = req.headers['authorization']
   const token = authHeader && authHeader.split(' ')[1]
 
 
@@ -54,7 +54,7 @@ const createBorne = async (req, res) => {
     return;
 
   }
-
+*/
 
   // Create a Borne
 
@@ -92,7 +92,7 @@ const createBorne = async (req, res) => {
       }
 
     })
-   console.log("resultt" + result);
+   console.log("resultt" + result.length);
     if (result.length > 0) {
       if(result[0].etat==0){
           const updatedBorne = Borne.update(
