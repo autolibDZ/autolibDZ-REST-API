@@ -15,8 +15,14 @@ const addPlanMaintenance = async (req, res, next) => {
 	try {
 		let addedRows = 0;
 		const plans = [];
-		if (req.body.length != 0) {
-			for (const plan of req.body) {
+
+		let UtilPlans = [];
+		if (!Array.isArray(req.body)) {
+			UtilPlans.push(req.body);
+		} else UtilPlans = req.body;
+
+		if (UtilPlans.length != 0) {
+			for (const plan of UtilPlans) {
 				let date = new Date(plan.date);
 				let action = plan.action;
 
