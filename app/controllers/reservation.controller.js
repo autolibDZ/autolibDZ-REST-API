@@ -231,8 +231,7 @@ const getHistoriqueReservationsLocataire = async(req, res) => {
             if(reservation.etat=="Terminée"){
             const trajetInfo = await Trajet.findOne({where: {idReservation: reservation.idReservation}})
             if (trajetInfo != null) {
-                var d = trajetInfo.dateDebut
-                reservationFinale.dateReservation  = d.toString();   
+                reservationFinale.dateReservation = trajetInfo.dateDebut
                 reservationFinale.dure = trajetInfo.tempsEstime
                 reservationFinale.distance = trajetInfo.kmParcourue
 
