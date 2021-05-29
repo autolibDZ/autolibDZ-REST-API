@@ -1,7 +1,7 @@
 const db = require("../models");
 const Borne = db.borne;
 const Vehicule = db.vehicules;
- 
+const jwt = require('jsonwebtoken');
 const { Op } = require("sequelize");
 /**
  * Create and save a new borne in database
@@ -11,6 +11,51 @@ const { Op } = require("sequelize");
 // Create and Save a new Borne
 
 const createBorne = async (req, res) => {
+
+  // verify access
+  const authHeader = req.headers['authorization']
+  const token = authHeader && authHeader.split(' ')[1]
+
+
+  if (token == null) {
+
+    res.status(403).send({
+      message: "Access Forbidden,invalide token",
+    });
+    return;
+  }
+
+  try {
+
+    const user = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (user != undefined) {
+
+      const role = user.role
+
+      // Only admin can create Borne
+
+      if (role != "admin") {
+
+        res.status(403).send({
+          message: "Access Forbidden,you can't do this operation",
+        });
+
+        return;
+      }
+    }
+
+  } catch (err) {
+
+    res.status(403).send({
+      message: "Access Forbidden,invalide token",
+    });
+
+    return;
+
+  }
+
+
   // Create a Borne
 
   if (!req.body.nomBorne || !req.body.wilaya || !req.body.commune || !req.body.latitude || !req.body.longitude || !req.body.nbVehicules || !req.body.nbPlaces) {
@@ -42,17 +87,39 @@ const createBorne = async (req, res) => {
         latitude: req.body.latitude,
         longitude: req.body.longitude,
         nbVehicules: req.body.nbVehicules,
-        nbPlaces: req.body.nbPlaces
+        nbPlaces: req.body.nbPlaces,
+       // etat:1
       }
 
     })
-
+   console.log("resultt" + result.length);
     if (result.length > 0) {
-      res.status(400).send({
+      if(result[0].etat==0){
+          const updatedBorne = Borne.update(
+            {etat : 1},
+            
+             { where: {
+                nomBorne: req.body.nomBorne,
+                wilaya: req.body.wilaya,
+                commune: req.body.commune,
+                latitude: req.body.latitude,
+                longitude: req.body.longitude,
+                nbVehicules: req.body.nbVehicules,
+                nbPlaces: req.body.nbPlaces,
+                etat:0
+            }
+          }
+          )
+          result[0].etat =1 
+          res.send(result)
+      }else{
+        res.status(400).send({
 
-        message: "Borne already exists!"
-
-      })
+          message: "Borne already exists!"
+  
+        })
+      }
+      
     } else {
       let data = await Borne.create(borne)
       res.send(data);
@@ -138,9 +205,10 @@ const getFilteredBornes = async (req, res) => {
         },
         nbPlaces: {
           [nbPlacesSquelizeOp]: (req.body.nbPlaces != null) ? req.body.nbPlaces : 0
-        }
-      },
 
+        },
+        etat:1
+      },
     });
 
     if (bornes.length != 0) {
@@ -171,7 +239,6 @@ const getFilteredBornes = async (req, res) => {
 
 const getBorne = async (req, res) => {
 
-
   // Validate request
 
   if (!req.params.id) {
@@ -188,7 +255,13 @@ const getBorne = async (req, res) => {
   try {
     const id = req.params.id;
 
-    const data = await Borne.findByPk(id)
+    const data = await Borne.findAll({
+      where: {
+        idBorne: id,
+        etat:1
+      }
+
+    })
 
     console.log(data)
 
@@ -224,7 +297,11 @@ const getBorne = async (req, res) => {
 const getAllBornes = async (req, res) => {
   try {
 
-    const data = await Borne.findAll()
+    const data = await Borne.findAll({
+      where :{
+        etat : 1
+      }
+    })
 
     //console.log(data)
 
@@ -264,7 +341,7 @@ const getAllBornes = async (req, res) => {
 const getWilaya = async (req, res) => {
   try {
 
-    const data = await Borne.findAll({ attributes: [[Borne.sequelize.fn('DISTINCT', Borne.sequelize.col('wilaya')), 'wilaya']] });
+    const data = await Borne.findAll({ attributes: [[Borne.sequelize.fn('DISTINCT', Borne.sequelize.col('wilaya')), 'wilaya']] , where :  {etat:1}}); 
 
     if (data.length != 0 && data != null) {
 
@@ -304,7 +381,7 @@ const getCommune = async (req, res) => {
 
     if (wilaya == "all") {
 
-      const data = await Borne.findAll({ attributes: [[Borne.sequelize.fn('DISTINCT', Borne.sequelize.col('commune')), 'commune']] });
+      const data = await Borne.findAll({ attributes: [[Borne.sequelize.fn('DISTINCT', Borne.sequelize.col('commune')), 'commune']] , where: {etat: 1} }); 
 
       if (data.length != 0) {
 
@@ -322,7 +399,7 @@ const getCommune = async (req, res) => {
 
     } else {
 
-      const data = await Borne.findAll({ attributes: [[Borne.sequelize.fn('DISTINCT', Borne.sequelize.col('commune')), 'commune']], where: { wilaya: wilaya } });
+      const data = await Borne.findAll({ attributes: [[Borne.sequelize.fn('DISTINCT', Borne.sequelize.col('commune')), 'commune']], where: { wilaya: wilaya ,etat:1} });
 
       if (data.length != 0) {
 
@@ -421,6 +498,97 @@ const updateBorne = async (req, res) => {
     });
   }
 };
+/**
+ * Delete Borne by ID
+ * @param {*} req request
+ * @param {*} res response
+ * 
+ */
+//Delete borne from database
+const deleteBorne = async (req, res) => {
+
+  // verify access
+
+  const authHeader = req.headers['authorization']
+  const token = authHeader && authHeader.split(' ')[1]
+
+
+  if (token == null) {
+
+    res.status(403).send({
+      message: "Access Forbidden,invalide token",
+    });
+
+    return;
+  }
+
+  try {
+
+    const user = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (user != undefined) {
+
+      const role = user.role
+
+      // Only admin can delete Borne
+
+      if (role != "admin") {
+
+        res.status(403).send({
+          message: "Access Forbidden,you can't do this operation",
+        });
+
+        return;
+      }
+    }
+
+  } catch (err) {
+
+    res.status(403).send({
+      message: "Access Forbidden,invalide token",
+    });
+
+    return;
+  }
+
+  try {
+    const data = await Borne.update(
+      {etat : 0},
+      {
+        where: {
+        idBorne: req.params.id,
+        etat : 1
+      }
+    }
+    )
+    if (data == 1) {
+      res.status(201).send({
+        message: "Borne with id : " + req.params.id + " was deleted succefully!"
+      })
+      //update list of véhicule
+      const vehicule = await Vehicule.update(
+        { idBorne: null },
+        { where: { idBorne: req.params.id } }
+      )
+
+
+    } else {
+      res.status(404).send({
+
+        message: "Borne with id : " + req.params.id + " does not exist!"
+
+      })
+    }
+
+  } catch (err) {
+    res.status(500).send({
+      error: err.message || "Some error occured while deleting borne with id: " + req.params.id
+    });
+  }
+
+
+
+};
 
 export default {
   createBorne,
@@ -430,5 +598,6 @@ export default {
   getVehiclesInABorne,
   getWilaya,
   getCommune,
-  updateBorne
+  updateBorne,
+  deleteBorne
 }
