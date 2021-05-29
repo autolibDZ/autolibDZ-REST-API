@@ -105,28 +105,28 @@ const updateReservationById = async(req, res) => {
         });
 };
 
-const deleteReservationById = async(req, res) => {
+const deleteReservationById = async (req, res) => {
     const id = req.params.id;
 
     console.log(id);
 
     Reservation.destroy({
-        where: { idReservation: id }
+        where: { idReservation: id },
     })
-        .then(num => {
+        .then((num) => {
             if (num == 1) {
                 res.send({
-                    message: "Reservation was deleted successfully!"
+                    message: 'Reservation was deleted successfully!',
                 });
             } else {
                 res.send({
-                    message: `Cannot delete Reservation with id=${id}. Maybe Reservation was not found!`
+                    message: `Cannot delete Reservation with id=${id}. Maybe Reservation was not found!`,
                 });
             }
         })
-        .catch(err => {
+        .catch((err) => {
             res.status(500).send({
-                message: "Could not delete Tutorial with id=" + id
+                message: 'Could not delete Reservation with id=' + id,
             });
         });
 };
