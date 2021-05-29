@@ -43,7 +43,6 @@ describe('Borne route test', () => {
                 });
         })
     })
-
 	describe('createBorne 3rd scenario', () => {
 		it('returns 200 OK when sending borne params that doesn"t exist in db', (done) => {
 			request
@@ -65,8 +64,8 @@ describe('Borne route test', () => {
 
         });
         })
-
-
+                });
+        })
         it('returns 500  server error when using a wrong id like AA55', (done) => {
             request
                 .get('/AA55')
@@ -81,7 +80,6 @@ describe('Borne route test', () => {
                 });
 
         });
-    });
 
     describe('createBorne 3rd scenario', () => {
 
@@ -101,13 +99,14 @@ describe('Borne route test', () => {
                  .expect('Content-Type', 'application/json; charset=utf-8')
                  .end((err, res) => {
                      if (err) done(err);
- 
+     
                      expect(res.body.error)
- 
+     
                      done();
                  });
  
          });
+
 
 
         it('returns 400 When borne exists', (done) => {
@@ -241,37 +240,37 @@ describe('Borne route test', () => {
 
         });
 
-	});
-	
-	describe('Get list of all vehicles in a given borne of id 1', () => {
-		it('Should returns 200 OK when getting all vehicles in the borne', (done) => {
-			request
-				.get('/1/vehicules')
-				.set('Accept', 'application/json')
-				.expect(200)
-				.expect('Content-Type', /json/)
-				.end((err, res) => {
-					if (err) done(err);
-					expect(res.body.length).not.toEqual(0);
-					done();
-				});
-		});
+    });
 
-		it('Should returns 404 when using an non exesting id borne=3 ', (done) => {
-			request
-				.get('/3/vehicules')
-				.set('Accept', 'application/json')
-				.expect(404)
-				.expect('Content-Type', /json/)
-				.end((err, res) => {
-					if (err) done(err);
-					expect(res.body.error == 'No vehicles in the borne with id: 3')
-					done();
-				});
-		});
-	});
+    describe('Get list of all vehicles in a given borne of id 1', () => {
+        it('Should returns 200 OK when getting all vehicles in the borne', (done) => {
+            request
+                .get('/1/vehicules')
+                .set('Accept', 'application/json')
+                .expect(200)
+                .expect('Content-Type', /json/)
+                .end((err, res) => {
+                    if (err) done(err);
+                    expect(res.body.length).not.toEqual(0);
+                    done();
+                });
+        });
 
-	describe('POST filter bornes', () => {
+        it('Should returns 404 when using an non exesting id borne=3 ', (done) => {
+            request
+                .get('/3/vehicules')
+                .set('Accept', 'application/json')
+                .expect(404)
+                .expect('Content-Type', /json/)
+                .end((err, res) => {
+                    if (err) done(err);
+                    expect(res.body.error == 'No vehicles in the borne with id: 3')
+                    done();
+                });
+        });
+    });
+
+    describe('POST filter bornes', () => {
         it('returns 200 OK when sending correct filter like wilaya = Alger', (done) => {
             request
                 .post('/filter')
@@ -283,37 +282,38 @@ describe('Borne route test', () => {
                 .expect('Content-Type', /json/)
                 .end((err, res) => {
                     if (err) done(err);
-    
+
                     expect(res.body != null).toBe(true)
                     expect(res.body.length > 0).toBe(true)
                     const ele = res.body[0]
-    
+
                     expect(ele.wilaya).toBe("Alger")
-    
+
                     done();
                 });
         });
+
 
         it('returns 200 OK when sending correct filter like nbVehicules entre 10 et 50', (done) => {
             request
                 .post('/filter')
                 .send({
                     wilaya: 'Alger',
-                    nbVehiculesMax : 50,
-                    nbVehiculesMin : 10
+                    nbVehiculesMax: 50,
+                    nbVehiculesMin: 10
                 })
                 .set('Accept', 'application/json')
                 .expect(200)
                 .expect('Content-Type', /json/)
                 .end((err, res) => {
                     if (err) done(err);
-    
+
                     expect(res.body != null).toBe(true)
                     expect(res.body.length > 0).toBe(true)
                     const ele = res.body[0]
-    
+
                     expect(ele.nbVehicules >= 10 && ele.nbVehicules <= 50).toBe(true)
-    
+
                     done();
                 });
         });
@@ -323,16 +323,16 @@ describe('Borne route test', () => {
                 .post('/filter')
                 .send({
                     wilaya: 'Alger',
-                    nbPlacesOp : ">="
+                    nbPlacesOp: ">="
                 })
                 .set('Accept', 'application/json')
                 .expect(400)
                 .expect('Content-Type', /json/)
                 .end((err, res) => {
                     if (err) done(err);
-    
+
                     expect(res.body.message).toBe("nbPlacesOp must be min or max")
-                    
+
                     done();
                 });
         });
@@ -342,16 +342,16 @@ describe('Borne route test', () => {
                 .post('/filter')
                 .send({
                     wilaya: 'Alger',
-                    nbVehiculesMin : 500,
+                    nbVehiculesMin: 500,
                 })
                 .set('Accept', 'application/json')
                 .expect(404)
                 .expect('Content-Type', /json/)
                 .end((err, res) => {
                     if (err) done(err);
-    
+
                     expect(res.body.error).toBe("there is no Born that matches your filter")
-                    
+
                     done();
                 });
         });
@@ -361,18 +361,75 @@ describe('Borne route test', () => {
                 .post('/filter')
                 .send({
                     wilaya: 'Alger',
-                    nbVehiculesMax : "m",
+                    nbVehiculesMax: "m",
                 })
                 .set('Accept', 'application/json')
                 .expect(500)
                 .expect('Content-Type', /json/)
                 .end((err, res) => {
                     if (err) done(err);
-    
+
                     expect(res.body.error).toBe("invalid input syntax for type integer: \"m\"")
-                    
+
                     done();
                 });
         });
     });
-});
+
+    /**
+         * Test "update Borne" method 
+     */
+    describe('Testing Update borne', () => {
+        it('return 200 OK and the actual updated borne with id=1', (done) => {
+            request
+                .put('/1')
+                .send({
+                    nbVehicules: 19
+                })
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(200)
+                .end((err, res) => {
+                    if (err) {
+                        done.fail(err);
+                    } else {
+                        let updatedBorne = res.body;
+                        expect(updatedBorne.message).toEqual('Borne was updated successfully.');
+                        expect(updatedBorne.data.idBorne).toEqual(1)
+                        expect(updatedBorne.data.nbVehicules).toEqual(19);
+                        done();
+                    }
+                });
+        });
+
+        it("Return Error if id borne not found", (done) => {
+            request
+                .put('/7')
+                .send({ etat: 'en hors service' })
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(404)
+                .end((err, res) => {
+                    if (err) {
+                        done.fail(err);
+                    } else {
+                        expect(res.body.error).toEqual('not_found')
+                        expect(res.body.message).toEqual('Borne not found');
+                        done();
+                    }
+                });
+        });
+
+        it('returns 500  server error when using a wrong id like a', (done) => {
+            request
+                .put('/a')
+                .expect(500)
+                .expect('Content-Type', 'application/json; charset=utf-8')
+                .end((err, res) => {
+                    if (err) done(err);
+                    expect(res.body.error)
+                    done();
+                });
+        });
+    });
+

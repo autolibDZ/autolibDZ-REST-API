@@ -53,6 +53,17 @@ cloudinary.config({
 	api_secret: process.env.API_SECRET,
 });
 
+const cloudinary = require('cloudinary').v2
+require('dotenv').config()
+
+// cloudinary configuration
+cloudinary.config({
+	cloud_name: process.env.CLOUD_NAME,
+	api_key: process.env.API_KEY,
+	api_secret: process.env.API_SECRET
+  });
+
+
 /**
  * Create and save a new Vehicule in database
  * @param {*} req The request
@@ -62,6 +73,7 @@ cloudinary.config({
 
 const createVehicule = async (req, res) => {
 	// Validate request
+<<<<<<< HEAD
 	if (!req.body.numChassis || !req.body.numImmatriculation || !req.body.modele || !req.body.marque || !req.body.couleur
 		|| !req.body.etat || !req.body.idAgentMaintenance || !req.body.idBorne || !req.body.image ) {
 		res.status(400).send({
@@ -70,6 +82,16 @@ const createVehicule = async (req, res) => {
 		console.log(req.body.numChassis);
 		console.log(req.body.numImmatriculation);
 		console.log(req.body.modele);
+=======
+	if (!req.body.numChassis || !body.numImmatriculation || !req.body.modele || !req.body.marque || !req.body.couleur
+		|| !req.body.etat ) {
+		res.status(400).send({
+			message: 'Content can not be empty!',
+		});
+		console.log( req.body.numChassis);
+		console.log(req.body.numImmatriculation); 
+		console.log(req.body.modele); 
+>>>>>>> feature/Boucheta/updateBorne
 		console.log(req.body.couleur);
 		return;
 	}
@@ -89,8 +111,11 @@ const createVehicule = async (req, res) => {
 		niveauMinimumHuile: req.body.niveauMinimumHuile,
 		regulateurVitesse: req.body.regulateurVitesse,
 		limiteurVitesse: req.body.limiteurVitesse,
+<<<<<<< HEAD
 		idBorne: req.body.idBorne, 
 		idAgentMaintenance: req.body.idAgentMaintenance,
+=======
+>>>>>>> feature/Boucheta/updateBorne
 	    idCloudinary: "", 
 		secureUrl: ""
 	};
@@ -217,6 +242,7 @@ const getAllVehicule = async (req, res) => {
 };
 
 /**
+<<<<<<< HEAD
  * This function displays the details of a given car, identified by it's num chassis
  * return 404 status with not_found error as json if it doesn't exist
  * return 200 status with the actual car oin json if it exists
@@ -226,6 +252,12 @@ const getAllVehicule = async (req, res) => {
  * @param {*} next Used to move on to the next middleware
  */
 
+=======
+ * Get details of the Vehicule that has the specified ID in request body 
+ * @param {*} req The request
+ * @param {*} res The response
+ */
+>>>>>>> feature/Boucheta/updateBorne
 const getVehiculeDetails = async (req, res, next) => {
 	try {
 		if (parseInt(req.params.id, 10)) {
@@ -485,15 +517,23 @@ export default {
 </div>
 
 <nav>
+<<<<<<< HEAD
     <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#createBorne">createBorne</a></li><li><a href="global.html#createReclamation">createReclamation</a></li><li><a href="global.html#createVehicule">createVehicule</a></li><li><a href="global.html#deleteReclamation">deleteReclamation</a></li><li><a href="global.html#deleteVehicule">deleteVehicule</a></li><li><a href="global.html#getAllBornes">getAllBornes</a></li><li><a href="global.html#getAllReclamations">getAllReclamations</a></li><li><a href="global.html#getAllVehicule">getAllVehicule</a></li><li><a href="global.html#getBorne">getBorne</a></li><li><a href="global.html#getCommune">getCommune</a></li><li><a href="global.html#getFilteredBornes">getFilteredBornes</a></li><li><a href="global.html#getReclamationDetails">getReclamationDetails</a></li><li><a href="global.html#getVehiclesInABorne">getVehiclesInABorne</a></li><li><a href="global.html#getVehiculeDetails">getVehiculeDetails</a></li><li><a href="global.html#getVehiculeReservations">getVehiculeReservations</a></li><li><a href="global.html#getWilaya">getWilaya</a></li><li><a href="global.html#updateVehicule">updateVehicule</a></li></ul>
     <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#createVehicule">createVehicule</a></li><li><a href="global.html#deleteVehicule">deleteVehicule</a></li><li><a href="global.html#getAllVehicule">getAllVehicule</a></li><li><a href="global.html#getVehiculeDetails">getVehiculeDetails</a></li><li><a href="global.html#getVehiculesEnServiceOfAGivenAgent">getVehiculesEnServiceOfAGivenAgent</a></li><li><a href="global.html#getVehiculesHorsServiceOfAGivenAgent">getVehiculesHorsServiceOfAGivenAgent</a></li><li><a href="global.html#selectVehicuesOfAGivenAgent">selectVehicuesOfAGivenAgent</a></li><li><a href="global.html#setEtatVehicule">setEtatVehicule</a></li><li><a href="global.html#updateVehicule">updateVehicule</a></li></ul>
+=======
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#createBorne">createBorne</a></li><li><a href="global.html#createVehicule">createVehicule</a></li><li><a href="global.html#deleteVehicule">deleteVehicule</a></li><li><a href="global.html#getAllBornes">getAllBornes</a></li><li><a href="global.html#getAllVehicule">getAllVehicule</a></li><li><a href="global.html#getBorne">getBorne</a></li><li><a href="global.html#getCommune">getCommune</a></li><li><a href="global.html#getFilteredBornes">getFilteredBornes</a></li><li><a href="global.html#getVehiclesInABorne">getVehiclesInABorne</a></li><li><a href="global.html#getVehiculeDetails">getVehiculeDetails</a></li><li><a href="global.html#getWilaya">getWilaya</a></li><li><a href="global.html#updateBorne">updateBorne</a></li><li><a href="global.html#updateVehicule">updateVehicule</a></li></ul>
+>>>>>>> feature/Boucheta/updateBorne
 </nav>
 
 <br class="clear">
 
 <footer>
+<<<<<<< HEAD
     Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Tue May 25 2021 17:37:05 GMT+0000 (GMT)
     Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Tue May 25 2021 23:01:15 GMT+0200 (heure d’été d’Europe centrale)
+=======
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Thu May 27 2021 18:02:06 GMT+0100 (heure normale d’Europe centrale)
+>>>>>>> feature/Boucheta/updateBorne
 </footer>
 
 <script> prettyPrint(); </script>
