@@ -55,12 +55,12 @@ module.exports = function (sequelize, Sequelize) {
 			idBorne: {
 				type: Sequelize.INTEGER,
 			},
-			idCloudinary:{
+			idCloudinary: {
 				type: Sequelize.STRING(128),
-			} , 
+			},
 			secureUrl: {
 				type: Sequelize.STRING(128),
-			}
+			},
 		},
 		{
 			freezeTableName: true,
@@ -69,15 +69,6 @@ module.exports = function (sequelize, Sequelize) {
 			updatedAt: false,
 		}
 	);
-	// Déclaration des clès étrangères
-	Vehicule.associate = (models) => {
-		Vehicule.belongsTo(models.utilisateur, {
-			foreignKey: 'idAgentMaintenace',
-		});
-		Vehicule.belongsTo(models.borne, {
-			foreignKey: 'idBorne',
-		});
-	};
 
 	return Vehicule;
 };
