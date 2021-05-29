@@ -3,7 +3,7 @@ request = Request('http://localhost:4000/api/bornes');
 
 
 describe('Borne route test', () => {
-   /* describe('getBorne 1st scenario', () => {
+    describe('getBorne 1st scenario', () => {
 
         it('returns 200 OK when using an exesting id 1', (done) => {
             request
@@ -57,7 +57,7 @@ describe('Borne route test', () => {
 
         });
     })
-*/
+
     describe('createBorne 3rd scenario', () => {
 
         it("returns 200 OK when sending borne params that doesn't exist in db", (done) => {
@@ -135,7 +135,7 @@ describe('Borne route test', () => {
     });
 
 
-   /* describe('Get list of all bornes in database 4th scenario', () => {
+    describe('Get list of all bornes in database 4th scenario', () => {
 
         it('returns 200 OK when getting all bornes', (done) => {
             request
@@ -389,5 +389,5 @@ describe('Borne route test', () => {
                 });
         });
 
-    });*/
+    });
 });
