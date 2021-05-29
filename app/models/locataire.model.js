@@ -24,8 +24,10 @@ module.exports = function(sequelize, Sequelize) {
         Active: {
             type: Sequelize.BOOLEAN
         },
-    },
-     {
+        ValidationGmail: {
+            type: Sequelize.BOOLEAN
+        },
+    }, {
         freezeTableName: true,
         tableName: 'locataire',
         createdAt: false,

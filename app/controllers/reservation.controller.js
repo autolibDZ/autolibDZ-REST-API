@@ -1,6 +1,8 @@
 const db = require('../models');
 var bcrypt = require('bcryptjs');
 const Reservation = db.reservation;
+const Borne = db.borne;
+
 
 const createReservation = async(req, res) => {
 
@@ -176,18 +178,20 @@ const getReservationAnnulee = async(req, res) => {
 
 const verifyCodePin = async(req, res) => {
 
-    const reservation = await Reservation.findOne({ where: { idVehicule: req.body.idVehicule, etat: "en cours" } })
+    const reservation = await Reservation.findOne({ where: { idVehicule: req.body.idVehicule, etat: "En cours" } })
     if (reservation != null) {
         const pinCorrect = await bcrypt.compare(req.body.codePin.toString(), reservation.codePin)
+        console.log(req.body.codePin)
         if (pinCorrect) {
-            res.status(200).send({ success: true, id: reservation })
+            const bornDepart = await Borne.findOne({ where: { idBorne: reservation.idBorneDepart } })
+            const bornDestination = await Borne.findOne({ where: { idBorne: reservation.idBorneDestination } })
+            res.status(200).send({ success: true, reservation: reservation, bornDepart: bornDepart, bornDestination: bornDestination })
         } else {
-            res.status(400).send({ success: false })
+            res.status(400).send({ success: false, message: "Code pin incorrect" })
         }
     } else {
-        res.status(400).send({ success: false })
+        res.status(400).send({ success: false, message: "Pas de réservation disponible !" })
     }
-
 }
 
 export default {
