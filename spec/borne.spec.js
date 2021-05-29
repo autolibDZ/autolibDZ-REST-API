@@ -66,7 +66,7 @@ describe('Borne route test', () => {
                 .send({
                     nomBorne: "Bab El Oued-2",
                     wilaya: "Alger",
-                    commune: "Bab El Oued-2",
+                    commune: "Bab El Oued",
                     latitude: 36.7927,
                     longitude: 3.0513,
                     nbVehicules: 30,
@@ -80,7 +80,7 @@ describe('Borne route test', () => {
                     expect(function (res) {
                         res.body.nomBorne = "Bab El Oued-2";
                         res.body.wilaya = "Alger";
-                        res.body.commune = "Bab El Oued-2";
+                        res.body.commune = "Bab El Oued";
                         res.body.latitude = 36.7927;
                         res.body.longitude = 3.0513;
                         res.body.nbVehicules = 30;
