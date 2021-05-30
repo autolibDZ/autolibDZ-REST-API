@@ -133,7 +133,6 @@ const deleteVehicule = async (req, res) => {
 //Update vehicule with numChassis = id
 const updateVehicule = async (req, res) => {
 	const id = req.params.id;
-
 	Vehicule.update(req.body, {
 		where: { numChassis: id },
 	})
@@ -245,7 +244,7 @@ const getVehiculeReservations = async (req, res, next) => {
 							"dateFin":""
 						}; 
 				
-					  console.log(i);
+					   console.log(i);
 		
 					   console.log(historiqueReservation[i].idBorneDepart);
 					   reservationDetails.idReservation=historiqueReservation[i].idReservation;
@@ -281,7 +280,7 @@ const getVehiculeReservations = async (req, res, next) => {
 							reservationDetails.nomBorneDestination=rows2.nomBorne;
 							reservationDetails.WilayaBorneDestination=rows2.wilaya; 
 
-							if (reservationDetails.etatReservation=="Terminée" || reservationDetails.etatReservation=="Active" ){
+							if (reservationDetails.etatReservation=="Terminée" || reservationDetails.etatReservation=="En cours" ){
 
 								const result3 = await Trajet.findAll({
 									where: {
@@ -292,12 +291,7 @@ const getVehiculeReservations = async (req, res, next) => {
 									if(rows3.dateDebut != null) {reservationDetails.dateDebut= rows3.dateDebut }
 									if(rows3.dateFin != null ) {reservationDetails.dateFin= rows3.dateFin }
 							}
-							historytable.push(reservationDetails); 
-							console.log(historytable[i].nomBorneDepart);
-							console.log(historytable[i].nomBorneDestination);
-							console.log(historytable[i].nomLocataire);
-
-							
+							historytable.push(reservationDetails); 		
 					}
 					res.send(historytable);
 			}
