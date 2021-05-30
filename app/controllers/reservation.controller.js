@@ -2,6 +2,8 @@ const db = require('../models');
 var bcrypt = require('bcryptjs');
 const Reservation = db.reservation;
 const Borne = db.borne;
+const Locataire = db.locataire;
+
 
 
 const createReservation = async(req, res) => {
@@ -185,7 +187,9 @@ const verifyCodePin = async(req, res) => {
         if (pinCorrect) {
             const bornDepart = await Borne.findOne({ where: { idBorne: reservation.idBorneDepart } })
             const bornDestination = await Borne.findOne({ where: { idBorne: reservation.idBorneDestination } })
-            res.status(200).send({ success: true, reservation: reservation, bornDepart: bornDepart, bornDestination: bornDestination })
+            const locataire = await Locataire.findOne({ where: { idLocataire: reservation.idLocataire } })
+
+            res.status(200).send({ success: true, reservation: reservation, bornDepart: bornDepart, bornDestination: bornDestination, locataire: locataire })
         } else {
             res.status(400).send({ success: false, message: "Code pin incorrect" })
         }

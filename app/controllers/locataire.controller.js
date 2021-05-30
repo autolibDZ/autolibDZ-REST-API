@@ -35,7 +35,7 @@ const validateAccount = (req, res) => {
             })
             .catch(err => {
                 res.status(500).send({
-                    message: "Error updating Locataire with email=" + email
+                    message: "Error validating account with email=" + email
                 });
 
             });
@@ -69,16 +69,10 @@ const createLocataire = async(req, res) => {
             html: `
             <!DOCTYPE html>
             <html>
-            
-            <head>
-                <title></title>
-            </head>
-            
-            <body>
-                <h2>Click here to activate your account</h2>
-                <a href="http://localhost:4000/api/locataire/validateAccount/${req.body.email}">Activate here</a>
-            </body>
-            
+                <body>
+                    <h2>Click here to activate your account</h2>
+                    <a href="http://localhost:4000/api/locataire/validateAccount/${req.body.email}">Activate here</a>
+                </body>
             </html>
                                `
         };
@@ -87,14 +81,12 @@ const createLocataire = async(req, res) => {
             if (error) {
                 find = true
                 res.status(400).send({
-                    message: error.message
+                    message: "Email n'existe pas"
                 });
             }
         });
         /////
         if (!find) {
-
-
             var locataire = {
 
                 nom: req.body.nom,
