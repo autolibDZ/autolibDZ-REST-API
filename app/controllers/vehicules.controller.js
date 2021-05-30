@@ -1,9 +1,11 @@
 const db = require('../models');
+const { Sequelize } = require('sequelize');
 const Vehicule = db.vehicules;
 const Reservation = db.reservation;
 const Borne = db.borne; 
 const Locataire= db.locataire;
 const Trajet= db.trajet;
+const Op = Sequelize.Op;
 
 const cloudinary = require('cloudinary').v2
 require('dotenv').config()
@@ -161,13 +163,19 @@ const updateVehicule = async (req, res) => {
  */
 
 const getAllVehicule = async (req, res) => {
-	Vehicule.findAll()
+	Vehicule.findAll({
+		where: {
+			etat: {
+			  [Op.ne]: "supprime", // Tous les véhicules sauf ceux qui sont supprimés
+			},
+		  },
+	})  
 		.then((data) => {
 			res.send(data);
 		})
 		.catch((err) => {
 			res.status(500).send({
-				message: 'Error retrieving Vehicule with id=' + id,
+				message: 'Error retrieving all vehicules',
 			});
 		});
 };
