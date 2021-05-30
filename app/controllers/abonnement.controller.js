@@ -1,7 +1,7 @@
 const db = require('../models');
 var sequelize = require("sequelize");
-const jwt = require('jsonwebtoken');
 const Abonnement = db.abonnement;
+var jwt = require("jsonwebtoken");
 
 // get the balance
 const getUserBalance = async (req, res) => {
@@ -13,7 +13,7 @@ const getUserBalance = async (req, res) => {
 	if (token == null) {
 
 		res.status(403).send({
-			message: "Access Forbidden,invalid token",
+			message: "Access Forbidden,invalide token",
 		});
 		return;
 	}
@@ -40,7 +40,7 @@ const getUserBalance = async (req, res) => {
 
 	} catch (err) {
 		res.status(403).send({
-			message: "Access Forbidden,invalid token",
+			message: "Access Forbidden,invalide token",
 		});
 		return;
 	}
@@ -87,7 +87,7 @@ const doPayment = async (req, res) => {
 	if (token == null) {
 
 		res.status(403).send({
-			message: "Access Forbidden,invalid token",
+			message: "Access Forbidden,invalide token",
 		});
 		return;
 	}
@@ -114,7 +114,7 @@ const doPayment = async (req, res) => {
 
 	} catch (err) {
 		res.status(403).send({
-			message: "Access Forbidden,invalid token",
+			message: "Access Forbidden,invalide token",
 		});
 		return;
 	}
@@ -198,6 +198,116 @@ const doPayment = async (req, res) => {
 	}
 };
 
+const rechargezCarteAbonnement = async (req, res) => {
+
+	const authHeader = req.headers['authorization']
+	const token = authHeader && authHeader.split(' ')[1]
+
+	if (token == null) {
+
+		res.status(403).send({
+			message: "Access Forbidden,invalide token",
+		});
+		return;
+	}
+
+	try {
+		const user = jwt.verify(token, process.env.JWT_SECRET);
+		if (user != undefined) {
+
+			const role = user.role
+
+			if (role != "administrateur") { //only administrateur can do this operation
+				res.status(403).send({
+					message: "Access Forbidden,you can't do this operation",
+				});
+				return;
+
+			} else {
+
+
+
+			}
+
+		}
+
+	} catch (err) {
+		console.log("---->"+err)
+		res.status(403).send({
+			message: "Access Forbidden,invalide token",
+		});
+		return;
+	}
+
+	// Validate request
+
+	if (!req.params.id) {
+		res.status(400).send({
+			message: "params 'id' can not be empty!",
+		});
+		return;
+	}
+
+	if (!req.body.value) {
+		res.status(400).send({
+			message: "body 'prix' element can not be empty!",
+		});
+		return;
+	}
+
+	if (isNaN(req.body.value)) {
+		res.status(400).send({
+			message: "body 'prix' element must be a number",
+		});
+		return;
+	}
+
+	if (req.body.value < 0) {
+		res.status(400).send({
+			message: "body 'prix' element must be a positive number",
+		});
+		return;
+	}
+
+	// update the balance from DB
+	try {
+		const id = req.params.id;
+		const userAbonnement = await Abonnement.findOne({
+			where: {
+				idLocataire: id,
+			},
+
+		});
+		console.log(userAbonnement);
+
+		if (userAbonnement) {
+			const newBalance = userAbonnement.balance + req.body.value
+
+			userAbonnement.update({
+				balance: newBalance
+			}).then(() => {
+				console.log("balance updated")
+
+				res.send({
+					"message": "top up has been done Successfully"
+				});
+			})
+
+
+		} else {
+
+			res.status(404).send({
+				error: 'the id ' + id + ' does not exist',
+			});
+		}
+
+	} catch (err) {
+		res.status(500).send({
+			error: err.message || 'Some error occurred !',
+		});
+	}
+};
+
 // For a specific year, return how much Abonnements there were for each month
 const countAbonnementsByMonth = async (req, res) => {
 	// Validate request
@@ -265,6 +375,7 @@ const getYears = async (req, res) => {
 export default {
 	getUserBalance,
 	doPayment,
+	rechargezCarteAbonnement,
 	countAbonnementsByMonth,
 	getYears,
 };
