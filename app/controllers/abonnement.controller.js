@@ -2,8 +2,49 @@ const db = require('../models');
 var sequelize = require("sequelize");
 const Abonnement = db.abonnement;
 var jwt = require("jsonwebtoken");
+
 // get the balance
 const getUserBalance = async (req, res) => {
+
+	const authHeader = req.headers['authorization']
+	const token = authHeader && authHeader.split(' ')[1]
+
+
+	if (token == null) {
+
+		res.status(403).send({
+			message: "Access Forbidden,invalide token",
+		});
+		return;
+	}
+
+	try {
+		const user = jwt.verify(token, process.env.JWT_SECRET);
+		if (user != undefined) {
+
+			const role = user.role
+
+			if (role == "agent") { //only locataire and admin can check out the balance
+				res.status(403).send({
+					message: "Access Forbidden,you can't do this operation",
+				});
+				return;
+
+			} else {
+
+
+
+			}
+
+		}
+
+	} catch (err) {
+		res.status(403).send({
+			message: "Access Forbidden,invalide token",
+		});
+		return;
+	}
+
 	// Validate request
 	if (!req.params.id) {
 		res.status(400).send({
@@ -21,7 +62,7 @@ const getUserBalance = async (req, res) => {
 			},
 			attributes: ['balance'],
 		});
-		console.log(balance);
+		//console.log(balance);
 
 		if (balance.length != 0) {
 			res.send(balance[0]);
@@ -39,6 +80,45 @@ const getUserBalance = async (req, res) => {
 
 
 const doPayment = async (req, res) => {
+
+	const authHeader = req.headers['authorization']
+	const token = authHeader && authHeader.split(' ')[1]
+
+	if (token == null) {
+
+		res.status(403).send({
+			message: "Access Forbidden,invalide token",
+		});
+		return;
+	}
+
+	try {
+		const user = jwt.verify(token, process.env.JWT_SECRET);
+		if (user != undefined) {
+
+			const role = user.role
+
+			if (role != "locataire") { //only locataire can do this operation
+				res.status(403).send({
+					message: "Access Forbidden,you can't do this operation",
+				});
+				return;
+
+			} else {
+
+
+
+			}
+
+		}
+
+	} catch (err) {
+		res.status(403).send({
+			message: "Access Forbidden,invalide token",
+		});
+		return;
+	}
+
 	// Validate request
 
 	if (!req.params.id) {

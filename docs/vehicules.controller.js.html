@@ -28,6 +28,41 @@
         <article>
             <pre class="prettyprint source linenums"><code>const db = require('../models');
 const Vehicule = db.vehicules;
+const Reservation = db.reservation;
+const Borne = db.Borne; 
+const Locataire= db.Locataire;
+
+const cloudinary = require('cloudinary').v2
+require('dotenv').config()
+
+// cloudinary configuration
+cloudinary.config({
+	cloud_name: process.env.CLOUD_NAME,
+	api_key: process.env.API_KEY,
+	api_secret: process.env.API_SECRET
+  });
+
+
+const cloudinary = require('cloudinary').v2;
+require('dotenv').config();
+
+// cloudinary configuration
+cloudinary.config({
+	cloud_name: process.env.CLOUD_NAME,
+	api_key: process.env.API_KEY,
+	api_secret: process.env.API_SECRET,
+});
+
+const cloudinary = require('cloudinary').v2
+require('dotenv').config()
+
+// cloudinary configuration
+cloudinary.config({
+	cloud_name: process.env.CLOUD_NAME,
+	api_key: process.env.API_KEY,
+	api_secret: process.env.API_SECRET
+  });
+
 
 /**
  * Create and save a new Vehicule in database
@@ -38,10 +73,26 @@ const Vehicule = db.vehicules;
 
 const createVehicule = async (req, res) => {
 	// Validate request
-	if (!req.body.numChassis) {
+<<<<<<< HEAD
+	if (!req.body.numChassis || !req.body.numImmatriculation || !req.body.modele || !req.body.marque || !req.body.couleur
+		|| !req.body.etat || !req.body.idAgentMaintenance || !req.body.idBorne || !req.body.image ) {
 		res.status(400).send({
 			message: 'Content can not be empty!',
 		});
+		console.log(req.body.numChassis);
+		console.log(req.body.numImmatriculation);
+		console.log(req.body.modele);
+=======
+	if (!req.body.numChassis || !body.numImmatriculation || !req.body.modele || !req.body.marque || !req.body.couleur
+		|| !req.body.etat ) {
+		res.status(400).send({
+			message: 'Content can not be empty!',
+		});
+		console.log( req.body.numChassis);
+		console.log(req.body.numImmatriculation); 
+		console.log(req.body.modele); 
+>>>>>>> feature/Boucheta/updateBorne
+		console.log(req.body.couleur);
 		return;
 	}
 	// Create a Vehicule
@@ -60,13 +111,48 @@ const createVehicule = async (req, res) => {
 		niveauMinimumHuile: req.body.niveauMinimumHuile,
 		regulateurVitesse: req.body.regulateurVitesse,
 		limiteurVitesse: req.body.limiteurVitesse,
+<<<<<<< HEAD
+		idBorne: req.body.idBorne, 
+		idAgentMaintenance: req.body.idAgentMaintenance,
+=======
+>>>>>>> feature/Boucheta/updateBorne
+	    idCloudinary: "", 
+		secureUrl: ""
 	};
 
-	// Add data to databse 
+	// upload image to cloudinary here
+	if (req.body.image) {
+		const image = req.body.image;
+		try{
+			ress= await cloudinary.uploader.upload(req.body.image)
+			.then((result) => {
+				vehicule.idCloudinary=result.public_id;
+				vehicule.secureUrl= result.secure_url;
+		
+			}); 
+		} catch(error){
+			console.log(error);
+		}
+	}
+	// Ajout d'un véhicule à la base de données
 	try {
-		data = await Vehicule.create(vehicule).then((data) => {
-			res.send(data);
-		});
+
+		let result = await Vehicule.findAll({
+			where: {
+				numChassis: req.body.numChassis,
+			}
+	  
+		  })
+		  if (result.length > 0) {
+			  res.status(400).send({
+			  message: "Vehicule already exists!"
+			})
+		  } else {
+				data = await Vehicule.create(vehicule).then((data) => {
+				res.send(data);
+			});
+		  }
+		  
 	} catch (err) {
 		res.status(500).send({
 			error: err.message || 'Some error occurred while creating the Vehicule.',
@@ -102,7 +188,7 @@ const deleteVehicule = async (req, res) => {
 		})
 		.catch((err) => {
 			res.status(500).send({
-				message: 'Could not delete Tutorial with id=' + id,
+				message: 'Could not delete Vehicule with id=' + id,
 			});
 		});
 };
@@ -139,7 +225,7 @@ const updateVehicule = async (req, res) => {
 
 /**
  * Return details of all vehicules thar are stored in database
- * @param {*} req request 
+ * @param {*} req request
  * @param {*} res response
  */
 
@@ -156,25 +242,35 @@ const getAllVehicule = async (req, res) => {
 };
 
 /**
- * Return vehciule details of the vehicule that has the specified ID in request body
+<<<<<<< HEAD
+ * This function displays the details of a given car, identified by it's num chassis
+ * return 404 status with not_found error as json if it doesn't exist
+ * return 200 status with the actual car oin json if it exists
+ *
+ * @param {*} req The request of the client
+ * @param {*} res The response from the server
+ * @param {*} next Used to move on to the next middleware
+ */
+
+=======
+ * Get details of the Vehicule that has the specified ID in request body 
  * @param {*} req The request
  * @param {*} res The response
  */
-//Returne vehiule with numChassis = id
+>>>>>>> feature/Boucheta/updateBorne
 const getVehiculeDetails = async (req, res, next) => {
 	try {
-		if (parseInt(req.params.numChassis, 10)) {
+		if (parseInt(req.params.id, 10)) {
 			const vehicule = await Vehicule.findAll({
 				where: {
-					numChassis: +req.params.numChassis,
+					numChassis: +req.params.id,
 				},
 			});
 			if (vehicule.length === 0) {
 				// No content with that numChassis
 				res.status(404).send({
 					error: 'not_found',
-					message: `No vehicule with such numero chassis: ${+req.params
-						.numChassis}`,
+					message: `No vehicule with such numero chassis: ${+req.params.id}`,
 					status: 404,
 				});
 			} else {
@@ -189,24 +285,71 @@ const getVehiculeDetails = async (req, res, next) => {
 	}
 };
 
-const selectVehicuesOfAGivenAgent = async (req, res) => {
+
+/**
+ * Get reservation history of the Vehicule that has the specified ID in request body 
+ * @param {*} req The request
+ * @param {*} res The response
+ */
+const getVehiculeReservations = async (req, res, next) => {
 	try {
-		const vehicules = await Vehicule.findAll({
-			where: {
-				idAgentMaintenance: +req.params.id,
-			},
-		});
-		if (vehicules.length === 0) {
-			// No content with that id
-			res.status(404).send({
-				error: 'not_found',
-				message: `No content with such id: ${+req.params.id}`,
-				status: 404,
+		if (parseInt(req.params.id, 10)) {
+			console.log("HEEEEY I'm here");
+			const historiqueReservation = await Reservation.findAll({
+				where: {
+					idVehicule: +req.params.id,
+				},
 			});
-		} else {
+			if (historiqueReservation.length === 0) {
+				// Ce vehicule n'a aucune réservation 
+				res.status(404).send({
+					error: 'not_found',
+					message: `Ce véhicule n'a aucune réservation en historique: ${+req.params.numChassis}`,
+					status: 404,
+				});
+			} else {
+				res.status(200).send(historiqueReservation);
+			}
+		} else next();
+	} catch (err) {
+		res.status(500).send({
+			error:
+				err.message || 'Some error occured while retreiving vehicule"s reservation history',
+		});
+	}
+};
+
+const selectVehicuesOfAGivenAgent = async (req, res) => {
+/**
+ * This function returns all vehicules of a given agent de maintenace, identified by it's id
+ * returns 404 status with not-found error message if nothing is found
+ * returns 200 status with the actuals cars if the car(s) exist(s)
+ *
+ * @param {*} req The client request
+ * @param {*} res The server response
+ * @param {*} done Used to move on into the next middleware
+ */
+
+const selectVehicuesOfAGivenAgent = async (req, res, done) => {
+	try {
+		if (parseInt(req.params.id, 10)) {
+			const vehicules = await Vehicule.findAll({
+				where: {
+					idAgentMaintenance: +req.params.id,
+				},
+			});
+			if (vehicules.length === 0) {
+				// No content with that id
+				res.status(404).send({
+					error: 'not_found',
+					message: `No content with such id: ${+req.params.id}`,
+					status: 404,
+				});
+			} else {
+				res.status(200).send(vehicules);
+			}
 			res.status(200).send(vehicules);
-		}
-		res.status(200).send(vehicules);
+		} else done();
 	} catch (err) {
 		res.status(500).send({
 			error:
@@ -217,6 +360,15 @@ const selectVehicuesOfAGivenAgent = async (req, res) => {
 	}
 };
 
+/**
+ * This function gets fired on a PUT request to /api/vehicules/etat/:numChassis
+ * the request should have an attribute 'etat' set to either 'en-service' or 'hors-service', no other values are accepted
+ * returns a 404 status with not-found error message if the num chasiis given doesn't exist
+ * returns an object {Updated rows, UpdatedVehicule} contained numer of rows affected (modified) and the actual cars which have been affected
+ *
+ * @param {*} req The client requeest
+ * @param {*} res The server response
+ */
 const setEtatVehicule = async (req, res) => {
 	try {
 		let state = req.body.etat;
@@ -270,11 +422,21 @@ const setEtatVehicule = async (req, res) => {
 	}
 };
 
-const getVehiculesEnService = async (req, res) => {
+/**
+ * returns all 'en-service' cars of a given agent de maintenace, identified by id
+ * returns 404 status with not-found error message if no id is found
+ * return 200 status with all the concerned cars in form of json
+ *
+ * @param {*} req The client request
+ * @param {*} res The server response
+ */
+
+const getVehiculesEnServiceOfAGivenAgent = async (req, res) => {
 	try {
 		const vehiculesEnService = await Vehicule.findAll({
 			where: {
 				etat: 'en service',
+				idAgentMaintenance: +req.params.id,
 			},
 		});
 		if (vehiculesEnService.length === 0) {
@@ -296,11 +458,21 @@ const getVehiculesEnService = async (req, res) => {
 	}
 };
 
-const getVehiculesHorsService = async (req, res) => {
+/**
+ * This function returns all 'hors-service' cars of a given aget de maintenace, identified by it's id
+ * returns 404 status with not-found error message if no such id exist
+ * returns 200 status with all the concerned cars in form of json
+ *
+ * @param {*} req The client request
+ * @param {*} res The server response
+ */
+
+const getVehiculesHorsServiceOfAGivenAgent = async (req, res) => {
 	try {
 		const vehiculesHorsService = await Vehicule.findAll({
 			where: {
 				etat: 'hors service',
+				idAgentMaintenance: +req.params.id,
 			},
 		});
 		if (vehiculesHorsService.length === 0) {
@@ -326,16 +498,14 @@ export default {
 	setEtatVehicule,
 	getVehiculeDetails,
 	selectVehicuesOfAGivenAgent,
-	getVehiculesEnService,
-	getVehiculesHorsService,
+	getVehiculesEnServiceOfAGivenAgent,
+	getVehiculesHorsServiceOfAGivenAgent,
 
 	createVehicule,
 	deleteVehicule,
 	updateVehicule,
-	// Ca existe déja.. C'est : getVehiculeDetails
-	// getOneVehicule,
 	getAllVehicule,
-	//getVehiculeByCondition
+	getVehiculeReservations
 };
 </code></pre>
         </article>
@@ -347,13 +517,31 @@ export default {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#createBorne">createBorne</a></li><li><a href="global.html#createVehicule">createVehicule</a></li><li><a href="global.html#deleteVehicule">deleteVehicule</a></li><li><a href="global.html#getAllBornes">getAllBornes</a></li><li><a href="global.html#getAllVehicule">getAllVehicule</a></li><li><a href="global.html#getBorne">getBorne</a></li><li><a href="global.html#getFilteredBornes">getFilteredBornes</a></li><li><a href="global.html#getVehiculeDetails">getVehiculeDetails</a></li><li><a href="global.html#updateVehicule">updateVehicule</a></li></ul>
+<<<<<<< HEAD
+<<<<<<< HEAD
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#createBorne">createBorne</a></li><li><a href="global.html#createReclamation">createReclamation</a></li><li><a href="global.html#createVehicule">createVehicule</a></li><li><a href="global.html#deleteReclamation">deleteReclamation</a></li><li><a href="global.html#deleteVehicule">deleteVehicule</a></li><li><a href="global.html#getAllBornes">getAllBornes</a></li><li><a href="global.html#getAllReclamations">getAllReclamations</a></li><li><a href="global.html#getAllVehicule">getAllVehicule</a></li><li><a href="global.html#getBorne">getBorne</a></li><li><a href="global.html#getCommune">getCommune</a></li><li><a href="global.html#getFilteredBornes">getFilteredBornes</a></li><li><a href="global.html#getReclamationDetails">getReclamationDetails</a></li><li><a href="global.html#getVehiclesInABorne">getVehiclesInABorne</a></li><li><a href="global.html#getVehiculeDetails">getVehiculeDetails</a></li><li><a href="global.html#getVehiculeReservations">getVehiculeReservations</a></li><li><a href="global.html#getWilaya">getWilaya</a></li><li><a href="global.html#updateVehicule">updateVehicule</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#createVehicule">createVehicule</a></li><li><a href="global.html#deleteVehicule">deleteVehicule</a></li><li><a href="global.html#getAllVehicule">getAllVehicule</a></li><li><a href="global.html#getVehiculeDetails">getVehiculeDetails</a></li><li><a href="global.html#getVehiculesEnServiceOfAGivenAgent">getVehiculesEnServiceOfAGivenAgent</a></li><li><a href="global.html#getVehiculesHorsServiceOfAGivenAgent">getVehiculesHorsServiceOfAGivenAgent</a></li><li><a href="global.html#selectVehicuesOfAGivenAgent">selectVehicuesOfAGivenAgent</a></li><li><a href="global.html#setEtatVehicule">setEtatVehicule</a></li><li><a href="global.html#updateVehicule">updateVehicule</a></li></ul>
+=======
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#createBorne">createBorne</a></li><li><a href="global.html#createVehicule">createVehicule</a></li><li><a href="global.html#deleteVehicule">deleteVehicule</a></li><li><a href="global.html#getAllBornes">getAllBornes</a></li><li><a href="global.html#getAllVehicule">getAllVehicule</a></li><li><a href="global.html#getBorne">getBorne</a></li><li><a href="global.html#getCommune">getCommune</a></li><li><a href="global.html#getFilteredBornes">getFilteredBornes</a></li><li><a href="global.html#getVehiclesInABorne">getVehiclesInABorne</a></li><li><a href="global.html#getVehiculeDetails">getVehiculeDetails</a></li><li><a href="global.html#getWilaya">getWilaya</a></li><li><a href="global.html#updateBorne">updateBorne</a></li><li><a href="global.html#updateVehicule">updateVehicule</a></li></ul>
+>>>>>>> feature/Boucheta/updateBorne
+=======
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addPlanMaintenance">addPlanMaintenance</a></li><li><a href="global.html#createAdmin">createAdmin</a></li><li><a href="global.html#createAgent">createAgent</a></li><li><a href="global.html#createBorne">createBorne</a></li><li><a href="global.html#createDirigeant">createDirigeant</a></li><li><a href="global.html#createIdentite">createIdentite</a></li><li><a href="global.html#createOperateur">createOperateur</a></li><li><a href="global.html#createTransaction">createTransaction</a></li><li><a href="global.html#createVehicule">createVehicule</a></li><li><a href="global.html#deleteAdmin">deleteAdmin</a></li><li><a href="global.html#deleteAgent">deleteAgent</a></li><li><a href="global.html#deleteAllAdmins">deleteAllAdmins</a></li><li><a href="global.html#deleteAllAgents">deleteAllAgents</a></li><li><a href="global.html#deleteAllDirigeants">deleteAllDirigeants</a></li><li><a href="global.html#deleteAllOperateurs">deleteAllOperateurs</a></li><li><a href="global.html#deleteBorne">deleteBorne</a></li><li><a href="global.html#deleteDirigeant">deleteDirigeant</a></li><li><a href="global.html#deleteIdentite">deleteIdentite</a></li><li><a href="global.html#deleteOperateur">deleteOperateur</a></li><li><a href="global.html#deleteVehicule">deleteVehicule</a></li><li><a href="global.html#filterTransaction">filterTransaction</a></li><li><a href="global.html#getAdmin">getAdmin</a></li><li><a href="global.html#getAgent">getAgent</a></li><li><a href="global.html#getAllAdmins">getAllAdmins</a></li><li><a href="global.html#getAllAgents">getAllAgents</a></li><li><a href="global.html#getAllBornes">getAllBornes</a></li><li><a href="global.html#getAllDirigeants">getAllDirigeants</a></li><li><a href="global.html#getAllIdentite">getAllIdentite</a></li><li><a href="global.html#getAllOperateurs">getAllOperateurs</a></li><li><a href="global.html#getAllVehicule">getAllVehicule</a></li><li><a href="global.html#getBorne">getBorne</a></li><li><a href="global.html#getCommune">getCommune</a></li><li><a href="global.html#getDirigeant">getDirigeant</a></li><li><a href="global.html#getFilteredBornes">getFilteredBornes</a></li><li><a href="global.html#getLocataireOfIdentity">getLocataireOfIdentity</a></li><li><a href="global.html#getOneIdentite">getOneIdentite</a></li><li><a href="global.html#getOperateur">getOperateur</a></li><li><a href="global.html#getOperatorOfIdentity">getOperatorOfIdentity</a></li><li><a href="global.html#getPlanMaintenance">getPlanMaintenance</a></li><li><a href="global.html#getTransaction">getTransaction</a></li><li><a href="global.html#getUserTransactions">getUserTransactions</a></li><li><a href="global.html#getVehiclesInABorne">getVehiclesInABorne</a></li><li><a href="global.html#getVehiculeDetails">getVehiculeDetails</a></li><li><a href="global.html#getVehiculesEnServiceOfAGivenAgent">getVehiculesEnServiceOfAGivenAgent</a></li><li><a href="global.html#getVehiculesHorsServiceOfAGivenAgent">getVehiculesHorsServiceOfAGivenAgent</a></li><li><a href="global.html#getWilaya">getWilaya</a></li><li><a href="global.html#invalider">invalider</a></li><li><a href="global.html#selectIdentitiesOfAGivenOperateur">selectIdentitiesOfAGivenOperateur</a></li><li><a href="global.html#selectVehicuesOfAGivenAgent">selectVehicuesOfAGivenAgent</a></li><li><a href="global.html#setEtatVehicule">setEtatVehicule</a></li><li><a href="global.html#updateAdmin">updateAdmin</a></li><li><a href="global.html#updateAgent">updateAgent</a></li><li><a href="global.html#updateDirigeant">updateDirigeant</a></li><li><a href="global.html#updateOperateur">updateOperateur</a></li><li><a href="global.html#updateVehicule">updateVehicule</a></li><li><a href="global.html#valider">valider</a></li></ul>
+>>>>>>> feature/medjahed/suppression
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Mon May 17 2021 20:14:52 GMT+0200 (GMT+02:00)
+<<<<<<< HEAD
+<<<<<<< HEAD
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Tue May 25 2021 17:37:05 GMT+0000 (GMT)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Tue May 25 2021 23:01:15 GMT+0200 (heure d’été d’Europe centrale)
+=======
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Thu May 27 2021 18:02:06 GMT+0100 (heure normale d’Europe centrale)
+>>>>>>> feature/Boucheta/updateBorne
+=======
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed May 26 2021 19:32:24 GMT+0200 (heure d’été d’Europe centrale)
+>>>>>>> feature/medjahed/suppression
 </footer>
 
 <script> prettyPrint(); </script>

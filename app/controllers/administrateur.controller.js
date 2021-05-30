@@ -2,6 +2,8 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const validator = require('validator');
 const passwordValidator = require('password-validator')
+var bcrypt = require("bcryptjs");
+var jwt = require("jsonwebtoken");
 const db = require("../models");
 const Administrateur = db.administrateur;
 
@@ -14,9 +16,15 @@ passwdValidator
 .has().uppercase()                              // Doit avoir des lettre en majuscules
 .has().lowercase()                              // Doit avoir des lettres en miniscules
 
+
+/**
+ * Récupérer un Administrateur avec un id donné
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
 // Récupérer un Administrateur avec un id donné
 
-exports.findOne = (req, res) => {
+const getAdmin = (req, res) => {
 
     //Récupérer l'id de l'Administrateur à modifier de l'url
     const id = req.params.id;
@@ -32,9 +40,15 @@ exports.findOne = (req, res) => {
     });
 };
 
+/**
+ * Récupérer des Administrateurs avec une condition sur le nom 
+ * ou sans condition, dans ce cas retourne tout les Administrateurs
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
 //Récupérer des Administrateurs avec une condition sur le nom (ou sans condition, dans ce cas retourne tout les Administrateurs)
 
-exports.findAll = (req, res) => {
+const getAllAdmins = async(req,res)=>{
 
     //Récupérer le nom de l'Administrateur de l'url
     const nom = req.query.nom;
@@ -54,13 +68,19 @@ exports.findAll = (req, res) => {
     });
 };
 
+
+/**
+ * Création d'un Administrateur
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
 //Création d'un Administrateur
 
-exports.create = (req, res) => {
+const createAdmin = async(req,res)=>{
           
     //Initialiser les attributs de l'Administrateur à créer
     const admin = {
-        idAdministrateur:req.body.id,
+        //idAdministrateur:req.body.id,
         nom: req.body.nom,
         prenom: req.body.prenom,
         email: req.body.email,
@@ -94,6 +114,10 @@ exports.create = (req, res) => {
                     });
                     return;
                 }else{
+                    //hasher le mot de passe
+                    var salt = bcrypt.genSaltSync(10);
+                    var hash = bcrypt.hashSync(admin.motDePasse, salt);
+                    admin.motDePasse= hash;
                     //Créer l'Administrateur
                     Administrateur.create(admin)
                     .then(data => {
@@ -111,9 +135,15 @@ exports.create = (req, res) => {
     }     
 };
 
+
+/**
+ * Modification d'un Administrateur
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
 //Modification d'un Administrateur
 
-exports.update = (req, res) => {
+const updateAdmin = (req, res) => {
 
     //Récupérer l'id de l'Administrateur à modifier de l'url
     const id = req.params.id;
@@ -136,6 +166,10 @@ exports.update = (req, res) => {
             });
             return;            
         }
+        //hasher le mot de passe
+        var salt = bcrypt.genSaltSync(10);
+        var hash = bcrypt.hashSync(req.body.motDePasse, salt);
+        req.body.motDePasse= hash;
     }
     //Nom si modifié
     if(req.body.nom){
@@ -178,9 +212,14 @@ exports.update = (req, res) => {
     });
 };
 
+/**
+ * Supprimer un Administrateur
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
 //Supprimer un Administrateur
 
-exports.delete = (req, res) => {
+const deleteAdmin = (req, res) => {
 
     //Récupérer l'id de l'Administrateur à modifier de l'url
     const id = req.params.id;
@@ -206,9 +245,14 @@ exports.delete = (req, res) => {
     });
 };
 
+/**
+ * Supprimer tout les Administrateurs
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
 //Supprimer tout les Administrateurs 
 
-exports.deleteAll = (req, res) => {
+const deleteAllAdmins = async (req, res) => {
 
     Administrateur.destroy({
         where: {},
@@ -222,4 +266,13 @@ exports.deleteAll = (req, res) => {
             message: err.message || "Une erreur est survenue lors de la suppression!"
         });
     });
+};
+
+export default {
+    createAdmin,
+    getAllAdmins,
+    getAdmin,
+    updateAdmin,
+    deleteAdmin,
+    deleteAllAdmins
 };
