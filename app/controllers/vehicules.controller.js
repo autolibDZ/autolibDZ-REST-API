@@ -7,6 +7,7 @@ const Locataire= db.Locataire;
 
 const cloudinary = require('cloudinary').v2;
 require('dotenv').config();
+let sequelize = require("sequelize");
 
 
 // cloudinary configuration
@@ -407,6 +408,38 @@ const getVehiculesHorsServiceOfAGivenAgent = async (req, res) => {
 	}
 };
 
+// Count vehicles (en-service) and count vehicles (hors-service)
+const countVehicles = async (req,res) =>{
+	try {
+		const countAll = await Vehicule.findAll({
+			attributes: [
+				[sequelize.fn('COUNT', sequelize.col('numChassis')), 'countAll'],
+			],
+		})
+		const countHorsService = await Vehicule.findAll({
+			attributes: [
+				[sequelize.fn('COUNT', sequelize.col('numChassis')), 'countHorsService'],
+			],
+			where: {etat:'hors service'}
+		})
+		const result = {}
+		if (countAll.length != 0) {
+			res.send([countAll[0],countHorsService[0]]);
+		} else {
+			res.status(404).send({
+				error: 'not_found',
+				message: 'No content',
+				status: 404,
+			});
+		}
+	} catch (err) {
+		res.status(500).send({
+			error: err.message || 'Some error occured while counting vehicules'
+		});
+	}
+	
+}
+
 export default {
 	setEtatVehicule,
 	getVehiculeDetails,
@@ -418,5 +451,6 @@ export default {
 	deleteVehicule,
 	updateVehicule,
 	getAllVehicule,
-	getVehiculeReservations
+	getVehiculeReservations,
+	countVehicles
 };

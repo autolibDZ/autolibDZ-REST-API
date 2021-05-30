@@ -6,6 +6,9 @@ vehiculeRouter.post('/', vehiculeController.createVehicule);
 vehiculeRouter.delete('/:id', vehiculeController.deleteVehicule);
 vehiculeRouter.put('/:id', vehiculeController.updateVehicule);
 
+// Count Vehicles (to use in dashboard)
+vehiculeRouter.get('/count', vehiculeController.countVehicles);
+
 // GET Details of a given vehicule's numero chassis
 vehiculeRouter.get('/:id', vehiculeController.getVehiculeDetails);
 
