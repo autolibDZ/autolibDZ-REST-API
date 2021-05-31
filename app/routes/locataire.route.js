@@ -16,6 +16,9 @@ router.put("/:id", locataireController.update);
 router.delete("/:id", locataireController.deleteLocataire);
 //Block or Unblock Locataire with id
 router.put('/block/:id', locataireController.block);
+//
+router.get('/validateAccount/:email', locataireController.validateAccount);
+
 
 
 export default router;
