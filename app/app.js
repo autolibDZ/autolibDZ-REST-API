@@ -20,7 +20,6 @@ import planMaintenaceRouter from './routes/planMaintenance.route';
 import identiteRouter from './routes/identite.route';
 import transactionRouter from './routes/transaction.route';
 
-
 dotenv.config();
 
 const app = express();
@@ -84,6 +83,9 @@ app.use('/api/trajet', trajetRouter);
 
 //Recalamation Router 
 app.use('/api/reclamation',reclamationRouter); 
+
+// algeria cities router
+//app.use('/api/algeria_cities',algeriacitiesRouter); 
 
 //Home
 app.use((req, res) => {
