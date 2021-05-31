@@ -104,6 +104,48 @@ const createReclamation = async (req, res) => {
 
 const getReclamationDetails = async (req, res) => {
 
+      // verify access
+      const authHeader = req.headers['authorization']
+      const token = authHeader && authHeader.split(' ')[1]
+      
+      if (token == null) {
+      
+        res.status(403).send({
+        message: "Access Forbidden,invalide token",
+        });
+        return;
+      }
+      
+      try {
+      
+        const user = jwt.verify(token, process.env.JWT_SECRET);
+      
+        if (user != undefined) {
+      
+        const role = user.role
+      
+        // Only admin can create Vehicule
+      
+        if (role != "admin") { //Ajouter dirigeant 
+      
+          res.status(403).send({
+          message: "Access Forbidden,you can't do this operation",
+          });
+      
+          return;
+        }
+        }
+      
+      } catch (err) {
+      
+        res.status(403).send({
+        message: "Access Forbidden,invalide token",
+        });
+      
+        return;
+      
+      }
+
   if (!req.params.id) {
 
     res.status(400).send({
@@ -148,6 +190,49 @@ const getReclamationDetails = async (req, res) => {
  * @param {*} res response
  */
 const getAllReclamations = async (req, res) => {
+
+  // verify access
+	const authHeader = req.headers['authorization']
+	const token = authHeader && authHeader.split(' ')[1]
+  
+	if (token == null) {
+  
+	  res.status(403).send({
+		message: "Access Forbidden,invalide token",
+	  });
+	  return;
+	}
+  
+	try {
+  
+	  const user = jwt.verify(token, process.env.JWT_SECRET);
+  
+	  if (user != undefined) {
+  
+		const role = user.role
+  
+		// Only admin can create Vehicule
+  
+		if (role != "admin") { // Ajouter dirigeant 
+  
+		  res.status(403).send({
+			message: "Access Forbidden,you can't do this operation",
+		  });
+  
+		  return;
+		}
+	  }
+  
+	} catch (err) {
+  
+	  res.status(403).send({
+		message: "Access Forbidden,invalide token",
+	  });
+  
+	  return;
+  
+	}
+
   try {
 
     const data = await Reclamation.findAll()
@@ -185,6 +270,48 @@ const getAllReclamations = async (req, res) => {
 //Delete claim with idReclamaton = id
 
 const deleteReclamation = async (req, res) => {
+
+        // verify access
+      const authHeader = req.headers['authorization']
+      const token = authHeader && authHeader.split(' ')[1]
+      
+      if (token == null) {
+      
+        res.status(403).send({
+        message: "Access Forbidden,invalide token",
+        });
+        return;
+      }
+      
+      try {
+      
+        const user = jwt.verify(token, process.env.JWT_SECRET);
+      
+        if (user != undefined) {
+      
+        const role = user.role
+      
+        // Only admin can create Vehicule
+      
+        if (role != "admin") {
+      
+          res.status(403).send({
+          message: "Access Forbidden,you can't do this operation",
+          });
+      
+          return;
+        }
+        }
+      
+      } catch (err) {
+      
+        res.status(403).send({
+        message: "Access Forbidden,invalide token",
+        });
+      
+        return;
+      
+      }
 	const id = req.params.id;
 
 	Reclamation.destroy({
