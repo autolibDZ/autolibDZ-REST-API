@@ -9,6 +9,49 @@ const Reclamation = db.reclamation;
 // Create and Save a new Claim
 
 const createReclamation = async (req, res) => {
+      // verify access
+    const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(' ')[1]
+    
+    if (token == null) {
+    
+      res.status(403).send({
+      message: "Access Forbidden,invalide token",
+      });
+      return;
+    }
+    
+    try {
+    
+      const user = jwt.verify(token, process.env.JWT_SECRET);
+    
+      if (user != undefined) {
+    
+      const role = user.role
+    
+      // Only admin can create Vehicule
+    
+      if (role != "admin") {
+    
+        res.status(403).send({
+        message: "Access Forbidden,you can't do this operation",
+        });
+    
+        return;
+      }
+      }
+    
+    } catch (err) {
+    
+      res.status(403).send({
+      message: "Access Forbidden,invalide token",
+      });
+    
+      return;
+    
+    }
+
+
   // Create a Claim
 
   if (!req.body.description || !req.body.emailLocataire) {

@@ -11,15 +11,6 @@ const Op = Sequelize.Op;
 const cloudinary = require('cloudinary').v2;
 require('dotenv').config();
 let sequelize = require("sequelize");
-
-
-// cloudinary configuration
-cloudinary.config({
-	cloud_name: process.env.CLOUD_NAME,
-	api_key: process.env.API_KEY,
-	api_secret: process.env.API_SECRET,
-});
-
 /**
  * Create and save a new Vehicule in database
  * @param {*} req The request
@@ -28,6 +19,49 @@ cloudinary.config({
 // Create and Save a new Vehicule
 
 const createVehicule = async (req, res) => {
+
+	// verify access
+	const authHeader = req.headers['authorization']
+	const token = authHeader && authHeader.split(' ')[1]
+  
+	if (token == null) {
+  
+	  res.status(403).send({
+		message: "Access Forbidden,invalide token",
+	  });
+	  return;
+	}
+  
+	try {
+  
+	  const user = jwt.verify(token, process.env.JWT_SECRET);
+  
+	  if (user != undefined) {
+  
+		const role = user.role
+  
+		// Only admin can create Vehicule
+  
+		if (role != "admin") {
+  
+		  res.status(403).send({
+			message: "Access Forbidden,you can't do this operation",
+		  });
+  
+		  return;
+		}
+	  }
+  
+	} catch (err) {
+  
+	  res.status(403).send({
+		message: "Access Forbidden,invalide token",
+	  });
+  
+	  return;
+  
+	}
+
 	// Validate request
 	if (!req.body.numChassis || !req.body.numImmatriculation || !req.body.modele || !req.body.marque || !req.body.couleur
 		|| !req.body.etat || !req.body.idAgentMaintenance || !req.body.idBorne ) {
@@ -56,20 +90,8 @@ const createVehicule = async (req, res) => {
 		idAgentMaintenance: req.body.idAgentMaintenance,
 	    idCloudinary: req.body.idCloudinary, 
 		secureUrl: req.body.secureUrl
-	};
+	}; 
 
-	// upload image to cloudinary here
-	/* if (req.body.image) {
-		const image = req.body.image;
-		try {
-			ress = await cloudinary.uploader.upload(req.body.image).then((result) => {
-				vehicule.idCloudinary = result.public_id;
-				vehicule.secureUrl = result.secure_url;
-			});
-		} catch (error) {
-			console.log(error);
-		}
-	}*/ 
 	// Ajout d'un véhicule à la base de données
 	try {
 		let result = await Vehicule.findAll({
@@ -134,6 +156,50 @@ const deleteVehicule = async (req, res) => {
  */
 //Update vehicule with numChassis = id
 const updateVehicule = async (req, res) => {
+
+	// verify access
+	const authHeader = req.headers['authorization']
+	const token = authHeader && authHeader.split(' ')[1]
+  
+  
+	if (token == null) {
+  
+	  res.status(403).send({
+		message: "Access Forbidden,invalide token",
+	  });
+	  return;
+	}
+  
+	try {
+  
+	  const user = jwt.verify(token, process.env.JWT_SECRET);
+  
+	  if (user != undefined) {
+  
+		const role = user.role
+  
+		// Only admin can create Borne
+  
+		if (role != "admin") {
+  
+		  res.status(403).send({
+			message: "Access Forbidden,you can't do this operation",
+		  });
+  
+		  return;
+		}
+	  }
+  
+	} catch (err) {
+  
+	  res.status(403).send({
+		message: "Access Forbidden,invalide token",
+	  });
+  
+	  return;
+  
+	}
+
 	const id = req.params.id;
 	Vehicule.update(req.body, {
 		where: { numChassis: id },
@@ -163,6 +229,51 @@ const updateVehicule = async (req, res) => {
  */
 
 const getAllVehicule = async (req, res) => {
+
+	// verify access
+	const authHeader = req.headers['authorization']
+	const token = authHeader && authHeader.split(' ')[1]
+  
+  
+	if (token == null) {
+  
+	  res.status(403).send({
+		message: "Access Forbidden,invalide token",
+	  });
+	  return;
+	}
+  
+	try {
+  
+	  const user = jwt.verify(token, process.env.JWT_SECRET);
+  
+	  if (user != undefined) {
+  
+		const role = user.role
+  
+		// Only admin can create Borne
+  
+		if (role != "admin") {
+  
+		  res.status(403).send({
+			message: "Access Forbidden,you can't do this operation",
+		  });
+  
+		  return;
+		}
+	  }
+  
+	} catch (err) {
+  
+	  res.status(403).send({
+		message: "Access Forbidden,invalide token",
+	  });
+  
+	  return;
+  
+	}
+
+
 	Vehicule.findAll({
 		where: {
 			etat: {
@@ -191,6 +302,48 @@ const getAllVehicule = async (req, res) => {
  */
 
 const getVehiculeDetails = async (req, res, next) => {
+	// verify access
+	const authHeader = req.headers['authorization']
+	const token = authHeader && authHeader.split(' ')[1]
+  
+  
+	if (token == null) {
+  
+	  res.status(403).send({
+		message: "Access Forbidden,invalide token",
+	  });
+	  return;
+	}
+  
+	try {
+  
+	  const user = jwt.verify(token, process.env.JWT_SECRET);
+  
+	  if (user != undefined) {
+  
+		const role = user.role
+  
+		// Only admin can create Borne
+  
+		if (role != "admin" || role != "locataire") {
+  
+		  res.status(403).send({
+			message: "Access Forbidden,you can't do this operation",
+		  });
+  
+		  return;
+		}
+	  }
+  
+	} catch (err) {
+  
+	  res.status(403).send({
+		message: "Access Forbidden,invalide token",
+	  });
+  
+	  return;
+  
+	}
 	try {
 		if (parseInt(req.params.id, 10)) {
 			const vehicule = await Vehicule.findAll({
@@ -224,6 +377,49 @@ const getVehiculeDetails = async (req, res, next) => {
  * @param {*} res The response
  */
 const getVehiculeReservations = async (req, res, next) => {
+
+	// verify access
+	const authHeader = req.headers['authorization']
+	const token = authHeader && authHeader.split(' ')[1]
+  
+  
+	if (token == null) {
+  
+	  res.status(403).send({
+		message: "Access Forbidden,invalide token",
+	  });
+	  return;
+	}
+  
+	try {
+  
+	  const user = jwt.verify(token, process.env.JWT_SECRET);
+  
+	  if (user != undefined) {
+  
+		const role = user.role
+  
+		// Only admin can create Borne
+  
+		if (role != "admin") {
+  
+		  res.status(403).send({
+			message: "Access Forbidden,you can't do this operation",
+		  });
+  
+		  return;
+		}
+	  }
+  
+	} catch (err) {
+  
+	  res.status(403).send({
+		message: "Access Forbidden,invalide token",
+	  });
+  
+	  return;
+  
+	}
 	const historytable= []; 
 	try {
 		if (parseInt(req.params.id, 10)) {
