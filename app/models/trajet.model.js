@@ -32,6 +32,11 @@ module.exports = function(sequelize, Sequelize) {
     });
 
 
+    Trajet.associate = models => {
+        Trajet.belongsTo(models.reservation, {
+            foreignKey: 'idReservation',
 
+        });
+    };
     return Trajet;
 };

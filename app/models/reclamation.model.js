@@ -3,12 +3,15 @@ module.exports = function(sequelize, Sequelize) {
         idReclamation: {
             type: Sequelize.INTEGER,
             primaryKey: true,
+            autoIncrement: true
         },
         description: {
-            type: Sequelize.STRING(50)
+            type: Sequelize.STRING(50),
+            allowNull: false
         },
-        idLocataire: {
-            type: Sequelize.INTEGER,
+        emailLocataire: {
+            type: Sequelize.STRING(50),
+            allowNull:false
         }
     }, {
         freezeTableName: true,

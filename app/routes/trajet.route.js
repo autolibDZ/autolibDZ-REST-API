@@ -11,6 +11,7 @@ trajetRouter.get('/:id', trajetController.findTrajetById);
 trajetRouter.put('/:id', trajetController.updateTrajetById);
 trajetRouter.delete('/:id', trajetController.deleteTrajetById);
 
+
 export default trajetRouter;
 
 

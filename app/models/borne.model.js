@@ -41,6 +41,10 @@ module.exports = function (sequelize, Sequelize) {
       type: Sequelize.INTEGER,
       allowNull: false
     },
+    etat:{
+      type: Sequelize.INTEGER,
+      defaultValue : 1
+    }
   },
   {
 
@@ -52,6 +56,12 @@ module.exports = function (sequelize, Sequelize) {
     
   }
   );
+
+  Borne.associate = function (modals) {
+		Borne.hasMany(modals.Vehicule, {
+			foreignKey: 'idBorne',
+		});
+	};
 
   return Borne;
 }

@@ -36,6 +36,7 @@ module.exports = function(sequelize, Sequelize) {
 
     return Locataire;
 };
+
 /*
 Locataire.associate = (models) => {
     Locataire.hasMany(models.Abonnement, {

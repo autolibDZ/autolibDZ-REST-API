@@ -2,6 +2,8 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const validator = require('validator');
 const passwordValidator = require('password-validator')
+var bcrypt = require("bcryptjs");
+var jwt = require("jsonwebtoken");
 const db = require("../models");
 const Dirigeant = db.dirigenat;
 
@@ -14,9 +16,15 @@ passwdValidator
 .has().uppercase()                              // Doit avoir des lettre en majuscules
 .has().lowercase()                              // Doit avoir des lettres en miniscules
 
+
+/**
+ * Récupérer un Dirigeant avec un id donné
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
 // Récupérer un Dirigeant avec un id donné
 
-exports.findOne = (req, res) => {
+const getDirigeant = (req, res) => {
 
     //Récupérer l'id de l'Dirigeant à modifier de l'url
     const id = req.params.id;
@@ -32,9 +40,16 @@ exports.findOne = (req, res) => {
     });
 };
 
+
+/**
+ * Récupérer des Dirigeants avec une condition sur le nom 
+ * ou sans condition, dans ce cas retourne tout les Dirigeants
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
 //Récupérer des Dirigeants avec une condition sur le nom (ou sans condition, dans ce cas retourne tout les Dirigeants)
 
-exports.findAll = (req, res) => {
+const getAllDirigeants = (req, res) => {
 
     //Récupérer le nom de l'Dirigeant de l'url
     const nom = req.query.nom;
@@ -54,13 +69,18 @@ exports.findAll = (req, res) => {
     });
 };
 
+/**
+ * Création d'un Dirigeant
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
 //Création d'un Dirigeant
 
-exports.create = (req, res) => {
+const createDirigeant = (req, res) => {
           
     //Initialiser les attributs de l'Dirigeant à créer
     const dirigeant = {
-        idDirigeant:req.body.id,
+        //idDirigeant:req.body.id,
         nom: req.body.nom,
         prenom: req.body.prenom,
         email: req.body.email,
@@ -94,6 +114,10 @@ exports.create = (req, res) => {
                     });
                     return;
                 }else{
+                    //hasher le mot de passe
+                    var salt = bcrypt.genSaltSync(10);
+                    var hash = bcrypt.hashSync(dirigeant.motDePasse, salt);
+                    dirigeant.motDePasse= hash;
                     //Créer l'Dirigeant
                     Dirigeant.create(dirigeant)
                     .then(data => {
@@ -111,9 +135,15 @@ exports.create = (req, res) => {
     }     
 };
 
+
+/**
+ * Modification d'un Dirigeant
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
 //Modification d'un Dirigeant
 
-exports.update = (req, res) => {
+const updateDirigeant = (req, res) => {
 
     //Récupérer l'id de l'Dirigeant à modifier de l'url
     const id = req.params.id;
@@ -178,9 +208,14 @@ exports.update = (req, res) => {
     });
 };
 
+/**
+ * Supprimer un Dirigeant
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
 //Supprimer un Dirigeant
 
-exports.delete = (req, res) => {
+const deleteDirigeant = (req, res) => {
 
     //Récupérer l'id de l'Dirigeant à modifier de l'url
     const id = req.params.id;
@@ -206,9 +241,14 @@ exports.delete = (req, res) => {
     });
 };
 
+/**
+ * Supprimer tout les Dirigeants 
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
 //Supprimer tout les Dirigeants 
 
-exports.deleteAll = (req, res) => {
+const deleteAllDirigeants = (req, res) => {
 
     Dirigeant.destroy({
         where: {},
@@ -222,4 +262,13 @@ exports.deleteAll = (req, res) => {
             message: err.message || "Une erreur est survenue lors de la suppression!"
         });
     });
+};
+
+export default {
+    createDirigeant,
+    getAllDirigeants,
+    getDirigeant,
+    updateDirigeant,
+    deleteDirigeant,
+    deleteAllDirigeants
 };

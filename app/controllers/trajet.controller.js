@@ -1,5 +1,6 @@
 const db = require('../models');
 const Trajet = db.trajet;
+var sequelize = require("sequelize");
 const createTrajet = async(req, res) => {
 
     if (!req.body.dateDebut || !req.body.dateFin || !req.body.tempsEstime|| !req.body.kmParcourue|| !req.body.prixAPayer|| !req.body.idReservation) {
