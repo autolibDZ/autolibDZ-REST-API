@@ -235,8 +235,7 @@ const getVehiculeReservations = async (req, res, next) => {
 					status: 404,
 				});
 			} else {
-				
-				//res.status(200).send(historiqueReservation);
+
 				var i=0;
 				for ( i=0;i<historiqueReservation.length ; i++){
 					 let reservationDetails={
@@ -249,14 +248,23 @@ const getVehiculeReservations = async (req, res, next) => {
 							"prenomLocataire": "", 
 							"etatReservation":"", 
 							"dateDebut":"", 
-							"dateFin":""
+							"dateFin":"", 
+							"idTrajet":"", 
+							"nbKm":"",
+							"nbKmEstime":"", 
+							"tempsEstime":"",
+							"tempsReel":"",
+							"prixEstime":"",
+							"prixAPayer":""
 						}; 
 				
-					   console.log(i);
-		
-					   console.log(historiqueReservation[i].idBorneDepart);
+					   //console.log(i);
+					   //console.log(historiqueReservation[i].idBorneDepart);
 					   reservationDetails.idReservation=historiqueReservation[i].idReservation;
 					   reservationDetails.etatReservation=historiqueReservation[i].etat;
+					   reservationDetails.tempsEstime=historiqueReservation[i].tempsEstime;
+					   reservationDetails.prixEstime=historiqueReservation[i].prixEstime; 
+					   reservationDetails.nbKmEstime=historiqueReservation[i].distanceEstime; 
 					
 						//Récuperer le nom de la borne de départ 
 						const result = await Borne.findAll({
@@ -288,7 +296,7 @@ const getVehiculeReservations = async (req, res, next) => {
 							reservationDetails.nomBorneDestination=rows2.nomBorne;
 							reservationDetails.WilayaBorneDestination=rows2.wilaya; 
 
-							if (reservationDetails.etatReservation=="Terminée" || reservationDetails.etatReservation=="En cours" ){
+							if (reservationDetails.etatReservation=="Terminée" || reservationDetails.etatReservation=="Active" ){
 
 								const result3 = await Trajet.findAll({
 									where: {
@@ -296,8 +304,14 @@ const getVehiculeReservations = async (req, res, next) => {
 									},
 								}); 	
 									var rows3 = JSON.parse(JSON.stringify(result3[0]));
+									reservationDetails.idTrajet=rows3.idTrajet; 
 									if(rows3.dateDebut != null) {reservationDetails.dateDebut= rows3.dateDebut }
-									if(rows3.dateFin != null ) {reservationDetails.dateFin= rows3.dateFin }
+									if(rows3.dateFin != null ) {	
+										reservationDetails.dateFin= rows3.dateFin;
+										reservationDetails.nbKm= rows3.kmParcourue;
+										reservationDetails.tempsReel = rows3.tempsEstime;
+										reservationDetails.prixAPayer= rows3.prixAPayer;
+									}
 							}
 							historytable.push(reservationDetails); 		
 					}
