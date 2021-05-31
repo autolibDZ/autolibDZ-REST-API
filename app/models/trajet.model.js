@@ -3,6 +3,7 @@ module.exports = function(sequelize, Sequelize) {
         idTrajet: {
             type: Sequelize.INTEGER,
             primaryKey: true,
+            autoIncrement:true,
         },
         dateDebut: {
             type: Sequelize.DATE,
@@ -31,6 +32,11 @@ module.exports = function(sequelize, Sequelize) {
     });
 
 
+    Trajet.associate = models => {
+        Trajet.belongsTo(models.reservation, {
+            foreignKey: 'idReservation',
 
+        });
+    };
     return Trajet;
 };

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: transaction.controller.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: transaction.controller.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const db = require("../models");
+const Transaction = db.transaction;
+const { Op } = require("sequelize");
+
+/**
+ * Create and save a new transaction in database
+ * @param {*} req The request
+ * @param {*} res The response
+* @returns {object} The transaction that created 
+ */
+
+const createTransaction = async (req, res) => {
+     // Validate request
+
+     if (!req.body.idReservation) {
+          res.status(400).send({
+               error: "validation_error",
+               message: "Id reservation can not be empty!"
+          });
+          return;
+     }
+
+     if (!req.body.idLocataire) {
+          res.status(400).send({
+               error: "validation_error",
+               message: "Id locataire can not be empty!"
+          });
+          return;
+     }
+
+     if (typeof (req.body.montant) !== "number") {
+          res.status(400).send({
+               error: "validation_error",
+               message: "montant must be a number",
+          });
+          return;
+     }
+
+     if (req.body.montant &lt; 0) {
+          res.status(400).send({
+               message: "montant must be a positive number",
+          });
+          return;
+     }
+
+
+     // Create a transaction
+     const transaction = {
+          idLocataire: req.body.idLocataire,   //sinon through session
+          idReservation: req.body.idReservation,
+          montant: req.body.montant,
+          moyenPayement: req.body.moyenPayement,
+          dateTransaction: req.body.dateTransaction ? req.body.dateTransaction : Date.now(),
+     };
+
+
+     // Save Transaction in the database
+     try {
+          let reseravation = await Transaction.findAll({
+               where: {
+                    idReservation: req.body.idReservation
+               }
+          })
+          if (reseravation.length > 0) {
+               res.status(400).send({
+                    message: "Reservation already paid."
+               });
+          } else {
+               let data = await Transaction.create(transaction)
+               res.status(201).send(data);
+          }
+     }
+     catch (err) {
+          res.status(500).send({
+               error: err.message || "Some error occurred while creating the Transaction."
+          });
+     }
+};
+
+
+/**
+*Returns the transaction history of a specific user
+ * @param {*} req The request
+ * @param {*} res The response
+* @returns {*} A list of transactions
+ */
+
+const getUserTransactions = async (req, res) => {
+     // Validate request
+     if (!req.params.id) {
+          res.status(400).send({
+               message: "Id locataire can not be empty!"
+          });
+          return;
+     }
+
+     try {
+          const id = req.params.id
+          let transactions = await Transaction.findAll({
+               where: {
+                    idLocataire: id
+               }
+          })
+          if (transactions.length > 0) {
+               res.status(200).send(transactions)
+          } else {
+               res.status(404).send({
+                    error: "not_found",
+                    message: "Locataire with ID " + id + " has no transaction yet"
+               })
+          }
+     }
+     catch (err) {
+          res.status(500).send({
+               error: err.message || "Some error occurred while creating the Transaction."
+          });
+     }
+};
+
+
+/**
+ * Visualize transaction details 
+ * @param {*} req The request
+ * @param {*} res The response
+* @returns {object}  Transaction 
+ */
+
+
+const getTransaction = async (req, res) => {
+     // Validate request
+     if (!req.params.id) {
+          res.status(400).send({
+               message: "Id locataire can not be empty!"
+          });
+          return;
+     }
+
+     // get Transaction in the database
+     try {
+          const id = req.params.id
+          const idTransaction = req.params.idTransaction
+
+          let transaction = await Transaction.findOne({
+               where: {
+                    [Op.and]: [
+                         { idLocataire: id },
+                         { idTransaction: idTransaction }
+                    ]
+               }
+          })
+
+          if (transaction != null) {
+               res.status(200).send(transaction)
+          } else {
+               res.status(404).send({
+                    error: "not_found",
+                    message: "Locataire transaction with ID: " + idTransaction + " does not exist"
+               })
+          }
+     }
+     catch (err) {
+          res.status(500).send({
+               error: err.message || "Some error occurred while creating the Transaction."
+          });
+     }
+};
+
+/**
+ * Filter user transactions
+ * @param {*} req The request
+ * @param {*} res The response
+* @returns {object} A list of filtered transactions
+ */
+
+const filterTransaction = async (req, res) => {
+
+     // Validate request
+     if (!req.params.id) {
+          res.status(400).send({
+               message: "Id locataire can not be empty!"
+          });
+          return;
+     }
+
+     var options = {};
+
+     let dateTransaction = req.body.dateTransaction;
+     let dateFrom = req.body.dateFrom;
+     let dateTo = req.body.dateTo;
+
+     let montant = req.body.montant;
+     let montantFrom = req.body.montantFrom;
+     let montantTo = req.body.montantTo;
+
+     let moyenPayement = req.body.moyenPayement
+
+
+     if (montant) {
+          options.montant = {
+               [Op.eq]: montant
+          }
+     }
+     if (montantFrom) {
+          options.montant = {
+               [Op.gte]: montantFrom
+          }
+     }
+     if (montantTo) {
+          options.montant = {
+               [Op.lt]: montantTo
+          }
+     }
+
+     if (dateTransaction) {
+          options.dateTransaction = {
+               [Op.eq]: dateTransaction
+          }
+     }
+     if (dateFrom) {
+          options.dateTransaction = {
+               [Op.gte]: dateFrom
+          }
+     }
+     if (dateTo) {
+          options.dateTransaction = {
+               [Op.lt]: prixTo
+          }
+     }
+
+     if (moyenPayement) {
+          options.moyenPayement = moyenPayement
+     }
+
+     console.log(options)
+
+     try {
+          const id = req.params.id
+          let locataire = await Transaction.findAll({
+               where: {
+                    idLocataire: id
+               }
+          })
+          if (locataire.length > 0) {
+               let transactions = await Transaction.findAll({
+                    where: {
+                         [Op.and]: [
+                              { idLocataire: id },
+                              options
+                         ]
+                    },
+                    order: [
+                         ['dateTransaction','DESC']
+                    ]
+               })
+               if (transactions.length &lt;= 0) {
+                    res.status(404).send({
+                         error: "There is no transaction with these parameters."
+                    });
+               } else {
+                    res.status(200).send(transactions);
+               }
+          } else {
+               res.status(404).send({ "error": "le locataire avec id " + id + " n'a pas encore de transactions." })
+          }
+     }
+     catch (err) {
+          res.status(500).send({
+               error: err.message || "Some error occurred while filtering Transaction."
+          });
+     }
+};
+
+export default {
+     createTransaction,
+     getUserTransactions,
+     getTransaction,
+     filterTransaction
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addPlanMaintenance">addPlanMaintenance</a></li><li><a href="global.html#createAdmin">createAdmin</a></li><li><a href="global.html#createAgent">createAgent</a></li><li><a href="global.html#createBorne">createBorne</a></li><li><a href="global.html#createDirigeant">createDirigeant</a></li><li><a href="global.html#createIdentite">createIdentite</a></li><li><a href="global.html#createOperateur">createOperateur</a></li><li><a href="global.html#createTransaction">createTransaction</a></li><li><a href="global.html#createVehicule">createVehicule</a></li><li><a href="global.html#deleteAdmin">deleteAdmin</a></li><li><a href="global.html#deleteAgent">deleteAgent</a></li><li><a href="global.html#deleteAllAdmins">deleteAllAdmins</a></li><li><a href="global.html#deleteAllAgents">deleteAllAgents</a></li><li><a href="global.html#deleteAllDirigeants">deleteAllDirigeants</a></li><li><a href="global.html#deleteAllOperateurs">deleteAllOperateurs</a></li><li><a href="global.html#deleteBorne">deleteBorne</a></li><li><a href="global.html#deleteDirigeant">deleteDirigeant</a></li><li><a href="global.html#deleteIdentite">deleteIdentite</a></li><li><a href="global.html#deleteOperateur">deleteOperateur</a></li><li><a href="global.html#deleteVehicule">deleteVehicule</a></li><li><a href="global.html#filterTransaction">filterTransaction</a></li><li><a href="global.html#getAdmin">getAdmin</a></li><li><a href="global.html#getAgent">getAgent</a></li><li><a href="global.html#getAllAdmins">getAllAdmins</a></li><li><a href="global.html#getAllAgents">getAllAgents</a></li><li><a href="global.html#getAllBornes">getAllBornes</a></li><li><a href="global.html#getAllDirigeants">getAllDirigeants</a></li><li><a href="global.html#getAllIdentite">getAllIdentite</a></li><li><a href="global.html#getAllOperateurs">getAllOperateurs</a></li><li><a href="global.html#getAllVehicule">getAllVehicule</a></li><li><a href="global.html#getBorne">getBorne</a></li><li><a href="global.html#getCommune">getCommune</a></li><li><a href="global.html#getDirigeant">getDirigeant</a></li><li><a href="global.html#getFilteredBornes">getFilteredBornes</a></li><li><a href="global.html#getLocataireOfIdentity">getLocataireOfIdentity</a></li><li><a href="global.html#getOneIdentite">getOneIdentite</a></li><li><a href="global.html#getOperateur">getOperateur</a></li><li><a href="global.html#getOperatorOfIdentity">getOperatorOfIdentity</a></li><li><a href="global.html#getPlanMaintenance">getPlanMaintenance</a></li><li><a href="global.html#getTransaction">getTransaction</a></li><li><a href="global.html#getUserTransactions">getUserTransactions</a></li><li><a href="global.html#getVehiclesInABorne">getVehiclesInABorne</a></li><li><a href="global.html#getVehiculeDetails">getVehiculeDetails</a></li><li><a href="global.html#getVehiculesEnServiceOfAGivenAgent">getVehiculesEnServiceOfAGivenAgent</a></li><li><a href="global.html#getVehiculesHorsServiceOfAGivenAgent">getVehiculesHorsServiceOfAGivenAgent</a></li><li><a href="global.html#getWilaya">getWilaya</a></li><li><a href="global.html#invalider">invalider</a></li><li><a href="global.html#selectIdentitiesOfAGivenOperateur">selectIdentitiesOfAGivenOperateur</a></li><li><a href="global.html#selectVehicuesOfAGivenAgent">selectVehicuesOfAGivenAgent</a></li><li><a href="global.html#setEtatVehicule">setEtatVehicule</a></li><li><a href="global.html#updateAdmin">updateAdmin</a></li><li><a href="global.html#updateAgent">updateAgent</a></li><li><a href="global.html#updateDirigeant">updateDirigeant</a></li><li><a href="global.html#updateOperateur">updateOperateur</a></li><li><a href="global.html#updateVehicule">updateVehicule</a></li><li><a href="global.html#valider">valider</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed May 26 2021 19:32:24 GMT+0200 (heure d’été d’Europe centrale)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -2,6 +2,8 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const validator = require('validator');
 const passwordValidator = require('password-validator')
+var bcrypt = require("bcryptjs");
+var jwt = require("jsonwebtoken");
 const db = require("../models");
 const Agent = db.agent;
 
@@ -15,9 +17,15 @@ passwdValidator
 .has().uppercase()                              // Doit avoir des lettre en majuscules
 .has().lowercase()                              // Doit avoir des lettres en miniscules
 
+
+/**
+ * Récupérer un Agent avec un id donné
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
 // Récupérer un Agent avec un id donné
 
-exports.findOne = (req, res) => {
+const getAgent = (req, res) => {
 
     //Récupérer l'id de l'Agent à modifier de l'url
     const id = req.params.id;
@@ -33,9 +41,15 @@ exports.findOne = (req, res) => {
     });
 };
 
+/**
+ * Récupérer des Agents avec une condition sur le nom 
+ * ou sans condition, dans ce cas retourne tout les Agents
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
 //Récupérer des Agents avec une condition sur le nom (ou sans condition, dans ce cas retourne tout les Agents)
 
-exports.findAll = (req, res) => {
+const getAllAgents = (req, res) => {
 
     //Récupérer le nom de l'Agent de l'url
     const nom = req.query.nom;
@@ -55,13 +69,18 @@ exports.findAll = (req, res) => {
     });
 };
 
+/**
+ * Création d'un Agent
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
 //Création d'un Agent
 
-exports.create = (req, res) => {
+const createAgent = (req, res) => {
           
     //Initialiser les attributs de l'Agent à créer
     const agent = {
-        idAgentMaintenance:req.body.id,
+        //idAgentMaintenance:req.body.id,
         nom: req.body.nom,
         prenom: req.body.prenom,
         email: req.body.email,
@@ -95,6 +114,10 @@ exports.create = (req, res) => {
                     });
                     return;
                 }else{
+                    //hasher le mot de passe
+                    var salt = bcrypt.genSaltSync(10);
+                    var hash = bcrypt.hashSync(agent.motDePasse, salt);
+                    agent.motDePasse= hash;
                     //Créer l'Agent
                     Agent.create(agent)
                     .then(data => {
@@ -112,9 +135,15 @@ exports.create = (req, res) => {
     }     
 };
 
+
+/**
+ * Modification d'un Agent
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
 //Modification d'un Agent
 
-exports.update = (req, res) => {
+const updateAgent = (req, res) => {
 
     //Récupérer l'id de l'Agent à modifier de l'url
     const id = req.params.id;
@@ -179,9 +208,14 @@ exports.update = (req, res) => {
     });
 };
 
+/**
+ * Supprimer un Agent
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
 //Supprimer un Agent
 
-exports.delete = (req, res) => {
+const deleteAgent = (req, res) => {
 
     //Récupérer l'id de l'Agent à modifier de l'url
     const id = req.params.id;
@@ -207,9 +241,14 @@ exports.delete = (req, res) => {
     });
 };
 
+/**
+ * Supprimer tout les Agents 
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
 //Supprimer tout les Agents 
 
-exports.deleteAll = (req, res) => {
+const deleteAllAgents = (req, res) => {
 
     Agent.destroy({
         where: {},
@@ -223,4 +262,12 @@ exports.deleteAll = (req, res) => {
             message: err.message || "Une erreur est survenue lors de la suppression!"
         });
     });
+};
+export default {
+    createAgent,
+    getAllAgents,
+    getAgent,
+    updateAgent,
+    deleteAgent,
+    deleteAllAgents
 };

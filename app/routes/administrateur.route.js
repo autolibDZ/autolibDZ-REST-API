@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const administrateurControleur= require('../controllers/administrateur.controller')
 
-router.get('/', administrateurControleur.findAll);
-router.get('/:id', administrateurControleur.findOne);
-router.post('/',administrateurControleur.create);
-router.put("/:id", administrateurControleur.update);
-router.delete("/:id", administrateurControleur.delete);
-router.delete("/", administrateurControleur.deleteAll);
+import administrateurControleur from "../controllers/administrateur.controller";
+
+router.get('/', administrateurControleur.getAllAdmins);
+router.get('/:id', administrateurControleur.getAdmin);
+router.post('/',administrateurControleur.createAdmin);
+router.put("/:id", administrateurControleur.updateAdmin);
+router.delete("/:id", administrateurControleur.deleteAdmin);
+router.delete("/", administrateurControleur.deleteAllAdmins);
 
 module.exports = router;

@@ -27,7 +27,6 @@ module.exports = function (sequelize, Sequelize) {
 				values: ['circulation', 'en service', 'reserve', 'hors service','supprime'],
 				allowNull: false,
 			},
-
 			tempsDeRefroidissement: {
 				type: Sequelize.INTEGER,
 			},
@@ -54,18 +53,16 @@ module.exports = function (sequelize, Sequelize) {
 			},
 			idAgentMaintenance: {
 				type: Sequelize.INTEGER,
-				allowNull: false,
 			},
 			idBorne: {
 				type: Sequelize.INTEGER,
-				allowNull: false,
 			},
-			idCloudinary:{
+			idCloudinary: {
 				type: Sequelize.STRING(128),
-			} , 
+			},
 			secureUrl: {
 				type: Sequelize.STRING(128),
-			}
+			},
 		},
 		{
 			freezeTableName: true,
@@ -74,6 +71,7 @@ module.exports = function (sequelize, Sequelize) {
 			updatedAt: false,
 		}
 	);
+
 	// Déclaration des clès étrangères
 	Vehicule.associate = (models) => {
 		Vehicule.hasOne(models.utilisateur, {
