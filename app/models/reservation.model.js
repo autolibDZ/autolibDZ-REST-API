@@ -3,7 +3,7 @@ module.exports = function(sequelize, Sequelize) {
         'reservation', {
             idReservation: {
                 type: Sequelize.INTEGER,
-            primaryKey: true,
+                primaryKey: true,
                 autoIncrement: true
             },
             etat: {
@@ -20,10 +20,24 @@ module.exports = function(sequelize, Sequelize) {
             },
             idBorneDestination: {
                 type: Sequelize.INTEGER,
-            }
+            },
+            codePin: {
+                type: Sequelize.STRING(255)
+            },
+            tempsEstime: {
+                type: Sequelize.INTEGER,
 
-        },
-        {
+            },
+            distanceEstime: {
+                type: Sequelize.FLOAT,
+
+            },
+            prixEstime: {
+                type: Sequelize.FLOAT,
+
+            },
+
+        }, {
             freezeTableName: true,
             tableName: 'reservation',
             timestamps: true,
@@ -32,6 +46,13 @@ module.exports = function(sequelize, Sequelize) {
 
         }
     );
+    Reservation.associate = function(models) {
+        Reservation.belongsTo(models.locataire, {
+            foreignKey: 'idLocataire',
+
+        });
+    };
+
     return Reservation;
     /* Reservation.associate = function(models) {
          // associations can be defined here
@@ -46,5 +67,5 @@ module.exports = function(sequelize, Sequelize) {
          });
      };*/
 
-};
 
+};
