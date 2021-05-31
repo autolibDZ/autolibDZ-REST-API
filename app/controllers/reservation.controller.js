@@ -185,6 +185,7 @@ const verifyCodePin = async(req, res) => {
         const pinCorrect = await bcrypt.compare(req.body.codePin.toString(), reservation.codePin)
         console.log(req.body.codePin)
         if (pinCorrect) {
+            Reservation.update({ etat: "Active" }, { where: { idVehicule: req.body.idVehicule, etat: "En cours" } })
             const bornDepart = await Borne.findOne({ where: { idBorne: reservation.idBorneDepart } })
             const bornDestination = await Borne.findOne({ where: { idBorne: reservation.idBorneDestination } })
             const locataire = await Locataire.findOne({ where: { idLocataire: reservation.idLocataire } })
