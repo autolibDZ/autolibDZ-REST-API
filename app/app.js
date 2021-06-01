@@ -19,7 +19,7 @@ import reclamationRouter from './routes/reclamation.route'
 import planMaintenaceRouter from './routes/planMaintenance.route';
 import identiteRouter from './routes/identite.route';
 import transactionRouter from './routes/transaction.route';
-
+import algeria_citiesRouter from './routes/algeria_cities.route';
 
 dotenv.config();
 
@@ -84,6 +84,9 @@ app.use('/api/trajet', trajetRouter);
 
 //Recalamation Router 
 app.use('/api/reclamation',reclamationRouter); 
+
+// algeria cities router
+app.use('/api/algeria_cities',algeria_citiesRouter); 
 
 //Home
 app.use((req, res) => {

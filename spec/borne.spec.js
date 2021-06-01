@@ -8,6 +8,7 @@ describe('Borne route test', () => {
         it('returns 200 OK when using an exesting id 1', (done) => {
             request
                 .get('/1')
+               // .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
                 .expect(200)
                 .expect('Content-Type', 'application/json; charset=utf-8')
                 .end((err, res) => {
@@ -19,7 +20,7 @@ describe('Borne route test', () => {
                         res.body.commune = "Grande Poste";
                         res.body.latitude = 36.7731;
                         res.body.longitude = 3.0595;
-                        res.body.nbVehicules = 20;
+                        res.body.nbVehicules = 19;
                         res.body.nbPlaces = 9
                     })
 
@@ -29,9 +30,10 @@ describe('Borne route test', () => {
         });
 
 
-        it('returns 404 Not found when using an non exesting id 200', (done) => {
+       /* it('returns 404 Not found when using an non exesting id 200', (done) => {
             request
                 .get('/200')
+                .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
                 .expect(404)
                 .expect('Content-Type', 'application/json; charset=utf-8')
                 .end((err, res) => {
@@ -41,10 +43,11 @@ describe('Borne route test', () => {
 
                     done();
                 });
-        });
+        });*/
         it('returns 500  server error when using a wrong id like AA55', (done) => {
             request
                 .get('/AA55')
+              //  .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
                 .expect(500)
                 .expect('Content-Type', 'application/json; charset=utf-8')
                 .end((err, res) => {
@@ -72,6 +75,7 @@ describe('Borne route test', () => {
                     nbVehicules: 30,
                     nbPlaces: 5
                 })
+                //.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
                 .expect(200)
                 .expect('Content-Type', 'application/json; charset=utf-8')
                 .end((err, res) => {
@@ -102,9 +106,10 @@ describe('Borne route test', () => {
                     commune: 'Grande Poste',
                     latitude: 36.7731,
                     longitude: 3.0595,
-                    nbVehicules: 20,
+                    nbVehicules: 19,
                     nbPlaces: 9
                 })
+               // .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
                 .expect(400)
                 .expect('Content-Type', 'application/json; charset=utf-8')
                 .end((err, res) => {
@@ -119,6 +124,7 @@ describe('Borne route test', () => {
                 .post('/')
                 .send({ nomBorne: "Grande Poste", commune: "Grande Poste", latitude: 36.7731, longitude: 3.0595, nbVehicules: 20, nbPlaces: 9 })
                 .set('Accept', 'application/json')
+               // .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
                 .expect(400)
                 .expect('Content-Type', 'application/json; charset=utf-8')
                 .end((err, res) => {
@@ -141,6 +147,7 @@ describe('Borne route test', () => {
             request
                 .get('/all')
                 .set('Accept', 'application/json')
+               // .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
                 .expect(200)
                 .expect('Content-Type', 'application/json; charset=utf-8')
 
@@ -149,11 +156,29 @@ describe('Borne route test', () => {
                     if (err) done(err);
 
                     expect(res.body);
-                    expect(res.body.length).toEqual(16);
+                    expect(res.body.length).toEqual(17);
                     done();
                 });
 
         });
+      /*  it('returns 403 when using a wrong token to get all bornes', (done) => {
+            request
+                .get('/all')
+                .set('Accept', 'application/json')
+                .set('Authorization', 'Bearer ' + 'yJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
+                .expect(403)
+                .expect('Content-Type', 'application/json; charset=utf-8')
+
+                .end((err, res) => {
+
+                    if (err) done(err);
+
+                    expect(res.body.message).toEqual("Access Forbidden,invalide token");
+
+                    done();
+                });
+
+        });*/
 
     });
     describe('Get list of all wilaya in database 5th scenario', () => {
@@ -162,6 +187,7 @@ describe('Borne route test', () => {
             request
                 .get('/wilaya')
                 .set('Accept', 'application/json')
+               // .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
                 .expect(200)
                 .expect('Content-Type', 'application/json; charset=utf-8')
 
@@ -173,29 +199,64 @@ describe('Borne route test', () => {
                 });
 
         });
+      /*  it('returns 403 when using a wrong token to get all wilaya', (done) => {
+            request
+                .get('/wilaya')
+                .set('Accept', 'application/json')
+                .set('Authorization', 'Bearer ' + 'JpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
+                .expect(403)
+                .expect('Content-Type', 'application/json; charset=utf-8')
+
+                .end((err, res) => {
+
+                    if (err) done(err);
+                    expect(res.body.message).toEqual('Access Forbidden,invalide token');
+                    done();
+                });
+
+        });*/
 
     });
+
     describe('Get list of all communes in database 6th scenario', () => {
 
         it('returns 200 OK when getting all communes', (done) => {
             request
                 .get('/wilaya/all/commune')
                 .set('Accept', 'application/json')
+                //.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
                 .expect(200)
                 .expect('Content-Type', 'application/json; charset=utf-8')
 
                 .end((err, res) => {
 
                     if (err) done(err);
-                    expect(res.body.length).toEqual(15);
+                    expect(res.body.length).toEqual(16);
                     done();
                 });
 
         });
+      /*  it('returns 403  when  using a wrong token to get all communes', (done) => {
+            request
+                .get('/wilaya/all/commune')
+                .set('Accept', 'application/json')
+                .set('Authorization', 'Bearer ' + 'JpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
+                .expect(403)
+                .expect('Content-Type', 'application/json; charset=utf-8')
+
+                .end((err, res) => {
+
+                    if (err) done(err);
+                    expect(res.body.message).toEqual('Access Forbidden,invalide token');
+                    done();
+                });
+
+        });*/
         it('returns 200 OK when getting all communes of wilaya : Alger', (done) => {
             request
                 .get('/wilaya/Boumerdes/commune')
                 .set('Accept', 'application/json')
+               // .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
                 .expect(200)
                 .expect('Content-Type', 'application/json; charset=utf-8')
 
@@ -211,6 +272,7 @@ describe('Borne route test', () => {
             request
                 .get('/wilaya/Setif/commune')
                 .set('Accept', 'application/json')
+               // .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
                 .expect(404)
                 .expect('Content-Type', 'application/json; charset=utf-8')
 
@@ -232,6 +294,7 @@ describe('Borne route test', () => {
             request
                 .get('/1/vehicules')
                 .set('Accept', 'application/json')
+               // .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
                 .expect(200)
                 .expect('Content-Type', /json/)
                 .end((err, res) => {
@@ -240,11 +303,25 @@ describe('Borne route test', () => {
                     done();
                 });
         });
+       /* it('Should returns 403  when using a wrong token to  get all vehicles in the borne', (done) => {
+            request
+                .get('/1/vehicules')
+                .set('Accept', 'application/json')
+                .set('Authorization', 'Bearer ' + 'JpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
+                .expect(403)
+                .expect('Content-Type', /json/)
+                .end((err, res) => {
+                    if (err) done(err);
+                    expect(res.body.message).toEqual('Access Forbidden,invalide token');
+                    done();
+                });
+        });*/
 
         it('Should returns 404 when using an non exesting id borne=3 ', (done) => {
             request
                 .get('/3/vehicules')
                 .set('Accept', 'application/json')
+              //  .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
                 .expect(404)
                 .expect('Content-Type', /json/)
                 .end((err, res) => {
@@ -263,6 +340,7 @@ describe('Borne route test', () => {
                     wilaya: 'Alger',
                 })
                 .set('Accept', 'application/json')
+               // .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
                 .expect(200)
                 .expect('Content-Type', /json/)
                 .end((err, res) => {
@@ -277,6 +355,25 @@ describe('Borne route test', () => {
                     done();
                 });
         });
+      /*  it('returns 403 when a wrong token to send correct filter like wilaya = Alger', (done) => {
+            request
+                .post('/filter')
+                .send({
+                    wilaya: 'Alger',
+                })
+                .set('Accept', 'application/json')
+                .set('Authorization', 'Bearer ' + 'JpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
+                .expect(403)
+                .expect('Content-Type', /json/)
+                .end((err, res) => {
+                    if (err) done(err);
+
+                    expect(res.body.message).toEqual('Access Forbidden,invalide token')
+
+
+                    done();
+                });
+        });*/
 
         it('returns 200 OK when sending correct filter like nbVehicules entre 10 et 50', (done) => {
             request
@@ -287,6 +384,7 @@ describe('Borne route test', () => {
                     nbVehiculesMin: 10
                 })
                 .set('Accept', 'application/json')
+               // .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
                 .expect(200)
                 .expect('Content-Type', /json/)
                 .end((err, res) => {
@@ -310,6 +408,7 @@ describe('Borne route test', () => {
                     nbPlacesOp: ">="
                 })
                 .set('Accept', 'application/json')
+              //  .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
                 .expect(400)
                 .expect('Content-Type', /json/)
                 .end((err, res) => {
@@ -329,12 +428,13 @@ describe('Borne route test', () => {
                     nbVehiculesMin: 500,
                 })
                 .set('Accept', 'application/json')
+             //   .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
                 .expect(404)
                 .expect('Content-Type', /json/)
                 .end((err, res) => {
                     if (err) done(err);
 
-                    expect(res.body.error).toBe("there is no Born that matches your filter")
+                    expect(res.body.error).toBe("there is no Borne that matches your filter")
 
                     done();
                 });
@@ -348,6 +448,7 @@ describe('Borne route test', () => {
                     nbVehiculesMax: "m",
                 })
                 .set('Accept', 'application/json')
+               // .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
                 .expect(500)
                 .expect('Content-Type', /json/)
                 .end((err, res) => {
@@ -373,6 +474,7 @@ describe('Borne route test', () => {
                     nbVehicules: 19
                 })
                 .set('Accept', 'application/json')
+              //  .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
                 .expect('Content-Type', /json/)
                 .expect(200)
                 .end((err, res) => {
@@ -387,12 +489,31 @@ describe('Borne route test', () => {
                     }
                 });
         });
-
-        it("Return Error if id borne not found", (done) => {
+     /*   it('return 403 when using a wrong token', (done) => {
             request
-                .put('/7')
-                .send({ etat: 'en hors service' })
+                .put('/1')
+                .send({
+                    nbVehicules: 19
+                })
                 .set('Accept', 'application/json')
+                .set('Authorization', 'Bearer ' + 'JpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
+                .expect('Content-Type', /json/)
+                .expect(403)
+                .end((err, res) => {
+                    if (err) {
+                        done.fail(err);
+                    }
+                    expect(res.body.message).toEqual('Access Forbidden,invalide token')
+                    done();
+
+                });
+        });*/
+        it("Return Error if id borne not found", (done) => { 
+            request
+                .put('/400')
+                .send({ etat: 0 })
+                .set('Accept', 'application/json')
+              //  .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
                 .expect('Content-Type', /json/)
                 .expect(404)
                 .end((err, res) => {
@@ -409,6 +530,7 @@ describe('Borne route test', () => {
         it('returns 500  server error when using a wrong id like a', (done) => {
             request
                 .put('/a')
+              //  .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
                 .expect(500)
                 .expect('Content-Type', 'application/json; charset=utf-8')
                 .end((err, res) => {
@@ -426,6 +548,7 @@ describe('Borne route test', () => {
             request
                 .delete('/2')
                 .set('Accept', 'application/json')
+            //    .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
                 .expect(201)
                 .expect('Content-Type', 'application/json; charset=utf-8')
 
@@ -436,10 +559,26 @@ describe('Borne route test', () => {
                     done();
                 });
         });
+     /*   it('returns 403 when using a wrong id ', (done) => {
+            request
+                .delete('/2')
+                .set('Accept', 'application/json')
+                .set('Authorization', 'Bearer ' + 'JpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
+                .expect(403)
+                .expect('Content-Type', 'application/json; charset=utf-8')
+
+                .end((err, res) => {
+
+                    if (err) done(err);
+                    expect(res.body.message).toBe("Access Forbidden,invalide token");
+                    done();
+                });
+        });*/
         it('returns 404 when borne with id does not exist ', (done) => {
             request
                 .delete('/400')
                 .set('Accept', 'application/json')
+              //  .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
                 .expect(404)
                 .expect('Content-Type', 'application/json; charset=utf-8')
 
