@@ -1,5 +1,5 @@
 module.exports = function (sequelize, Sequelize) {
-    const AlgeriaCities = sequelize.define("algeria_cities", {
+    const Algeria_cities = sequelize.define("algeria_cities", {
   
       id: {
         type: Sequelize.INTEGER,
@@ -8,7 +8,8 @@ module.exports = function (sequelize, Sequelize) {
       },
       
       commune_name: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
       },
   
       commune_name_ascii: {
@@ -54,6 +55,6 @@ module.exports = function (sequelize, Sequelize) {
     );
   
   
-    return AlgeriaCities;
+    return Algeria_cities;
   }
   

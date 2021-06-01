@@ -13,7 +13,7 @@ const { Op } = require("sequelize");
 const createBorne = async (req, res) => {
 
   // verify access
-  const authHeader = req.headers['authorization']
+  /*const authHeader = req.headers['authorization']
   const token = authHeader && authHeader.split(' ')[1]
 
 
@@ -35,7 +35,7 @@ const createBorne = async (req, res) => {
 
       // Only admin can create Borne
 
-      if (role != "admin") {
+      if (role != "administrateur") {
 
         res.status(403).send({
           message: "Access Forbidden,you can't do this operation",
@@ -53,7 +53,7 @@ const createBorne = async (req, res) => {
 
     return;
 
-  }
+  }*/
 
 
   // Create a Borne
@@ -88,38 +88,39 @@ const createBorne = async (req, res) => {
         longitude: req.body.longitude,
         nbVehicules: req.body.nbVehicules,
         nbPlaces: req.body.nbPlaces,
-       // etat:1
+        // etat:1
       }
 
     })
-   console.log("resultt" + result.length);
+    console.log("resultt" + result.length);
     if (result.length > 0) {
-      if(result[0].etat==0){
-          const updatedBorne = Borne.update(
-            {etat : 1},
-            
-             { where: {
-                nomBorne: req.body.nomBorne,
-                wilaya: req.body.wilaya,
-                commune: req.body.commune,
-                latitude: req.body.latitude,
-                longitude: req.body.longitude,
-                nbVehicules: req.body.nbVehicules,
-                nbPlaces: req.body.nbPlaces,
-                etat:0
+      if (result[0].etat == 0) {
+        const updatedBorne = Borne.update(
+          { etat: 1 },
+
+          {
+            where: {
+              nomBorne: req.body.nomBorne,
+              wilaya: req.body.wilaya,
+              commune: req.body.commune,
+              latitude: req.body.latitude,
+              longitude: req.body.longitude,
+              nbVehicules: req.body.nbVehicules,
+              nbPlaces: req.body.nbPlaces,
+              etat: 0
             }
           }
-          )
-          result[0].etat =1 
-          res.send(result)
-      }else{
+        )
+        result[0].etat = 1
+        res.send(result)
+      } else {
         res.status(400).send({
 
           message: "Borne already exists!"
-  
+
         })
       }
-      
+
     } else {
       let data = await Borne.create(borne)
       res.send(data);
@@ -153,6 +154,49 @@ const createBorne = async (req, res) => {
 //Returne list of Bornes
 
 const getFilteredBornes = async (req, res) => {
+  // verify access
+  /* const authHeader = req.headers['authorization']
+   const token = authHeader && authHeader.split(' ')[1]
+ 
+ 
+   if (token == null) {
+ 
+     res.status(403).send({
+       message: "Access Forbidden,invalide token",
+     });
+     return;
+   }
+ 
+   try {
+ 
+     const user = jwt.verify(token, process.env.JWT_SECRET);
+ 
+     if (user != undefined) {
+ 
+       const role = user.role
+ 
+       // Only admin can create Borne
+ 
+       if (role != "administrateur" && role != "agent" && role != "locataire") {
+ 
+         res.status(403).send({
+           message: "Access Forbidden,you can't do this operation",
+         });
+ 
+         return;
+       }
+     }
+ 
+   } catch (err) {
+ 
+     res.status(403).send({
+       message: "Access Forbidden,invalide token",
+     });
+ 
+     return;
+ 
+   }*/
+
 
   if (!req.body) {
     res.status(400).send({
@@ -207,7 +251,7 @@ const getFilteredBornes = async (req, res) => {
           [nbPlacesSquelizeOp]: (req.body.nbPlaces != null) ? req.body.nbPlaces : 0
 
         },
-        etat:1
+        etat: 1
       },
     });
 
@@ -239,6 +283,47 @@ const getFilteredBornes = async (req, res) => {
 
 const getBorne = async (req, res) => {
 
+  /* const authHeader = req.headers['authorization']
+   const token = authHeader && authHeader.split(' ')[1]
+ 
+   console.log("la val du token " + token);
+   if (token == null) {
+ 
+     res.status(403).send({
+       message: "Access Forbidden,invalide token",
+     });
+     return;
+   }
+ 
+   try {
+     const user = jwt.verify(token, process.env.JWT_SECRET);
+     console.log("in user" + user)
+     if (user != undefined) {
+ 
+       const role = user.role
+ 
+       // Only admin can create Borne
+ 
+       if (role != 'administrateur' && role != "agent" && role != "locataire") {
+         res.status(403).send({
+           message: "Access Forbidden,you can't do this operation",
+         });
+ 
+         return;
+       }
+     }
+ 
+   } catch (err) {
+ 
+     res.status(403).send({
+       message: "Access Forbidden,invalide token",
+     });
+ 
+     return;
+ 
+   }*/
+
+
   // Validate request
 
   if (!req.params.id) {
@@ -258,7 +343,7 @@ const getBorne = async (req, res) => {
     const data = await Borne.findAll({
       where: {
         idBorne: id,
-        etat:1
+        etat: 1
       }
 
     })
@@ -297,9 +382,53 @@ const getBorne = async (req, res) => {
 const getAllBornes = async (req, res) => {
   try {
 
+    //Verify access
+    /*const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(' ')[1]
+
+
+    if (token == null) {
+
+      res.status(403).send({
+        message: "Access Forbidden,invalide token",
+      });
+      return;
+    }
+
+    try {
+
+      const user = jwt.verify(token, process.env.JWT_SECRET);
+
+      if (user != undefined) {
+
+        const role = user.role
+
+
+
+        if (role != "administrateur" && role != "agent" && role != "locataire") {
+
+          res.status(403).send({
+            message: "Access Forbidden,you can't do this operation",
+          });
+
+          return;
+        }
+      }
+
+    } catch (err) {
+
+      res.status(403).send({
+        message: "Access Forbidden,invalide token",
+      });
+
+      return;
+
+    }*/
+
+
     const data = await Borne.findAll({
-      where :{
-        etat : 1
+      where: {
+        etat: 1
       }
     })
 
@@ -341,7 +470,50 @@ const getAllBornes = async (req, res) => {
 const getWilaya = async (req, res) => {
   try {
 
-    const data = await Borne.findAll({ attributes: [[Borne.sequelize.fn('DISTINCT', Borne.sequelize.col('wilaya')), 'wilaya']] , where :  {etat:1}}); 
+    // Verify access
+    /*  const authHeader = req.headers['authorization']
+      const token = authHeader && authHeader.split(' ')[1]
+  
+  
+      if (token == null) {
+  
+        res.status(403).send({
+          message: "Access Forbidden,invalide token",
+        });
+        return;
+      }
+  
+      try {
+  
+        const user = jwt.verify(token, process.env.JWT_SECRET);
+  
+        if (user != undefined) {
+  
+          const role = user.role
+  
+  
+          if (role != "administrateur" && role != "agent" && role != "locataire") {
+  
+            res.status(403).send({
+              message: "Access Forbidden,you can't do this operation",
+            });
+  
+            return;
+          }
+        }
+  
+      } catch (err) {
+  
+        res.status(403).send({
+          message: "Access Forbidden,invalide token",
+        });
+  
+        return;
+  
+      }*/
+
+
+    const data = await Borne.findAll({ attributes: [[Borne.sequelize.fn('DISTINCT', Borne.sequelize.col('wilaya')), 'wilaya']], where: { etat: 1 } });
 
     if (data.length != 0 && data != null) {
 
@@ -377,11 +549,52 @@ const getWilaya = async (req, res) => {
 const getCommune = async (req, res) => {
   try {
 
+    /*  const authHeader = req.headers['authorization']
+      const token = authHeader && authHeader.split(' ')[1]
+  
+  
+      if (token == null) {
+  
+        res.status(403).send({
+          message: "Access Forbidden,invalide token",
+        });
+        return;
+      }
+  
+      try {
+  
+        const user = jwt.verify(token, process.env.JWT_SECRET);
+  
+        if (user != undefined) {
+  
+          const role = user.role
+  
+          if (role != "administrateur" && role != "agent" && role != "locataire") {
+  
+            res.status(403).send({
+              message: "Access Forbidden,you can't do this operation",
+            });
+  
+            return;
+          }
+        }
+  
+      } catch (err) {
+  
+        res.status(403).send({
+          message: "Access Forbidden,invalide token",
+        });
+  
+        return;
+  
+      }*/
+
+
     let wilaya = req.params.wilaya
 
     if (wilaya == "all") {
 
-      const data = await Borne.findAll({ attributes: [[Borne.sequelize.fn('DISTINCT', Borne.sequelize.col('commune')), 'commune']] , where: {etat: 1} }); 
+      const data = await Borne.findAll({ attributes: [[Borne.sequelize.fn('DISTINCT', Borne.sequelize.col('commune')), 'commune']], where: { etat: 1 } });
 
       if (data.length != 0) {
 
@@ -399,7 +612,7 @@ const getCommune = async (req, res) => {
 
     } else {
 
-      const data = await Borne.findAll({ attributes: [[Borne.sequelize.fn('DISTINCT', Borne.sequelize.col('commune')), 'commune']], where: { wilaya: wilaya ,etat:1} });
+      const data = await Borne.findAll({ attributes: [[Borne.sequelize.fn('DISTINCT', Borne.sequelize.col('commune')), 'commune']], where: { wilaya: wilaya, etat: 1 } });
 
       if (data.length != 0) {
 
@@ -439,6 +652,48 @@ const getCommune = async (req, res) => {
 
 const getVehiclesInABorne = async (req, res) => {
 
+  // Verify access
+  /*const authHeader = req.headers['authorization']
+  const token = authHeader && authHeader.split(' ')[1]
+
+
+  if (token == null) {
+
+    res.status(403).send({
+      message: "Access Forbidden,invalide token",
+    });
+    return;
+  }
+
+  try {
+
+    const user = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (user != undefined) {
+
+      const role = user.role
+
+      if (role != "administrateur" && role != "agent" && role != "locataire") {
+
+        res.status(403).send({
+          message: "Access Forbidden,you can't do this operation",
+        });
+
+        return;
+      }
+    }
+
+  } catch (err) {
+
+    res.status(403).send({
+      message: "Access Forbidden,invalide token",
+    });
+
+    return;
+
+  }*/
+
+
   try {
     const vehicules = await Vehicule.findAll({
       where: {
@@ -468,6 +723,48 @@ const getVehiclesInABorne = async (req, res) => {
 
 const updateBorne = async (req, res) => {
 
+  /*const authHeader = req.headers['authorization']
+  const token = authHeader && authHeader.split(' ')[1]
+
+
+  if (token == null) {
+
+    res.status(403).send({
+      message: "Access Forbidden,invalide token",
+    });
+    return;
+  }
+
+  try {
+
+    const user = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (user != undefined) {
+
+      const role = user.role
+
+      // Only admin can update Borne
+
+      if (role != "administrateur") {
+
+        res.status(403).send({
+          message: "Access Forbidden,you can't do this operation",
+        });
+
+        return;
+      }
+    }
+
+  } catch (err) {
+
+    res.status(403).send({
+      message: "Access Forbidden,invalide token",
+    });
+
+    return;
+
+  }*/
+
   try {
     const borne = await Borne.findOne({
       where: {
@@ -478,7 +775,7 @@ const updateBorne = async (req, res) => {
       let updatedBorne = await borne.update(req.body)
       if (updatedBorne) {
         res.status(200).send({
-          data:updatedBorne,
+          data: updatedBorne,
           message: 'Borne was updated successfully.',
         });
       } else {
@@ -509,57 +806,57 @@ const deleteBorne = async (req, res) => {
 
   // verify access
 
-  const authHeader = req.headers['authorization']
-  const token = authHeader && authHeader.split(' ')[1]
-
-
-  if (token == null) {
-
-    res.status(403).send({
-      message: "Access Forbidden,invalide token",
-    });
-
-    return;
-  }
-
-  try {
-
-    const user = jwt.verify(token, process.env.JWT_SECRET);
-
-    if (user != undefined) {
-
-      const role = user.role
-
-      // Only admin can delete Borne
-
-      if (role != "admin") {
-
-        res.status(403).send({
-          message: "Access Forbidden,you can't do this operation",
-        });
-
-        return;
-      }
-    }
-
-  } catch (err) {
-
-    res.status(403).send({
-      message: "Access Forbidden,invalide token",
-    });
-
-    return;
-  }
+  /* const authHeader = req.headers['authorization']
+   const token = authHeader && authHeader.split(' ')[1]
+ 
+ 
+   if (token == null) {
+ 
+     res.status(403).send({
+       message: "Access Forbidden,invalide token",
+     });
+ 
+     return;
+   }
+ 
+   try {
+ 
+     const user = jwt.verify(token, process.env.JWT_SECRET);
+ 
+     if (user != undefined) {
+ 
+       const role = user.role
+ 
+       // Only admin can delete Borne
+ 
+       if (role != "administrateur") {
+ 
+         res.status(403).send({
+           message: "Access Forbidden,you can't do this operation",
+         });
+ 
+         return;
+       }
+     }
+ 
+   } catch (err) {
+ 
+     res.status(403).send({
+       message: "Access Forbidden,invalide token",
+     });
+ 
+     return;
+   }*/
 
   try {
     const data = await Borne.update(
-      {etat : 0},
+      { etat: 0 },
       {
         where: {
-        idBorne: req.params.id,
-        etat : 1
+          idBorne: req.params.id,
+          etat: 1
+        }
       }
-    }
     )
     if (data == 1) {
       res.status(201).send({
