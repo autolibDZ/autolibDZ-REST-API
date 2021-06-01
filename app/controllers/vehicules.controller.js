@@ -6,6 +6,7 @@ const Borne = db.borne;
 const Locataire= db.locataire;
 const Trajet= db.trajet;
 const Op = Sequelize.Op;
+var jwt = require("jsonwebtoken");
 
 
 const cloudinary = require('cloudinary').v2;
@@ -22,10 +23,12 @@ const createVehicule = async (req, res) => {
 
 	// verify access
 	const authHeader = req.headers['authorization']
+	console.log(authHeader);
 	const token = authHeader && authHeader.split(' ')[1]
+	console.log(token);
   
 	if (token == null) {
-  
+		console.log("HEEEEY I'm here");	
 	  res.status(403).send({
 		message: "Access Forbidden,invalide token",
 	  });
@@ -33,17 +36,13 @@ const createVehicule = async (req, res) => {
 	}
   
 	try {
-  
 	  const user = jwt.verify(token, process.env.JWT_SECRET);
-  
 	  if (user != undefined) {
-  
+		console.log("User defined"); 
 		const role = user.role
-  
 		// Only admin can create Vehicule
   
-		if (role != "admin") {
-  
+		if (role != "administrateur") {
 		  res.status(403).send({
 			message: "Access Forbidden,you can't do this operation",
 		  });
@@ -53,7 +52,6 @@ const createVehicule = async (req, res) => {
 	  }
   
 	} catch (err) {
-  
 	  res.status(403).send({
 		message: "Access Forbidden,invalide token",
 	  });
@@ -180,7 +178,7 @@ const updateVehicule = async (req, res) => {
   
 		// Only admin can create Borne
   
-		if (role != "admin") {
+		if (role != "administrateur") {
   
 		  res.status(403).send({
 			message: "Access Forbidden,you can't do this operation",
@@ -253,7 +251,7 @@ const getAllVehicule = async (req, res) => {
   
 		// Only admin can create Borne
   
-		if (role != "admin") {
+		if (role != "administrateur" && role != "agent") {
   
 		  res.status(403).send({
 			message: "Access Forbidden,you can't do this operation",
@@ -325,7 +323,7 @@ const getVehiculeDetails = async (req, res, next) => {
   
 		// Only admin can create Borne
   
-		if (role != "admin" || role != "locataire") {
+		if (role != "administrateur" && role != "locataire" && role != "agent" ) {
   
 		  res.status(403).send({
 			message: "Access Forbidden,you can't do this operation",
@@ -401,7 +399,7 @@ const getVehiculeReservations = async (req, res, next) => {
   
 		// Only admin can create Borne
   
-		if (role != "admin") {
+		if (role != "administrateur") {
   
 		  res.status(403).send({
 			message: "Access Forbidden,you can't do this operation",

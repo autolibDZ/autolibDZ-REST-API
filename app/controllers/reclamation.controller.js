@@ -1,5 +1,6 @@
 const db = require("../models");
 const Reclamation = db.reclamation;
+var jwt = require("jsonwebtoken");
 
 /**
  * Create and save a new claim in database
@@ -31,7 +32,7 @@ const createReclamation = async (req, res) => {
     
       // Only admin can create Vehicule
     
-      if (role != "admin") {
+      if (role != "administrateur") {
     
         res.status(403).send({
         message: "Access Forbidden,you can't do this operation",
@@ -50,7 +51,6 @@ const createReclamation = async (req, res) => {
       return;
     
     }
-
 
   // Create a Claim
 
@@ -126,7 +126,7 @@ const getReclamationDetails = async (req, res) => {
       
         // Only admin can create Vehicule
       
-        if (role != "admin") { //Ajouter dirigeant 
+        if (role != "administrateur") { //Ajouter dirigeant 
       
           res.status(403).send({
           message: "Access Forbidden,you can't do this operation",
@@ -213,7 +213,7 @@ const getAllReclamations = async (req, res) => {
   
 		// Only admin can create Vehicule
   
-		if (role != "admin") { // Ajouter dirigeant 
+		if (role != "administrateur") { // Ajouter dirigeant 
   
 		  res.status(403).send({
 			message: "Access Forbidden,you can't do this operation",
@@ -293,7 +293,7 @@ const deleteReclamation = async (req, res) => {
       
         // Only admin can create Vehicule
       
-        if (role != "admin") {
+        if (role != "administrateur") {
       
           res.status(403).send({
           message: "Access Forbidden,you can't do this operation",
