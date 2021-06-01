@@ -219,7 +219,7 @@ describe('Transaction route test', () => {
                request
                     .post('/1/filter')
                     .send({
-                         "montantTo": 223
+                         "montantTo": 2230
                     })
                     .set('Accept', 'application/json')
                     .expect(200)
@@ -230,7 +230,7 @@ describe('Transaction route test', () => {
                               let transactions = res.body
                               expect(transactions.length).not.toEqual(0);
                               transactions.forEach(transaction => {
-                                   expect(transaction.montant).toBeLessThan(223)
+                                   expect(transaction.montant).toBeLessThan(2230)
                               });
                               done();
                          }
