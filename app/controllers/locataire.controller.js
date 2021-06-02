@@ -88,7 +88,6 @@ const createLocataire = async(req, res) => {
         /////
         if (!find) {
             var locataire = {
-
                 nom: req.body.nom,
                 prenom: req.body.prenom,
                 email: req.body.email,
