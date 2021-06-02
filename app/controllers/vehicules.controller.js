@@ -1,16 +1,24 @@
 const db = require('../models');
+const { Sequelize } = require('sequelize');
 const Vehicule = db.vehicules;
+const Reservation = db.reservation;
+const Borne = db.borne; 
+const Locataire= db.locataire;
+const Trajet= db.trajet;
+const Op = Sequelize.Op;
 
-const cloudinary = require('cloudinary').v2
-require('dotenv').config()
+
+const cloudinary = require('cloudinary').v2;
+require('dotenv').config();
+let sequelize = require("sequelize");
+
 
 // cloudinary configuration
 cloudinary.config({
 	cloud_name: process.env.CLOUD_NAME,
 	api_key: process.env.API_KEY,
-	api_secret: process.env.API_SECRET
-  });
-
+	api_secret: process.env.API_SECRET,
+});
 
 /**
  * Create and save a new Vehicule in database
@@ -22,14 +30,10 @@ cloudinary.config({
 const createVehicule = async (req, res) => {
 	// Validate request
 	if (!req.body.numChassis || !req.body.numImmatriculation || !req.body.modele || !req.body.marque || !req.body.couleur
-		|| !req.body.etat ) {
+		|| !req.body.etat || !req.body.idAgentMaintenance || !req.body.idBorne ) {
 		res.status(400).send({
 			message: 'Content can not be empty!',
 		});
-		console.log( req.body.numChassis);
-		console.log(req.body.numImmatriculation); 
-		console.log(req.body.modele); 
-		console.log(req.body.couleur);
 		return;
 	}
 	// Create a Vehicule
@@ -48,46 +52,41 @@ const createVehicule = async (req, res) => {
 		niveauMinimumHuile: req.body.niveauMinimumHuile,
 		regulateurVitesse: req.body.regulateurVitesse,
 		limiteurVitesse: req.body.limiteurVitesse,
+		idBorne: req.body.idBorne, 
 		idAgentMaintenance: req.body.idAgentMaintenance,
-		idBorne: req.body.idBorne,
-	    idCloudinary: "", 
-		secureUrl: ""
+	    idCloudinary: req.body.idCloudinary, 
+		secureUrl: req.body.secureUrl
 	};
 
 	// upload image to cloudinary here
-	if (req.body.image) {
+	/* if (req.body.image) {
 		const image = req.body.image;
-		try{
-			ress= await cloudinary.uploader.upload(req.body.image)
-			.then((result) => {
-				vehicule.idCloudinary=result.public_id;
-				vehicule.secureUrl= result.secure_url;
-		
-			}); 
-		} catch(error){
+		try {
+			ress = await cloudinary.uploader.upload(req.body.image).then((result) => {
+				vehicule.idCloudinary = result.public_id;
+				vehicule.secureUrl = result.secure_url;
+			});
+		} catch (error) {
 			console.log(error);
 		}
-	}
+	}*/ 
 	// Ajout d'un véhicule à la base de données
 	try {
-
 		let result = await Vehicule.findAll({
 			where: {
 				numChassis: req.body.numChassis,
-			}
-	  
-		  })
-		  if (result.length > 0) {
-			  res.status(400).send({
-			  message: "Vehicule already exists!"
-			})
-		  } else {
-		  	let data;
-				data = await Vehicule.create(vehicule).then((data) => {
+			},
+		});
+		if (result.length > 0) {
+			res.status(400).send({
+				message: 'Vehicule already exists!',
+			});
+		} else {
+			let data;
+			data = await Vehicule.create(vehicule).then((data) => {
 				res.send(data);
 			});
-		  }
-		  
+		}
 	} catch (err) {
 		res.status(500).send({
 			error: err.message || 'Some error occurred while creating the Vehicule.',
@@ -136,7 +135,6 @@ const deleteVehicule = async (req, res) => {
 //Update vehicule with numChassis = id
 const updateVehicule = async (req, res) => {
 	const id = req.params.id;
-
 	Vehicule.update(req.body, {
 		where: { numChassis: id },
 	})
@@ -160,41 +158,51 @@ const updateVehicule = async (req, res) => {
 
 /**
  * Return details of all vehicules thar are stored in database
- * @param {*} req request 
+ * @param {*} req request
  * @param {*} res response
  */
 
 const getAllVehicule = async (req, res) => {
-	Vehicule.findAll()
+	Vehicule.findAll({
+		where: {
+			etat: {
+			  [Op.ne]: "supprime", // Tous les véhicules sauf ceux qui sont supprimés
+			},
+		  },
+	})  
 		.then((data) => {
 			res.send(data);
 		})
 		.catch((err) => {
 			res.status(500).send({
-				message: 'Error retrieving Vehicule with id=' + id,
+				message: 'Error retrieving all vehicules',
 			});
 		});
 };
 
 /**
- * Get details of the Vehicule that has the specified ID in request body 
- * @param {*} req The request
- * @param {*} res The response
+ * This function displays the details of a given car, identified by it's num chassis
+ * return 404 status with not_found error as json if it doesn't exist
+ * return 200 status with the actual car oin json if it exists
+ *
+ * @param {*} req The request of the client
+ * @param {*} res The response from the server
+ * @param {*} next Used to move on to the next middleware
  */
+
 const getVehiculeDetails = async (req, res, next) => {
 	try {
-		if (parseInt(req.params.numChassis, 10)) {
+		if (parseInt(req.params.id, 10)) {
 			const vehicule = await Vehicule.findAll({
 				where: {
-					numChassis: +req.params.numChassis,
+					numChassis: +req.params.id,
 				},
 			});
 			if (vehicule.length === 0) {
 				// No content with that numChassis
 				res.status(404).send({
 					error: 'not_found',
-					message: `No vehicule with such numero chassis: ${+req.params
-						.numChassis}`,
+					message: `No vehicule with such numero chassis: ${+req.params.id}`,
 					status: 404,
 				});
 			} else {
@@ -209,24 +217,137 @@ const getVehiculeDetails = async (req, res, next) => {
 	}
 };
 
+
+/**
+ * Get reservation history of the Vehicule that has the specified ID in request body 
+ * @param {*} req The request
+ * @param {*} res The response
+ */
+const getVehiculeReservations = async (req, res, next) => {
+	const historytable= []; 
+	try {
+		if (parseInt(req.params.id, 10)) {
+			const historiqueReservation = await Reservation.findAll({
+				where: {
+					idVehicule: +req.params.id,
+				},
+			});
+			if (historiqueReservation.length === 0) {
+				// Ce vehicule n'a aucune réservation 
+				res.status(404).send({
+					error: 'not_found',
+					message: `Ce véhicule n'a aucune réservation en historique: ${+req.params.id}`,
+					status: 404,
+				});
+			} else {
+
+				var i=0;
+				for ( i=0;i<historiqueReservation.length ; i++){
+					 let reservationDetails={
+							"idReservation": "", 
+							"nomBorneDepart" : "",
+							"wilayaBorneDepart":"",
+							"nomBorneDestination" : "",
+							"WilayaBorneDestination":"",
+							"nomLocataire":"", 
+							"prenomLocataire": "", 
+							"etatReservation":"", 
+							"dateDebut":"", 
+							"dateFin":"", 
+							"idTrajet":"", 
+							"nbKm":"",
+							"nbKmEstime":"", 
+							"tempsEstime":"",
+							"tempsReel":"",
+							"prixEstime":"",
+							"prixAPayer":""
+						}; 
+					   reservationDetails.idReservation=historiqueReservation[i].idReservation;
+					   reservationDetails.etatReservation=historiqueReservation[i].etat;
+					   reservationDetails.tempsEstime=historiqueReservation[i].tempsEstime;
+					   reservationDetails.prixEstime=historiqueReservation[i].prixEstime; 
+					   reservationDetails.nbKmEstime=historiqueReservation[i].distanceEstime; 
+					
+						//Récuperer le nom de la borne de départ 
+						const result = await Borne.findAll({
+							where: {
+								idBorne: historiqueReservation[i].idBorneDepart,
+							},
+						}); 
+							var rows = JSON.parse(JSON.stringify(result[0]));
+							console.log(rows.nomBorne); 
+							reservationDetails.nomBorneDepart=rows.nomBorne; 
+							reservationDetails.wilayaBorneDepart=rows.wilaya; 
+
+						// Récupérer le nom de la borne d'arrivée
+						const result1 = await Locataire.findAll({
+							where: {
+								idLocataire: historiqueReservation[i].idLocataire,
+							},
+						}); 
+							var rows1 = JSON.parse(JSON.stringify(result1[0]));
+							reservationDetails.nomLocataire=rows1.nom;
+							reservationDetails.prenomLocataire=rows1.prenom;
+
+							const result2 = await Borne.findAll({
+							where: {
+								idBorne: historiqueReservation[i].idBorneDestination,
+							},
+						}); 	
+							var rows2 = JSON.parse(JSON.stringify(result2[0]));
+							reservationDetails.nomBorneDestination=rows2.nomBorne;
+							reservationDetails.WilayaBorneDestination=rows2.wilaya; 
+
+							if (reservationDetails.etatReservation=="Terminée" || reservationDetails.etatReservation=="Active" ){
+
+								const result3 = await Trajet.findAll({
+									where: {
+										idReservation: historiqueReservation[i].idReservation,
+									},
+								}); 	
+									var rows3 = JSON.parse(JSON.stringify(result3[0]));
+									reservationDetails.idTrajet=rows3.idTrajet; 
+									if(rows3.dateDebut != null) {reservationDetails.dateDebut= rows3.dateDebut }
+									if(rows3.dateFin != null ) {	
+										reservationDetails.dateFin= rows3.dateFin;
+										reservationDetails.nbKm= rows3.kmParcourue;
+										reservationDetails.tempsReel = rows3.tempsEstime;
+										reservationDetails.prixAPayer= rows3.prixAPayer;
+									}
+							}
+							historytable.push(reservationDetails); 		
+					}
+					res.send(historytable);
+			}
+		} else next();
+	} catch (err) {
+		res.status(500).send({
+			error:
+				err.message || 'Some error occured while retreiving vehicule"s reservation history',
+		});
+	}
+};
+
 const selectVehicuesOfAGivenAgent = async (req, res) => {
 	try {
-		const vehicules = await Vehicule.findAll({
-			where: {
-				idAgentMaintenance: +req.params.id,
-			},
-		});
-		if (vehicules.length === 0) {
-			// No content with that id
-			res.status(404).send({
-				error: 'not_found',
-				message: `No content with such id: ${+req.params.id}`,
-				status: 404,
+		if (parseInt(req.params.id, 10)) {
+			const vehicules = await Vehicule.findAll({
+				where: {
+					idAgentMaintenance: +req.params.id,
+				},
 			});
-		} else {
+			if (vehicules.length === 0) {
+				// No content with that id
+				res.status(404).send({
+					error: 'not_found',
+					message: `No content with such id: ${+req.params.id}`,
+					status: 404,
+				});
+			} else {
+				res.status(200).send(vehicules);
+			}
 			res.status(200).send(vehicules);
-		}
-		res.status(200).send(vehicules);
+		} else done();
 	} catch (err) {
 		res.status(500).send({
 			error:
@@ -237,6 +358,15 @@ const selectVehicuesOfAGivenAgent = async (req, res) => {
 	}
 };
 
+/**
+ * This function gets fired on a PUT request to /api/vehicules/etat/:numChassis
+ * the request should have an attribute 'etat' set to either 'en-service' or 'hors-service', no other values are accepted
+ * returns a 404 status with not-found error message if the num chasiis given doesn't exist
+ * returns an object {Updated rows, UpdatedVehicule} contained numer of rows affected (modified) and the actual cars which have been affected
+ *
+ * @param {*} req The client requeest
+ * @param {*} res The server response
+ */
 const setEtatVehicule = async (req, res) => {
 	try {
 		let state = req.body.etat;
@@ -290,11 +420,21 @@ const setEtatVehicule = async (req, res) => {
 	}
 };
 
-const getVehiculesEnService = async (req, res) => {
+/**
+ * returns all 'en-service' cars of a given agent de maintenace, identified by id
+ * returns 404 status with not-found error message if no id is found
+ * return 200 status with all the concerned cars in form of json
+ *
+ * @param {*} req The client request
+ * @param {*} res The server response
+ */
+
+const getVehiculesEnServiceOfAGivenAgent = async (req, res) => {
 	try {
 		const vehiculesEnService = await Vehicule.findAll({
 			where: {
 				etat: 'en service',
+				idAgentMaintenance: +req.params.id,
 			},
 		});
 		if (vehiculesEnService.length === 0) {
@@ -316,11 +456,21 @@ const getVehiculesEnService = async (req, res) => {
 	}
 };
 
-const getVehiculesHorsService = async (req, res) => {
+/**
+ * This function returns all 'hors-service' cars of a given aget de maintenace, identified by it's id
+ * returns 404 status with not-found error message if no such id exist
+ * returns 200 status with all the concerned cars in form of json
+ *
+ * @param {*} req The client request
+ * @param {*} res The server response
+ */
+
+const getVehiculesHorsServiceOfAGivenAgent = async (req, res) => {
 	try {
 		const vehiculesHorsService = await Vehicule.findAll({
 			where: {
 				etat: 'hors service',
+				idAgentMaintenance: +req.params.id,
 			},
 		});
 		if (vehiculesHorsService.length === 0) {
@@ -342,16 +492,49 @@ const getVehiculesHorsService = async (req, res) => {
 	}
 };
 
+// Count vehicles (en-service) and count vehicles (hors-service)
+const countVehicles = async (req,res) =>{
+	try {
+		const countAll = await Vehicule.findAll({
+			attributes: [
+				[sequelize.fn('COUNT', sequelize.col('numChassis')), 'countAll'],
+			],
+		})
+		const countHorsService = await Vehicule.findAll({
+			attributes: [
+				[sequelize.fn('COUNT', sequelize.col('numChassis')), 'countHorsService'],
+			],
+			where: {etat:'hors service'}
+		})
+		const result = {}
+		if (countAll.length != 0) {
+			res.send([countAll[0],countHorsService[0]]);
+		} else {
+			res.status(404).send({
+				error: 'not_found',
+				message: 'No content',
+				status: 404,
+			});
+		}
+	} catch (err) {
+		res.status(500).send({
+			error: err.message || 'Some error occured while counting vehicules'
+		});
+	}
+	
+}
+
 export default {
 	setEtatVehicule,
 	getVehiculeDetails,
 	selectVehicuesOfAGivenAgent,
-	getVehiculesEnService,
-	getVehiculesHorsService,
+	getVehiculesEnServiceOfAGivenAgent,
+	getVehiculesHorsServiceOfAGivenAgent,
 
 	createVehicule,
 	deleteVehicule,
 	updateVehicule,
 	getAllVehicule,
-	//getVehiculeByCondition
+	getVehiculeReservations,
+	countVehicles
 };

@@ -4,10 +4,10 @@ request = Request('https://autolib-dz.herokuapp.com/api/auth');
 describe('POST : Authentification des locataire', () => {
     it('returns 200 OK when using valid input and credentials', (done) => {
         request
-            .post('/locataire')
+            .post('/administrateur')
             .send({
-                email: 'dooosso@esi.dz',
-                motdepasse: '00001234',
+                email: 'administrateur@esi.dz',
+                motdepasse: 'Admin123',
             })
             .expect(200)
             .expect('Content-Type', 'application/json; charset=utf-8')
@@ -21,9 +21,9 @@ describe('POST : Authentification des locataire', () => {
 
     it('returns 400 Bad Request when not sending either an email or password', (done) => {
         request
-            .post('/locataire')
+            .post('/administrateur')
             .send({
-                email: 'user4',
+                email: 'administrateur@esi.dz',
             })
             .expect(400)
             .expect('Content-Type', 'application/json; charset=utf-8')
@@ -37,9 +37,9 @@ describe('POST : Authentification des locataire', () => {
 
     it('returns 401 Unauthorized when using wrong credentials', (done) => {
         request
-            .post('/locataire')
+            .post('/administrateur')
             .send({
-                email: 'user4',
+                email: 'administrateur@esi.dz',
                 motdepasse: '12345444',
             })
             .expect(401)

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: administrateur.controller.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: administrateur.controller.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
+const validator = require('validator');
+const passwordValidator = require('password-validator')
+var bcrypt = require("bcryptjs");
+var jwt = require("jsonwebtoken");
+const db = require("../models");
+const Administrateur = db.administrateur;
+
+var passwdValidator = new passwordValidator();
+ 
+// ajouter des propriétés aux validateurs de mot de passe
+passwdValidator
+.is().min(8)                                    // Mot de passe de taille minimum 8
+.is().max(100)                                  // Mot de passe de taille maximum 100
+.has().uppercase()                              // Doit avoir des lettre en majuscules
+.has().lowercase()                              // Doit avoir des lettres en miniscules
+
+
+/**
+ * Récupérer un Administrateur avec un id donné
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
+// Récupérer un Administrateur avec un id donné
+
+const getAdmin = (req, res) => {
+
+    //Récupérer l'id de l'Administrateur à modifier de l'url
+    const id = req.params.id;
+  
+    Administrateur.findByPk(id)
+    .then(data => {
+        res.send(data);
+    })
+    .catch(err => {
+        res.status(500).send({
+            message: "Erreur lors de la récupération de l'Administrateur avec l'id=" + id
+        });
+    });
+};
+
+/**
+ * Récupérer des Administrateurs avec une condition sur le nom 
+ * ou sans condition, dans ce cas retourne tout les Administrateurs
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
+//Récupérer des Administrateurs avec une condition sur le nom (ou sans condition, dans ce cas retourne tout les Administrateurs)
+
+const getAllAdmins = async(req,res)=>{
+
+    //Récupérer le nom de l'Administrateur de l'url
+    const nom = req.query.nom;
+
+    //Créer la variable condition
+    var condition = nom ? { nom: { [Op.like]: `%${nom}%` } } : null;
+  
+    Administrateur.findAll({ where: condition })
+    .then(data => {
+        res.send(data);
+    })
+    .catch(err => {
+        res.status(500).send({
+            message:
+                err.message || "Une erreur est survenue lors de la récupération des Administrateurs."
+        });
+    });
+};
+
+
+/**
+ * Création d'un Administrateur
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
+//Création d'un Administrateur
+
+const createAdmin = async(req,res)=>{
+          
+    //Initialiser les attributs de l'Administrateur à créer
+    const admin = {
+        //idAdministrateur:req.body.id,
+        nom: req.body.nom,
+        prenom: req.body.prenom,
+        email: req.body.email,
+        motDePasse: req.body.motDePasse,
+        salaire: req.body.salaire   
+    };
+
+    //Validation de l'email de l'Administrateur à créer
+    if(validator.isEmail(admin.email)===false){
+        res.status(500).send({
+            message:"L'email est non valide!"             
+        });
+        return;
+    }else{
+        if(admin.nom==undefined || admin.prenom==undefined){
+            res.status(500).send({
+                message:"Les champs nom et prénom sont requis!"             
+            });
+            return;
+        }else{
+            //Vérifier si les attributs 'nom' et 'prénom' ne sont pas vides
+            if((validator.isEmpty(admin.nom)) || (validator.isEmpty(admin.prenom))){
+                res.status(500).send({
+                    message:"Le champ nom et prénom ne peuvent pas etre vides!"             
+                });
+                return;
+            }else{
+                if(!passwdValidator.validate(admin.motDePasse)){
+                    res.status(500).send({
+                        message:"Mot de passe invalide!",
+                    });
+                    return;
+                }else{
+                    //hasher le mot de passe
+                    var salt = bcrypt.genSaltSync(10);
+                    var hash = bcrypt.hashSync(admin.motDePasse, salt);
+                    admin.motDePasse= hash;
+                    //Créer l'Administrateur
+                    Administrateur.create(admin)
+                    .then(data => {
+                        //Si la création réussit on affiche les champs de l'admin créé
+                        res.send(data);
+                    })
+                    .catch(err => {
+                        res.status(500).send({
+                            message: err.message || "Une erreur est survenue lors de la création de l'administrateur!"
+                        });
+                    });
+                }
+            }
+        }
+    }     
+};
+
+
+/**
+ * Modification d'un Administrateur
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
+//Modification d'un Administrateur
+
+const updateAdmin = (req, res) => {
+
+    //Récupérer l'id de l'Administrateur à modifier de l'url
+    const id = req.params.id;
+  
+    //Validation des données modifiées
+    //Email si modifié
+    if(req.body.email){
+        if(!validator.isEmail(req.body.email)){
+            res.status(500).send({
+                message:"Email invalide!",
+            });
+            return;            
+        }
+    }
+    //Mot de passe si modifié
+    if(req.body.motDePasse){
+        if(!passwdValidator.validate(req.body.motDePasse)){
+            res.status(500).send({
+                message:"Mot de passe invalide!",
+            });
+            return;            
+        }
+        //hasher le mot de passe
+        var salt = bcrypt.genSaltSync(10);
+        var hash = bcrypt.hashSync(req.body.motDePasse, salt);
+        req.body.motDePasse= hash;
+    }
+    //Nom si modifié
+    if(req.body.nom){
+        if(validator.isEmpty(req.body.nom)){
+            res.status(500).send({
+                message:"Le champ nom ne peut pas etre vide!"             
+            });
+            return;
+        }
+    }
+    //Nom si modifié
+    if(req.body.prenom){
+        if(validator.isEmpty(req.body.prenom)){
+            res.status(500).send({
+                message:"Le champ prenom ne peut pas etre vide!"             
+            });
+            return;
+        }
+    }
+
+    //Modifier l'Administrateur
+    Administrateur.update(req.body, {
+        where: { idAdministrateur: id }
+    })
+    .then(num => {
+        if (num == 1) {
+            res.send({
+                message: "L'Administrateur a bien été modifié!"
+            });
+        }else{
+            res.send({
+                message: `Administrateur avec id=${id} non modifié. Peut etre l'Administrateur n'a pas été trouvé!`
+            });
+        }
+    })
+    .catch(err => {
+        res.status(500).send({
+            message: "Erreur lors de la modification de l'Administrateur avec l'id=" + id
+        });
+    });
+};
+
+/**
+ * Supprimer un Administrateur
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
+//Supprimer un Administrateur
+
+const deleteAdmin = (req, res) => {
+
+    //Récupérer l'id de l'Administrateur à modifier de l'url
+    const id = req.params.id;
+  
+    Administrateur.destroy({
+        where: { idAdministrateur: id }
+    })
+    .then(num => {
+        if (num == 1) {
+            res.send({
+                message: "Administrateur a été supprimé!"
+            });
+        }else{
+            res.send({
+                message: `Administrateur avec id=${id} non supprimé. Peut etre l'Administrateur n'a pas été trouvé!`
+            });
+        }
+    })
+    .catch(err => {
+        res.status(500).send({
+            message: "Erreur lors de la suppression de l'Administrateur avec l'id=" + id
+        });
+    });
+};
+
+/**
+ * Supprimer tout les Administrateurs
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
+//Supprimer tout les Administrateurs 
+
+const deleteAllAdmins = async (req, res) => {
+
+    Administrateur.destroy({
+        where: {},
+        truncate: false
+    })
+    .then(nums => {
+        res.send({ message: `${nums} Administrateurs ont été supprimés avec succés!` });
+    })
+    .catch(err => {
+        res.status(500).send({
+            message: err.message || "Une erreur est survenue lors de la suppression!"
+        });
+    });
+};
+
+export default {
+    createAdmin,
+    getAllAdmins,
+    getAdmin,
+    updateAdmin,
+    deleteAdmin,
+    deleteAllAdmins
+};</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addPlanMaintenance">addPlanMaintenance</a></li><li><a href="global.html#createAdmin">createAdmin</a></li><li><a href="global.html#createAgent">createAgent</a></li><li><a href="global.html#createBorne">createBorne</a></li><li><a href="global.html#createDirigeant">createDirigeant</a></li><li><a href="global.html#createIdentite">createIdentite</a></li><li><a href="global.html#createOperateur">createOperateur</a></li><li><a href="global.html#createTransaction">createTransaction</a></li><li><a href="global.html#createVehicule">createVehicule</a></li><li><a href="global.html#deleteAdmin">deleteAdmin</a></li><li><a href="global.html#deleteAgent">deleteAgent</a></li><li><a href="global.html#deleteAllAdmins">deleteAllAdmins</a></li><li><a href="global.html#deleteAllAgents">deleteAllAgents</a></li><li><a href="global.html#deleteAllDirigeants">deleteAllDirigeants</a></li><li><a href="global.html#deleteAllOperateurs">deleteAllOperateurs</a></li><li><a href="global.html#deleteBorne">deleteBorne</a></li><li><a href="global.html#deleteDirigeant">deleteDirigeant</a></li><li><a href="global.html#deleteIdentite">deleteIdentite</a></li><li><a href="global.html#deleteOperateur">deleteOperateur</a></li><li><a href="global.html#deleteVehicule">deleteVehicule</a></li><li><a href="global.html#filterTransaction">filterTransaction</a></li><li><a href="global.html#getAdmin">getAdmin</a></li><li><a href="global.html#getAgent">getAgent</a></li><li><a href="global.html#getAllAdmins">getAllAdmins</a></li><li><a href="global.html#getAllAgents">getAllAgents</a></li><li><a href="global.html#getAllBornes">getAllBornes</a></li><li><a href="global.html#getAllDirigeants">getAllDirigeants</a></li><li><a href="global.html#getAllIdentite">getAllIdentite</a></li><li><a href="global.html#getAllOperateurs">getAllOperateurs</a></li><li><a href="global.html#getAllVehicule">getAllVehicule</a></li><li><a href="global.html#getBorne">getBorne</a></li><li><a href="global.html#getCommune">getCommune</a></li><li><a href="global.html#getDirigeant">getDirigeant</a></li><li><a href="global.html#getFilteredBornes">getFilteredBornes</a></li><li><a href="global.html#getLocataireOfIdentity">getLocataireOfIdentity</a></li><li><a href="global.html#getOneIdentite">getOneIdentite</a></li><li><a href="global.html#getOperateur">getOperateur</a></li><li><a href="global.html#getOperatorOfIdentity">getOperatorOfIdentity</a></li><li><a href="global.html#getPlanMaintenance">getPlanMaintenance</a></li><li><a href="global.html#getTransaction">getTransaction</a></li><li><a href="global.html#getUserTransactions">getUserTransactions</a></li><li><a href="global.html#getVehiclesInABorne">getVehiclesInABorne</a></li><li><a href="global.html#getVehiculeDetails">getVehiculeDetails</a></li><li><a href="global.html#getVehiculesEnServiceOfAGivenAgent">getVehiculesEnServiceOfAGivenAgent</a></li><li><a href="global.html#getVehiculesHorsServiceOfAGivenAgent">getVehiculesHorsServiceOfAGivenAgent</a></li><li><a href="global.html#getWilaya">getWilaya</a></li><li><a href="global.html#invalider">invalider</a></li><li><a href="global.html#selectIdentitiesOfAGivenOperateur">selectIdentitiesOfAGivenOperateur</a></li><li><a href="global.html#selectVehicuesOfAGivenAgent">selectVehicuesOfAGivenAgent</a></li><li><a href="global.html#setEtatVehicule">setEtatVehicule</a></li><li><a href="global.html#updateAdmin">updateAdmin</a></li><li><a href="global.html#updateAgent">updateAgent</a></li><li><a href="global.html#updateDirigeant">updateDirigeant</a></li><li><a href="global.html#updateOperateur">updateOperateur</a></li><li><a href="global.html#updateVehicule">updateVehicule</a></li><li><a href="global.html#valider">valider</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed May 26 2021 19:32:24 GMT+0200 (heure d’été d’Europe centrale)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
