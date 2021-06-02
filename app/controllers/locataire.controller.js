@@ -71,7 +71,7 @@ const createLocataire = async(req, res) => {
             <html>
                 <body>
                     <h2>Click here to activate your account</h2>
-                    <a href="http://localhost:4000/api/locataire/validateAccount/${req.body.email}">Activate here</a>
+                    <a href="https://autolib-dz.herokuapp.com/api/locataire/validateAccount/${req.body.email}">Activate here</a>
                 </body>
             </html>
                                `
