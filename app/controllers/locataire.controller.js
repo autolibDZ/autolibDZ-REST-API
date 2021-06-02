@@ -92,7 +92,7 @@ const createLocataire = async(req, res) => {
                 nom: req.body.nom,
                 prenom: req.body.prenom,
                 email: req.body.email,
-                motDePasse: req.body.motdepasse,
+                motDePasse: req.body.motDePasse,
                 Active: false,
                 ValidationGmail: false
 
@@ -268,17 +268,6 @@ const deleteLocataire = (req, res) => {
             });
 
             where: { idLocataire: id }
-        })
-        .then(num => {
-            if (num == 1) {
-                res.status(200).send({
-                    message: "Locataire was deleted successfully!"
-                });
-            } else {
-                res.status(400).send({
-                    message: `Cannot delete Locataire with id=${id}. Maybe Locataire was not found!`
-                });
-            }
         })
         .catch(err => {
             res.status(500).send({
