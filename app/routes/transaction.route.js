@@ -2,6 +2,13 @@ import transactionCtrl from "../controllers/transaction.controller";
 
 var router = require("express").Router();
 
+
+//get stats
+router.get("/stats/:year", transactionCtrl.TransactionStats);
+
+//get years
+router.get("/getYears", transactionCtrl.getYears);
+
 router.post("/", transactionCtrl.createTransaction);
 
 //get User transactions

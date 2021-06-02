@@ -1,6 +1,7 @@
 const db = require("../models");
 const Transaction = db.transaction;
 const { Op } = require("sequelize");
+const sequelize = require("sequelize");
 
 /**
  * Create and save a new transaction in database
@@ -270,9 +271,72 @@ const filterTransaction = async (req, res) => {
      }
 };
 
+const TransactionStats= async (req,res)=>{
+    // Validate request
+	if (!req.params.year) {
+		res.status(400).send({
+			message: "params 'year' can not be empty!",
+		});
+		return;
+	}
+
+	try {
+		let year = req.params.year;
+		const transactionsByMonth = await Transaction.findAll({
+			attributes: [
+				[sequelize.fn('date_part', 'month', sequelize.col('dateTransaction')), 'month'],
+				[sequelize.fn('SUM', sequelize.col('montant')), 'sumTransactions'],
+			],
+			where: sequelize.where(sequelize.fn('date_part', 'year', sequelize.col('dateTransaction')), year),
+			group: [sequelize.fn('date_part', 'month', sequelize.col('dateTransaction'))],
+			order: [sequelize.fn('date_part', 'month', sequelize.col('dateTransaction'))],
+		});
+		if (transactionsByMonth.length != 0) {
+			res.send(transactionsByMonth);
+		} else {
+			res.status(404).send({
+				error: 'not_found',
+				message: 'No content',
+				status: 404,
+			});
+		}
+	} catch (err) {
+		res.status(500).send({
+			error: err.message || 'Some error occured while counting abonnements'
+		});
+	}
+}
+
+const getYears = async (req, res) => {
+	try {
+		const years = await Transaction.findAll({
+			attributes: [
+				[sequelize.fn('date_part', 'year', sequelize.col('dateTransaction')), 'year'],
+			],
+			group: [sequelize.fn('date_part', 'year', sequelize.col('dateTransaction'))],
+			order: [sequelize.fn('date_part', 'year', sequelize.col('dateTransaction'))],
+		})
+		if (years.length != 0) {
+			res.send(years);
+		} else {
+			res.status(404).send({
+				error: 'not_found',
+				message: 'No content',
+				status: 404,
+			});
+		}
+	} catch (err) {
+		res.status(500).send({
+			error: err.message || 'Some error occured while getting years'
+		});
+	}
+};
+
 export default {
      createTransaction,
      getUserTransactions,
      getTransaction,
-     filterTransaction
+     filterTransaction,
+     TransactionStats,
+     getYears
 }
