@@ -53,6 +53,40 @@ const addPlanMaintenance = async (req, res, next) => {
 		});
 	}
 };
+
+/**
+ * This function is fired on a DELETE request to /api/plan-maintenance endopoint
+ * It allows to delete a plan for a particular car
+ * Each plan has two required attributes (date & action)
+ *
+ * @param {*} req The client request
+ * @param {*} res The server response
+ * @param {*} next Is used to move on to the next middleware if necessary
+ * @returns
+ */
+
+const deletePlanMaintenance = async (req, res, next) => {
+	try {
+		if (parseInt(req.params.numChassis, 10)) {
+			const result = await planMaintenance.destroy({
+				where: { numChassis: +req.params.numChassis },
+			});
+			if (result > 0) {
+				res.status(200).send({
+					message: `Car with numChassis ${req.params.numChassis} was successfully deleted.`,
+				});
+			} else {
+				res.status(400).send({
+					message: 'No car with such numChassis: ' + req.params.numChassis,
+				});
+			}
+		} else next();
+	} catch (err) {
+		res.status(500).send({
+			error: err.message,
+		});
+	}
+};
 /**
  * This function allows to get plan de maintenance for a given car numChassis
  *
@@ -90,4 +124,5 @@ const getPlanMaintenance = async (req, res, next) => {
 module.exports = {
 	addPlanMaintenance,
 	getPlanMaintenance,
+	deletePlanMaintenance,
 };
