@@ -7,7 +7,6 @@ const Vehicule = db.vehicules;
 const Trajet = db.trajet;
 
 
-
 const createReservation = async(req, res) => {
 
     if (!req.body.etat || !req.body.idVehicule || !req.body.idLocataire || !req.body.idBorneDepart || !req.body.idBorneDestination) {
@@ -47,7 +46,6 @@ const createReservation = async(req, res) => {
     }
 
 };
-
 
 
 const listAllReservations = (req, res) => {
