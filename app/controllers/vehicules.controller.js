@@ -28,7 +28,6 @@ const createVehicule = async (req, res) => {
 	console.log(token);
   
 	if (token == null) {
-		console.log("HEEEEY I'm here");	
 	  res.status(403).send({
 		message: "Access Forbidden,invalide token",
 	  });
@@ -38,7 +37,6 @@ const createVehicule = async (req, res) => {
 	try {
 	  const user = jwt.verify(token, process.env.JWT_SECRET);
 	  if (user != undefined) {
-		console.log("User defined"); 
 		const role = user.role
 		// Only admin can create Vehicule
   

@@ -1,4 +1,4 @@
-/*const Request = require('supertest');
+const Request = require('supertest');
 request = Request('http://localhost:4000/api');
 
 describe('Testing GET on /api/vehicules endpoint', () => {
@@ -56,7 +56,10 @@ describe('createVehicule api', () => {
 				  niveauMinimumHuile:20, 
 				  regulateurVitesse: 20, 
 				  limiteurVitesse: 20,
-				  idBorne: 1
+				  idBorne: 1, 
+				  idAgentMaintenance:18, 
+				  idCloudinary: "qbhuwok5ssj646qbuj38", 
+				  secureUrl: "https://res.cloudinary.com/melb/image/upload/v1622583305/qbhuwok5ssj646qbuj38.png"
 			})
 			.set('Accept', 'application/json')
 			.expect(200)
@@ -87,7 +90,10 @@ describe('createVehicule api', () => {
 				  niveauMinimumHuile:20, 
 				  regulateurVitesse: 20, 
 				  limiteurVitesse: 20,
+				  idBorne:1, 
 				  idAgentmaintenance: 1, 
+				  idCloudinary: "xhellvdlmulzmhmkdbau", 
+				  secureUrl: "https://res.cloudinary.com/melb/image/upload/v1621962019/xhellvdlmulzmhmkdbau.png"
 			})
 			.expect(400)
 			.expect('Content-Type','application/json; charset=utf-8')
@@ -118,7 +124,11 @@ describe('createVehicule api', () => {
 				niveauMinimumHuile:20, 
 				regulateurVitesse: 20, 
 				limiteurVitesse: 20,
-				idBorne: 1
+				idBorne: 1,
+				idAgentMaintenance:18, 
+				idCloudinary: "qbhuwok5ssj646qbuj38", 
+				secureUrl: "https://res.cloudinary.com/melb/image/upload/v1622583305/qbhuwok5ssj646qbuj38.png"
+
 			})
 			.set('Accept', 'application/json')
 			.expect(400)
@@ -264,4 +274,3 @@ describe('Testing GET on /api/vehicules/agents/:id/hors-service', () => {
 			});
 	}); 
 });
-*/
