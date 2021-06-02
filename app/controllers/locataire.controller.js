@@ -265,7 +265,8 @@ const deleteLocataire = (req, res) => {
         .catch(err => {
             res.status(500).send({
                 message: "Could not delete Locataire with id=" + id
-            });
+            })
+    });
 }
 
 // Block or Unblock a locataire
