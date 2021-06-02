@@ -265,13 +265,6 @@ const deleteLocataire = (req, res) => {
             res.status(500).send({
                 message: "Could not delete Locataire with id=" + id
             });
-
-            where: { idLocataire: id }
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: "Could not delete Locataire with id=" + id
-            });
         })
 
 }
