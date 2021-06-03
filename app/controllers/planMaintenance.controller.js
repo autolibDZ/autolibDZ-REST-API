@@ -1,6 +1,33 @@
-const { planMaintenance } = require('../models');
 const db = require('../models');
 const PlanMaintenance = db.planMaintenance;
+const { Op } = require('sequelize');
+
+/**
+ * This functions verifies if an action exists in plan de maintenance of a guven numVhassis car
+ *
+ * @param {Int} numChassis
+ * @param {String} action
+ * @returns
+ */
+const verifyIfActionExists = async (numChassis, action) => {
+	let exists = false;
+
+	const plans = await PlanMaintenance.findAll({
+		where: {
+			numChassis: numChassis,
+		},
+	});
+
+	for (const plan of plans) {
+		if (plan.action === action) {
+			exists = true;
+			break;
+		}
+	}
+	if (exists) return true;
+	else return false;
+};
+
 /**
  * This function is fired on a POST request to /api/plan-maintenance endopoint
  * It allows to insert a plan for a particular car
@@ -14,7 +41,8 @@ const PlanMaintenance = db.planMaintenance;
 const addPlanMaintenance = async (req, res, next) => {
 	try {
 		let addedRows = 0;
-		const plans = [];
+		const addedPlans = [];
+		const existedPlans = [];
 
 		let UtilPlans = [];
 		if (!Array.isArray(req.body)) {
@@ -25,19 +53,26 @@ const addPlanMaintenance = async (req, res, next) => {
 			for (const plan of UtilPlans) {
 				let date = new Date(plan.date);
 				let action = plan.action;
+				let numChassis = plan.numChassis;
+				let idAgentMaintenance = plan.idAgentMaintenance;
 
 				// Create object of plan maintenance
 				const planMaintenance = {
 					date,
 					action,
-					numChassis: +plan.numChassis || null,
-					idAgentMaintenance: +plan.idAgentMaintenance || null,
+					numChassis,
+					idAgentMaintenance,
 				};
-				await PlanMaintenance.create(planMaintenance);
-				addedRows++;
-				plans.push(plan);
+
+				const exists = await verifyIfActionExists(numChassis, action);
+
+				if (!exists) {
+					await PlanMaintenance.create(planMaintenance);
+					addedRows++;
+					addedPlans.push(plan);
+				} else existedPlans.push(plan);
 			}
-			res.status(200).send({ addedRows, plans });
+			res.status(200).send({ addedRows, addedPlans, existedPlans });
 		} else {
 			res.status(400).send({
 				message: 'Content can not be empty!',
@@ -68,16 +103,25 @@ const addPlanMaintenance = async (req, res, next) => {
 const deletePlanMaintenance = async (req, res, next) => {
 	try {
 		if (parseInt(req.params.numChassis, 10)) {
-			const result = await planMaintenance.destroy({
-				where: { numChassis: +req.params.numChassis },
+			const result = await PlanMaintenance.destroy({
+				where: {
+					[Op.and]: [
+						{ numChassis: +req.params.numChassis },
+						{ action: req.body.action },
+					],
+				},
 			});
 			if (result > 0) {
 				res.status(200).send({
-					message: `Car with numChassis ${req.params.numChassis} was successfully deleted.`,
+					message: `action: ${req.body.action} was successfully deleted from car: ${req.params.numChassis}`,
 				});
 			} else {
 				res.status(400).send({
-					message: 'No car with such numChassis: ' + req.params.numChassis,
+					message:
+						'No car with such numChassis: ' +
+						req.params.numChassis +
+						' and action: ' +
+						req.body.action,
 				});
 			}
 		} else next();
@@ -97,7 +141,7 @@ const deletePlanMaintenance = async (req, res, next) => {
 const getPlanMaintenance = async (req, res, next) => {
 	try {
 		if (parseInt(req.params.numChassis, 10)) {
-			const plans = await planMaintenance.findAll({
+			const plans = await PlanMaintenance.findAll({
 				where: {
 					numChassis: +req.params.numChassis,
 				},
