@@ -81,7 +81,7 @@ const createLocataire = async (req, res) => {
             <html>
                 <body>
                     <h2>Click here to activate your account</h2>
-                    <a href="http://localhost:4000/api/locataire/validateAccount/${req.body.email}">Activate here</a>
+                    <a href="https://autolib-dz.herokuapp.com/api/locataire/validateAccount/${req.body.email}">Activate here</a>
                 </body>
             </html>
                                `,
@@ -101,7 +101,7 @@ const createLocataire = async (req, res) => {
 				nom: req.body.nom,
 				prenom: req.body.prenom,
 				email: req.body.email,
-				motDePasse: req.body.motdepasse,
+				motDePasse: req.body.motDePasse,
 				Active: false,
 				ValidationGmail: false,
 			};
@@ -265,10 +265,6 @@ const deleteLocataire = (req, res) => {
 			res.status(500).send({
 				message: 'Could not delete Locataire with id=' + id,
 			});
-
-			where: {
-				idLocataire: id;
-			}
 		});
 };
 

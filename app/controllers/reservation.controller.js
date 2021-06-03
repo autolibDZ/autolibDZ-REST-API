@@ -7,6 +7,9 @@ const Vehicule = db.vehicules;
 const Trajet = db.trajet;
 
 
+
+
+
 const createReservation = async(req, res) => {
 
     if (!req.body.etat || !req.body.idVehicule || !req.body.idLocataire || !req.body.idBorneDepart || !req.body.idBorneDestination) {
@@ -104,28 +107,34 @@ const updateReservationById = async(req, res) => {
         });
 };
 
-const deleteReservationById = async(req, res) => {
+const deleteReservationById = async (req, res) => {
     const id = req.params.id;
 
     console.log(id);
 
     Reservation.destroy({
+
+        where: { idReservation: id },
+    })
+        .then((num) => {
+
             where: { idReservation: id }
         })
         .then(num => {
+
             if (num == 1) {
                 res.send({
-                    message: "Reservation was deleted successfully!"
+                    message: 'Reservation was deleted successfully!',
                 });
             } else {
                 res.send({
-                    message: `Cannot delete Reservation with id=${id}. Maybe Reservation was not found!`
+                    message: `Cannot delete Reservation with id=${id}. Maybe Reservation was not found!`,
                 });
             }
         })
-        .catch(err => {
+        .catch((err) => {
             res.status(500).send({
-                message: "Could not delete Tutorial with id=" + id
+                message: 'Could not delete Reservation with id=' + id,
             });
         });
 };
@@ -203,7 +212,7 @@ const verifyCodePin = async(req, res) => {
 }
 
 
-const getHistoriqueReservationsLocataire = async(req, res) => {
+const getHistoriqueReservationsAllLocataire = async(req, res) => {
 
     const reservations = await Reservation.findAll({ where: { idLocataire: req.params.id } })
 
@@ -269,7 +278,62 @@ const getHistoriqueReservationsLocataire = async(req, res) => {
 
 }
 
+const getHistoriqueReservationsLocataire = async(req, res) => {
 
+    const reservations = await Reservation.findAll({ where: { idLocataire: req.params.id} })
+
+    let historiqueReser = []
+
+
+    if (reservations != null) {
+        for(const reservation of reservations) {
+if (reservation.etat!="Active"){
+            let reservationFinale = {
+                idReservation: 0, etat: "", nomBorneDepart: "", numChassisVehicule: 0,
+                numImmatriculationVehicule: 0, modeleVehicule: "", marqueVehicule: "", nomBorneDestination: "",
+                dateReservation: null, dure: null, distance: null
+            }
+
+            reservationFinale.idReservation = reservation.idReservation
+
+            reservationFinale.etat = reservation.etat
+
+            //Recuperation nom borne de départ
+            const borneDepart = await Borne.findOne({where: {idBorne: reservation.idBorneDepart}})
+            reservationFinale.nomBorneDepart = borneDepart.nomBorne
+            //Recuperation nom borne de destination
+            const borneDesti = await Borne.findOne({where: {idBorne: reservation.idBorneDestination}})
+            reservationFinale.nomBorneDestination = borneDesti.nomBorne
+            //Recuperation des infos du véhicules
+            const vehiculeInfo = await Vehicule.findOne({where: {numChassis: reservation.idVehicule}})
+            if (vehiculeInfo != null) {
+                reservationFinale.numChassisVehicule = vehiculeInfo.numChassis
+                reservationFinale.numImmatriculationVehicule = vehiculeInfo.numImmatriculation
+                reservationFinale.modeleVehicule = vehiculeInfo.modele
+                reservationFinale.marqueVehicule = vehiculeInfo.marque
+            }
+            if (reservation.etat == "Terminée") {
+                const trajetInfo = await Trajet.findOne({where: {idReservation: reservation.idReservation}})
+                if (trajetInfo != null) {
+                    reservationFinale.dateReservation = trajetInfo.dateDebut
+                    reservationFinale.dure = trajetInfo.tempsEstime
+                    reservationFinale.distance = trajetInfo.kmParcourue
+
+                }
+            }
+            historiqueReser.push(reservationFinale)
+
+
+        }   }
+
+        res.status(200).send(historiqueReser)
+
+    } else {
+        res.status(404).send({ message :"This user has no reservation "})
+    }
+    console.log(historiqueReser)
+
+}
 
 
 export default {
@@ -281,5 +345,6 @@ export default {
     verifyCodePin,
     selectReservationOfAGivenUser,
     getReservationAnnulee,
-    getHistoriqueReservationsLocataire
+    getHistoriqueReservationsLocataire,
+    getHistoriqueReservationsAllLocataire,
 }
