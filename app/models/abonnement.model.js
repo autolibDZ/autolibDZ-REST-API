@@ -6,6 +6,7 @@ module.exports = function (sequelize, Sequelize) {
 			idAbonnement: {
 				type: Sequelize.INTEGER,
 				primaryKey: true,
+				autoIncrement: true,
 			},
 			balance: {
 				type: Sequelize.DOUBLE,
