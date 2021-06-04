@@ -4,12 +4,54 @@ request = Request('http://localhost:4000/api/transaction');
 
 
 describe('Transaction route test', () => {
+     //var commonHeaders = { "authorization":"TokenValueASDF" };
 
      /**
      * Test "createTransaction" method 
      */
 
      describe('Add one transaction', () => {
+
+          it('returns 403 invalid_access_token when token is invalid ', (done) => {
+               request
+                    .post('/')
+                    .send({
+                         "idLocataire": 3,
+                         "montant": 222.2,
+                         "moyenPayement": "Stripe",
+                         "idReservation": 10
+                    })
+                    .set('Accept', 'application/json')
+                    .set("authorization", "aaaa")
+                    .expect(403)
+                    .expect('Content-Type', /json/)
+                    .end((err, res) => {
+                         if (err) done(err);
+                         expect(res.body.error).toBe("invalid_access_token")
+                         expect(res.body.message).toBe("Access Forbidden,invalid token")
+                         done();
+                    });
+          });
+          /*
+                    it('returns 403 authorization_required when user is Unauthorized ', (done) => {
+                         request
+                              .post('/')
+                              .send({
+                                   "idLocataire": 3,
+                                   "montant": 222.2,
+                                   "moyenPayement": "Stripe",
+                                   "idReservation": 10
+                              })
+                              .set('Accept', 'application/json')
+                              .set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjYyOTY3OX0.3oO8qBjv6jwQsQTIp6TaK8pvfKG9be8bn1btdHtKb00")
+                              .expect(403)
+                              .end((err, res) => {
+                                   if (err) done(err);
+                                   expect(res.body.error).toBe("authorization_required")
+                                   expect(res.body.message).toBe("Access Forbidden,you can't do this operation")
+                                   done();
+                              });
+                    });*/
 
           it('returns 201 when the id reservation does not existe', (done) => {
                request
@@ -20,6 +62,7 @@ describe('Transaction route test', () => {
                          "moyenPayement": "Stripe",
                          "idReservation": 10
                     })
+                    .set("authorization", " Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjYyOTY3OX0.3oO8qBjv6jwQsQTIp6TaK8pvfKG9be8bn1btdHtKb00")
                     .set('Accept', 'application/json')
                     .expect('Content-Type', /json/)
                     .end((err, res) => {
@@ -39,6 +82,7 @@ describe('Transaction route test', () => {
                          "idReservation": 9
                     })
                     .set('Accept', 'application/json')
+                    .set("authorization", " Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjYyOTY3OX0.3oO8qBjv6jwQsQTIp6TaK8pvfKG9be8bn1btdHtKb00")
                     .expect(400)
                     .expect('Content-Type', /json/)
                     .end((err, res) => {
@@ -55,6 +99,7 @@ describe('Transaction route test', () => {
                          "moyenPayement": "Stripe",
                     })
                     .expect(400)
+                    .set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjYyOTY3OX0.3oO8qBjv6jwQsQTIp6TaK8pvfKG9be8bn1btdHtKb00")
                     .expect('Content-Type', 'application/json; charset=utf-8')
                     .end((err, res) => {
                          if (err) done(err);
@@ -73,6 +118,7 @@ describe('Transaction route test', () => {
                          "moyenPayement": "Stripe",
                          "idReservation": 9
                     })
+                    .set("authorization", " Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjYyOTY3OX0.3oO8qBjv6jwQsQTIp6TaK8pvfKG9be8bn1btdHtKb00")
                     .expect(400)
                     .expect('Content-Type', 'application/json; charset=utf-8')
                     .end((err, res) => {
@@ -83,34 +129,66 @@ describe('Transaction route test', () => {
           });
 
           it('returns 400 when sending a string value in "montant"', (done) => {
-			request
-				.post('/')
-				.send({
+               request
+                    .post('/')
+                    .send({
                          "idLocataire": 1,
                          "montant": "22",
                          "idReservation": 9
-				})
-				.expect(400)
-				.expect('Content-Type', 'application/json; charset=utf-8')
-				.end((err, res) => {
-					if (err) done(err);
+                    })
+                    .set("authorization", " Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjYyOTY3OX0.3oO8qBjv6jwQsQTIp6TaK8pvfKG9be8bn1btdHtKb00")
+                    .expect(400)
+                    .expect('Content-Type', 'application/json; charset=utf-8')
+                    .end((err, res) => {
+                         if (err) done(err);
                          expect(res.body.message).toBe("montant must be a number")
-					done();
-				});
-		});
+                         done();
+                    });
+          });
      })
 
 
      /**
-      * Test "getUserTransactions" method 
+      * Test "getUserTransactions" method
       */
 
      describe('Get transactions by user id', () => {
+
+          it('returns 403 invalid_access_token when token is invalid', (done) => {
+               request
+                    .get('/1')
+                    .set("Authorization", "aaaa")
+                    .expect(403)
+                    .expect('Content-Type', 'application/json; charset=utf-8')
+                    .end((err, res) => {
+                         if (err) done(err);
+                         expect(res.body.error).toBe("invalid_access_token")
+                         expect(res.body.message).toBe("Access Forbidden,invalid token")
+                         done();
+                    });
+          });
+          /*
+                    it('returns 403 authorization_required when user is Unauthorized ', (done) => {
+                         request
+                              .get('/1')
+                              .set("Authorization", "Bearer ayJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjYyOTY3OX0.3oO8qBjv6jwQsQTIp6TaK8pvfKG9be8bn1btdHtKb00")
+                              .expect(403)
+                              .expect('Content-Type', 'application/json; charset=utf-8')
+                              .end((err, res) => {
+                                   if (err) done(err);
+                                   expect(res.body.error).toBe("authorization_required")
+                                   expect(res.body.message).toBe("Access Forbidden,you can't do this operation")
+                                   done();
+                              });
+                    });
+          */
           it('returns 200 OK when using an exesting id 1', (done) => {
                request
                     .get('/1')
                     .expect(200)
                     .expect('Content-Type', 'application/json; charset=utf-8')
+                    .set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjYyOTY3OX0.3oO8qBjv6jwQsQTIp6TaK8pvfKG9be8bn1btdHtKb00")
+
                     .end((err, res) => {
                          if (err) done(err);
                          else {
@@ -129,6 +207,8 @@ describe('Transaction route test', () => {
                     .get('/5')
                     .expect(404)
                     .expect('Content-Type', 'application/json; charset=utf-8')
+                    .set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjYyOTY3OX0.3oO8qBjv6jwQsQTIp6TaK8pvfKG9be8bn1btdHtKb00")
+
                     .end((err, res) => {
                          if (err) done(err);
                          expect(res.body.message).toBe('Locataire with ID 5 has no transaction yet');
@@ -139,6 +219,7 @@ describe('Transaction route test', () => {
           it('returns 500  server error when using a wrong id like a', (done) => {
                request
                     .get('/a')
+                    .set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjYyOTY3OX0.3oO8qBjv6jwQsQTIp6TaK8pvfKG9be8bn1btdHtKb00")
                     .expect(500)
                     .expect('Content-Type', 'application/json; charset=utf-8')
                     .end((err, res) => {
@@ -150,15 +231,47 @@ describe('Transaction route test', () => {
      })
 
      /**
-      * Test "getTransaction" method 
+      * Test "getTransaction" method
       */
 
      describe('Visualize transaction details  ', () => {
+
+
+          it('returns 403 invalid_access_token when token is invalid', (done) => {
+               request
+                    .get('/1/14')
+                    .set("authorization", "aaaa")
+                    .expect(403)
+                    .expect('Content-Type', 'application/json; charset=utf-8')
+                    .end((err, res) => {
+                         if (err) done(err);
+                         expect(res.body.error).toBe("invalid_access_token")
+                         expect(res.body.message).toBe("Access Forbidden,invalid token")
+                         done();
+                    });
+          });
+          /*
+                    it('returns 403 authorization_required when user is Unauthorized ', (done) => {
+                         request
+                              .get('/1/14')
+                              .set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjYyOTY3OX0.3oO8qBjv6jwQsQTIp6TaK8pvfKG9be8bn1btdHtKb00")
+                              .expect(403)
+                              .expect('Content-Type', 'application/json; charset=utf-8')
+                              .end((err, res) => {
+                                   if (err) done(err);
+                                   expect(res.body.error).toBe("authorization_required")
+                                   expect(res.body.message).toBe("Access Forbidden,you can't do this operation")
+                                   done();
+                              });
+                    });
+          
+          */
           it('returns 200 OK when using an exesting id of user and transaction: 14', (done) => {
                request
                     .get('/1/14')
                     .expect(200)
                     .expect('Content-Type', 'application/json; charset=utf-8')
+                    .set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjYyOTY3OX0.3oO8qBjv6jwQsQTIp6TaK8pvfKG9be8bn1btdHtKb00")
                     .end((err, res) => {
                          if (err) done(err);
                          else {
@@ -173,6 +286,7 @@ describe('Transaction route test', () => {
           it('returns 404 when using an non exesting id of transaction 5', (done) => {
                request
                     .get('/1/5')
+                    .set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjYyOTY3OX0.3oO8qBjv6jwQsQTIp6TaK8pvfKG9be8bn1btdHtKb00")
                     .expect(404)
                     .expect('Content-Type', 'application/json; charset=utf-8')
                     .end((err, res) => {
@@ -185,6 +299,7 @@ describe('Transaction route test', () => {
           it('returns 500  server error when using a wrong id like a', (done) => {
                request
                     .get('/a')
+                    .set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjYyOTY3OX0.3oO8qBjv6jwQsQTIp6TaK8pvfKG9be8bn1btdHtKb00")
                     .expect(500)
                     .expect('Content-Type', 'application/json; charset=utf-8')
                     .end((err, res) => {
@@ -201,11 +316,43 @@ describe('Transaction route test', () => {
 
      describe('Post filterTransaction : returns a list of filtered user transactions ', () => {
 
+          it('returns 403 invalid_access_token when token is invalid', (done) => {
+               request
+                    .post('/1/filter')
+                    .send({})
+                    .set("authorization", "aaaa")
+                    .expect(403)
+                    .expect('Content-Type', 'application/json; charset=utf-8')
+                    .end((err, res) => {
+                         if (err) done(err);
+                         expect(res.body.error).toBe("invalid_access_token")
+                         expect(res.body.message).toBe("Access Forbidden,invalid token")
+                         done();
+                    });
+          });
+          /*
+                    it('returns 403 authorization_required when user is Unauthorized ', (done) => {
+                         request
+                              .post('/1/filter')
+                              .send({})
+                              .set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjYyOTY3OX0.3oO8qBjv6jwQsQTIp6TaK8pvfKG9be8bn1btdHtKb00")
+                              .expect(403)
+                              .expect('Content-Type', 'application/json; charset=utf-8')
+                              .end((err, res) => {
+                                   if (err) done(err);
+                                   expect(res.body.error).toBe("authorization_required")
+                                   expect(res.body.message).toBe("Access Forbidden,you can't do this operation")
+                                   done();
+                              });
+                    });*/
+
+
           it('should returns 200 OK and a list of user transaction when using an existing id 1 and no value chosen for filtering', (done) => {
                request
                     .post('/1/filter')
                     .send({})
                     .set('Accept', 'application/json')
+                    .set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjYyOTY3OX0.3oO8qBjv6jwQsQTIp6TaK8pvfKG9be8bn1btdHtKb00")
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .end((err, res) => {
@@ -219,8 +366,9 @@ describe('Transaction route test', () => {
                request
                     .post('/1/filter')
                     .send({
-                         "montantTo": 223
+                         "montantTo": 2230
                     })
+                    .set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjYyOTY3OX0.3oO8qBjv6jwQsQTIp6TaK8pvfKG9be8bn1btdHtKb00")
                     .set('Accept', 'application/json')
                     .expect(200)
                     .expect('Content-Type', /json/)
@@ -230,7 +378,7 @@ describe('Transaction route test', () => {
                               let transactions = res.body
                               expect(transactions.length).not.toEqual(0);
                               transactions.forEach(transaction => {
-                                   expect(transaction.montant).toBeLessThan(223)
+                                   expect(transaction.montant).toBeLessThan(2230)
                               });
                               done();
                          }
@@ -244,6 +392,7 @@ describe('Transaction route test', () => {
                          "montant": 223,
                          "dateFrom": "2021-05-15"
                     })
+                    .set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjYyOTY3OX0.3oO8qBjv6jwQsQTIp6TaK8pvfKG9be8bn1btdHtKb00")
                     .set('Accept', 'application/json')
                     .expect(404)
                     .expect('Content-Type', /json/)
@@ -260,6 +409,7 @@ describe('Transaction route test', () => {
                     .send({})
                     .set('Accept', 'application/json')
                     .expect(404)
+                    .set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjYyOTY3OX0.3oO8qBjv6jwQsQTIp6TaK8pvfKG9be8bn1btdHtKb00")
                     .expect('Content-Type', /json/)
                     .end((err, res) => {
                          if (err) done(err);

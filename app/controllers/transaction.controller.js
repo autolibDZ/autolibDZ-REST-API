@@ -28,7 +28,7 @@ const createTransaction = async (req, res) => {
           const user = jwt.verify(token, process.env.JWT_SECRET);
           if (user != undefined) {
                const role = user.role
-               if (role == "locataire") {
+               if (role != "locataire" && role != "administrateur") {
                     res.status(403).send({
                          error: "authorization_required",
                          message: "Access Forbidden,you can't do this operation",
@@ -137,7 +137,7 @@ const getUserTransactions = async (req, res) => {
           const user = jwt.verify(token, process.env.JWT_SECRET);
           if (user != undefined) {
                const role = user.role
-               if (role == "locataire") {
+               if (role != "locataire" && role != "administrateur") {
                     res.status(403).send({
                          error: "authorization_required",
                          message: "Access Forbidden,you can't do this operation",
@@ -209,7 +209,7 @@ const getTransaction = async (req, res) => {
           const user = jwt.verify(token, process.env.JWT_SECRET);
           if (user != undefined) {
                const role = user.role
-               if (role == "locataire") {
+               if (role != "locataire" && role != "administrateur") {
                     res.status(403).send({
                          error: "authorization_required",
                          message: "Access Forbidden,you can't do this operation",
@@ -286,7 +286,7 @@ const filterTransaction = async (req, res) => {
           const user = jwt.verify(token, process.env.JWT_SECRET);
           if (user != undefined) {
                const role = user.role
-               if (role == "locataire") {
+               if (role != "locataire" && role != "administrateur") {
                     res.status(403).send({
                          error: "authorization_required",
                          message: "Access Forbidden,you can't do this operation",
