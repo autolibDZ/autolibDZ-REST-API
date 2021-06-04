@@ -63,6 +63,10 @@ module.exports = function (sequelize, Sequelize) {
 			secureUrl: {
 				type: Sequelize.STRING(128),
 			},
+			id: {
+				type: Sequelize.INTEGER,
+				unique: true
+			}
 		},
 		{
 			freezeTableName: true,
