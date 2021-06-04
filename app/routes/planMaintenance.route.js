@@ -11,4 +11,10 @@ planMaintenaceRouter.get(
 	planMaintenanceController.getPlanMaintenance
 );
 
+// Supprimer un plan de maintenance donné
+planMaintenaceRouter.delete(
+	'/:numChassis',
+	planMaintenanceController.deletePlanMaintenance
+);
+
 export default planMaintenaceRouter;
