@@ -57,7 +57,6 @@ const createVehicule = async (req, res) => {
 	  return;
   
 	}
-
 	// Validate request
 	if (!req.body.numChassis || !req.body.numImmatriculation || !req.body.modele || !req.body.marque || !req.body.couleur
 		|| !req.body.etat || !req.body.idAgentMaintenance || !req.body.idBorne ) {
@@ -122,8 +121,6 @@ const createVehicule = async (req, res) => {
 const deleteVehicule = async (req, res) => {
 	const id = req.params.id;
 
-	console.log(id);
-
 	Vehicule.destroy({
 		where: { numChassis: id },
 	})
@@ -174,7 +171,7 @@ const updateVehicule = async (req, res) => {
   
 		const role = user.role
   
-		// Only admin can create Borne
+		// Only admin can update Vehicule
   
 		if (role != "administrateur") {
   
@@ -195,27 +192,35 @@ const updateVehicule = async (req, res) => {
 	  return;
   
 	}
-
-	const id = req.params.id;
-	Vehicule.update(req.body, {
-		where: { numChassis: id },
-	})
-		.then((num) => {
-			if (num == 1) {
-				res.send({
-					message: 'Vehicule was updated successfully.',
-				});
-			} else {
-				res.send({
-					message: `Cannot update Vehicule with id=${id}. Maybe Vehicule was not found or req.body is empty!`,
-				});
-			}
-		})
-		.catch((err) => {
-			res.status(500).send({
-				message: 'Error updating Vehicule with id=' + id,
+	try {
+			const vehicule = await Vehicule.findOne({
+			  where: {
+				numChassis: req.params.id
+			  }
 			});
-		});
+			if (vehicule) {    // Check if record exists in db
+			  let updatedVehicule = await vehicule.update(req.body)
+			  if (updatedVehicule) {
+				res.status(200).send({
+				  data: updatedVehicule,
+				  message: 'Vehicule was updated successfully.',
+				});
+			  } else {
+				res.status(404).send({
+				  message: "Cannot update vehicule with numChassis: " + id
+				});
+			  }
+			} else {
+			  res.status(404).send({
+				error: "not_found",
+				message: "Vehicule not found"
+			  });
+			}
+		  } catch (err) {
+			res.status(500).send({
+			  message: err.message || "Some error occured while updating vehicule with numChassis: " + req.params.id
+			});
+		  }
 };
 
 /**
@@ -247,7 +252,7 @@ const getAllVehicule = async (req, res) => {
   
 		const role = user.role
   
-		// Only admin can create Borne
+		// Only admin can update Vehicule
   
 		if (role != "administrateur" && role != "agent") {
   
@@ -268,8 +273,6 @@ const getAllVehicule = async (req, res) => {
 	  return;
   
 	}
-
-
 	Vehicule.findAll({
 		where: {
 			etat: {
@@ -301,8 +304,7 @@ const getVehiculeDetails = async (req, res, next) => {
 	// verify access
 	const authHeader = req.headers['authorization']
 	const token = authHeader && authHeader.split(' ')[1]
-  
-  
+ 
 	if (token == null) {
   
 	  res.status(403).send({
@@ -319,7 +321,7 @@ const getVehiculeDetails = async (req, res, next) => {
   
 		const role = user.role
   
-		// Only admin can create Borne
+		// Only admin/locataire/agent can get vehiucle details
   
 		if (role != "administrateur" && role != "locataire" && role != "agent" ) {
   
@@ -338,10 +340,10 @@ const getVehiculeDetails = async (req, res, next) => {
 	  });
   
 	  return;
-  
 	}
 	try {
 		if (parseInt(req.params.id, 10)) {
+			console.log(req.params.id);
 			const vehicule = await Vehicule.findAll({
 				where: {
 					numChassis: +req.params.id,
@@ -357,7 +359,10 @@ const getVehiculeDetails = async (req, res, next) => {
 			} else {
 				res.status(200).send(vehicule[0]);
 			}
-		} else next();
+		} 
+		else{
+			err.message="ID has to be an integer";
+		}
 	} catch (err) {
 		res.status(500).send({
 			error:
@@ -395,7 +400,7 @@ const getVehiculeReservations = async (req, res, next) => {
   
 		const role = user.role
   
-		// Only admin can create Borne
+		// Only admin can acces reservation history
   
 		if (role != "administrateur") {
   
