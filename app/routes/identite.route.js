@@ -22,6 +22,9 @@ identiteRouter.put("/:numeroPermis/invalider",identiteController.invalider)
 // GET All Identities for a certain operator
 identiteRouter.get('/operateur/:id',identiteController.selectIdentitiesOfAGivenOperateur);
 
+// GET All Identities for a certain locataire
+identiteRouter.get('/locataire/:id',identiteController.selectIdentitieOfAGivenLocataire);
+
 export default identiteRouter;
 
 
