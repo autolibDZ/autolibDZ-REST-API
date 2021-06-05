@@ -1,16 +1,17 @@
 const db = require('../models');
+const { Sequelize } = require('sequelize');
 const Vehicule = db.vehicules;
+const Reservation = db.reservation;
+const Borne = db.borne; 
+const Locataire= db.locataire;
+const Trajet= db.trajet;
+const Op = Sequelize.Op;
+var jwt = require("jsonwebtoken");
+
 
 const cloudinary = require('cloudinary').v2;
 require('dotenv').config();
-
-// cloudinary configuration
-cloudinary.config({
-	cloud_name: process.env.CLOUD_NAME,
-	api_key: process.env.API_KEY,
-	api_secret: process.env.API_SECRET,
-});
-
+let sequelize = require("sequelize");
 /**
  * Create and save a new Vehicule in database
  * @param {*} req The request
@@ -19,22 +20,49 @@ cloudinary.config({
 // Create and Save a new Vehicule
 
 const createVehicule = async (req, res) => {
+/*
+	// verify access
+	const authHeader = req.headers['authorization']
+	console.log(authHeader);
+	const token = authHeader && authHeader.split(' ')[1]
+	console.log(token);
+  
+	if (token == null) {
+	  res.status(403).send({
+		message: "Access Forbidden,invalide token",
+	  });
+	  return;
+	}
+  
+	try {
+	  const user = jwt.verify(token, process.env.JWT_SECRET);
+	  if (user != undefined) {
+		const role = user.role
+		// Only admin can create Vehicule
+  
+		if (role != "administrateur") {
+		  res.status(403).send({
+			message: "Access Forbidden,you can't do this operation",
+		  });
+  
+		  return;
+		}
+	  }
+  
+	} catch (err) {
+	  res.status(403).send({
+		message: "Access Forbidden,invalide token",
+	  });
+  
+	  return;
+  
+	} */ 
 	// Validate request
-	if (
-		!req.body.numChassis ||
-		!req.body.numImmatriculation ||
-		!req.body.modele ||
-		!req.body.marque ||
-		!req.body.couleur ||
-		!req.body.etat
-	) {
+	if (!req.body.numChassis || !req.body.numImmatriculation || !req.body.modele || !req.body.marque || !req.body.couleur
+		|| !req.body.etat || !req.body.idAgentMaintenance || !req.body.idBorne ) {
 		res.status(400).send({
 			message: 'Content can not be empty!',
 		});
-		console.log(req.body.numChassis);
-		console.log(req.body.numImmatriculation);
-		console.log(req.body.modele);
-		console.log(req.body.couleur);
 		return;
 	}
 	// Create a Vehicule
@@ -53,26 +81,13 @@ const createVehicule = async (req, res) => {
 		niveauMinimumHuile: req.body.niveauMinimumHuile,
 		regulateurVitesse: req.body.regulateurVitesse,
 		limiteurVitesse: req.body.limiteurVitesse,
+		idBorne: req.body.idBorne, 
 		idAgentMaintenance: req.body.idAgentMaintenance,
-		idBorne: req.body.idBorne,
-		idCloudinary: '',
-		secureUrl: '',
-	};
+	    idCloudinary: req.body.idCloudinary, 
+		secureUrl: req.body.secureUrl
+	}; 
 
-	// upload image to cloudinary here
-	if (req.body.image) {
-		const image = req.body.image;
-		try {
-			ress = await cloudinary.uploader.upload(req.body.image).then((result) => {
-				vehicule.idCloudinary = result.public_id;
-				vehicule.secureUrl = result.secure_url;
-			});
-		} catch (error) {
-			console.log(error);
-		}
-	}
-
-	// Add data to databse
+	// Ajout d'un véhicule à la base de données
 	try {
 		let result = await Vehicule.findAll({
 			where: {
@@ -106,8 +121,6 @@ const createVehicule = async (req, res) => {
 const deleteVehicule = async (req, res) => {
 	const id = req.params.id;
 
-	console.log(id);
-
 	Vehicule.destroy({
 		where: { numChassis: id },
 	})
@@ -136,27 +149,78 @@ const deleteVehicule = async (req, res) => {
  */
 //Update vehicule with numChassis = id
 const updateVehicule = async (req, res) => {
-	const id = req.params.id;
-
-	Vehicule.update(req.body, {
-		where: { numChassis: id },
-	})
-		.then((num) => {
-			if (num == 1) {
-				res.send({
-					message: 'Vehicule was updated successfully.',
-				});
-			} else {
-				res.send({
-					message: `Cannot update Vehicule with id=${id}. Maybe Vehicule was not found or req.body is empty!`,
-				});
-			}
-		})
-		.catch((err) => {
-			res.status(500).send({
-				message: 'Error updating Vehicule with id=' + id,
+/*
+	// verify access
+	const authHeader = req.headers['authorization']
+	const token = authHeader && authHeader.split(' ')[1]
+  
+  
+	if (token == null) {
+  
+	  res.status(403).send({
+		message: "Access Forbidden,invalide token",
+	  });
+	  return;
+	}
+  
+	try {
+  
+	  const user = jwt.verify(token, process.env.JWT_SECRET);
+  
+	  if (user != undefined) {
+  
+		const role = user.role
+  
+		// Only admin can update Vehicule
+  
+		if (role != "administrateur") {
+  
+		  res.status(403).send({
+			message: "Access Forbidden,you can't do this operation",
+		  });
+  
+		  return;
+		}
+	  }
+  
+	} catch (err) {
+  
+	  res.status(403).send({
+		message: "Access Forbidden,invalide token",
+	  });
+  
+	  return;
+  
+	} */ 
+	try {
+			const vehicule = await Vehicule.findOne({
+			  where: {
+				numChassis: req.params.id
+			  }
 			});
-		});
+			if (vehicule) {    // Check if record exists in db
+			  let updatedVehicule = await vehicule.update(req.body)
+			  if (updatedVehicule) {
+				res.status(200).send({
+				  data: updatedVehicule,
+				  message: 'Vehicule was updated successfully.',
+				});
+			  } else {
+				res.status(404).send({
+				  message: "Cannot update vehicule with numChassis: " + id
+				});
+			  }
+			} else {
+			  res.status(404).send({
+				error: "not_found",
+				message: "Vehicule not found"
+			  });
+			}
+		  } catch (err) {
+			res.status(500).send({
+			  message: err.message || "Some error occured while updating vehicule with numChassis: " + req.params.id
+			});
+		  }
 };
 
 /**
@@ -166,13 +230,62 @@ const updateVehicule = async (req, res) => {
  */
 
 const getAllVehicule = async (req, res) => {
-	Vehicule.findAll()
+/*
+	// verify access
+	const authHeader = req.headers['authorization']
+	const token = authHeader && authHeader.split(' ')[1]
+  
+  
+	if (token == null) {
+  
+	  res.status(403).send({
+		message: "Access Forbidden,invalide token",
+	  });
+	  return;
+	}
+  
+	try {
+  
+	  const user = jwt.verify(token, process.env.JWT_SECRET);
+  
+	  if (user != undefined) {
+  
+		const role = user.role
+  
+		// Only admin can update Vehicule
+  
+		if (role != "administrateur" && role != "agent") {
+  
+		  res.status(403).send({
+			message: "Access Forbidden,you can't do this operation",
+		  });
+  
+		  return;
+		}
+	  }
+  
+	} catch (err) {
+  
+	  res.status(403).send({
+		message: "Access Forbidden,invalide token",
+	  });
+  
+	  return;
+  
+	} */ 
+	Vehicule.findAll({
+		where: {
+			etat: {
+			  [Op.ne]: "supprime", // Tous les véhicules sauf ceux qui sont supprimés
+			},
+		  },
+	})  
 		.then((data) => {
 			res.send(data);
 		})
 		.catch((err) => {
 			res.status(500).send({
-				message: 'Error retrieving Vehicule with id=' + id,
+				message: 'Error retrieving all vehicules',
 			});
 		});
 };
@@ -188,25 +301,68 @@ const getAllVehicule = async (req, res) => {
  */
 
 const getVehiculeDetails = async (req, res, next) => {
+	/* // verify access
+	const authHeader = req.headers['authorization']
+	const token = authHeader && authHeader.split(' ')[1]
+ 
+	if (token == null) {
+  
+	  res.status(403).send({
+		message: "Access Forbidden,invalide token",
+	  });
+	  return;
+	}
+  
 	try {
-		if (parseInt(req.params.numChassis, 10)) {
+  
+	  const user = jwt.verify(token, process.env.JWT_SECRET);
+  
+	  if (user != undefined) {
+  
+		const role = user.role
+  
+		// Only admin/locataire/agent can get vehiucle details
+  
+		if (role != "administrateur" && role != "locataire" && role != "agent" ) {
+  
+		  res.status(403).send({
+			message: "Access Forbidden,you can't do this operation",
+		  });
+  
+		  return;
+		}
+	  }
+  
+	} catch (err) {
+  
+	  res.status(403).send({
+		message: "Access Forbidden,invalide token",
+	  });
+  
+	  return;
+	} */ 
+	try {
+		if (parseInt(req.params.id, 10)) {
+			console.log(req.params.id);
 			const vehicule = await Vehicule.findAll({
 				where: {
-					numChassis: +req.params.numChassis,
+					numChassis: +req.params.id,
 				},
 			});
 			if (vehicule.length === 0) {
 				// No content with that numChassis
 				res.status(404).send({
 					error: 'not_found',
-					message: `No vehicule with such numero chassis: ${+req.params
-						.numChassis}`,
+					message: `No vehicule with such numero chassis: ${+req.params.id}`,
 					status: 404,
 				});
 			} else {
 				res.status(200).send(vehicule[0]);
 			}
-		} else next();
+		} 
+		else{
+			err.message="ID has to be an integer";
+		}
 	} catch (err) {
 		res.status(500).send({
 			error:
@@ -215,17 +371,161 @@ const getVehiculeDetails = async (req, res, next) => {
 	}
 };
 
-/**
- * This function returns all vehicules of a given agent de maintenace, identified by it's id
- * returns 404 status with not-found error message if nothing is found
- * returns 200 status with the actuals cars if the car(s) exist(s)
- *
- * @param {*} req The client request
- * @param {*} res The server response
- * @param {*} done Used to move on into the next middleware
- */
 
-const selectVehicuesOfAGivenAgent = async (req, res, done) => {
+/**
+ * Get reservation history of the Vehicule that has the specified ID in request body 
+ * @param {*} req The request
+ * @param {*} res The response
+ */
+const getVehiculeReservations = async (req, res, next) => {
+/* 
+	// verify access
+	const authHeader = req.headers['authorization']
+	const token = authHeader && authHeader.split(' ')[1]
+  
+  
+	if (token == null) {
+  
+	  res.status(403).send({
+		message: "Access Forbidden,invalide token",
+	  });
+	  return;
+	}
+  
+	try {
+  
+	  const user = jwt.verify(token, process.env.JWT_SECRET);
+  
+	  if (user != undefined) {
+  
+		const role = user.role
+  
+		// Only admin can acces reservation history
+  
+		if (role != "administrateur") {
+  
+		  res.status(403).send({
+			message: "Access Forbidden,you can't do this operation",
+		  });
+  
+		  return;
+		}
+	  }
+  
+	} catch (err) {
+  
+	  res.status(403).send({
+		message: "Access Forbidden,invalide token",
+	  });
+  
+	  return;
+  
+	} */ 
+	const historytable= []; 
+	try {
+		if (parseInt(req.params.id, 10)) {
+			const historiqueReservation = await Reservation.findAll({
+				where: {
+					idVehicule: +req.params.id,
+				},
+			});
+			if (historiqueReservation.length === 0) {
+				// Ce vehicule n'a aucune réservation 
+				res.status(404).send({
+					error: 'not_found',
+					message: `Ce véhicule n'a aucune réservation en historique: ${+req.params.id}`,
+					status: 404,
+				});
+			} else {
+
+				var i=0;
+				for ( i=0;i<historiqueReservation.length ; i++){
+					 let reservationDetails={
+							"idReservation": "", 
+							"nomBorneDepart" : "",
+							"wilayaBorneDepart":"",
+							"nomBorneDestination" : "",
+							"WilayaBorneDestination":"",
+							"nomLocataire":"", 
+							"prenomLocataire": "", 
+							"etatReservation":"", 
+							"dateDebut":"", 
+							"dateFin":"", 
+							"idTrajet":"", 
+							"nbKm":"",
+							"nbKmEstime":"", 
+							"tempsEstime":"",
+							"tempsReel":"",
+							"prixEstime":"",
+							"prixAPayer":""
+						}; 
+					   reservationDetails.idReservation=historiqueReservation[i].idReservation;
+					   reservationDetails.etatReservation=historiqueReservation[i].etat;
+					   reservationDetails.tempsEstime=historiqueReservation[i].tempsEstime;
+					   reservationDetails.prixEstime=historiqueReservation[i].prixEstime; 
+					   reservationDetails.nbKmEstime=historiqueReservation[i].distanceEstime; 
+					
+						//Récuperer le nom de la borne de départ 
+						const result = await Borne.findAll({
+							where: {
+								idBorne: historiqueReservation[i].idBorneDepart,
+							},
+						}); 
+							var rows = JSON.parse(JSON.stringify(result[0]));
+							console.log(rows.nomBorne); 
+							reservationDetails.nomBorneDepart=rows.nomBorne; 
+							reservationDetails.wilayaBorneDepart=rows.wilaya; 
+
+						// Récupérer le nom de la borne d'arrivée
+						const result1 = await Locataire.findAll({
+							where: {
+								idLocataire: historiqueReservation[i].idLocataire,
+							},
+						}); 
+							var rows1 = JSON.parse(JSON.stringify(result1[0]));
+							reservationDetails.nomLocataire=rows1.nom;
+							reservationDetails.prenomLocataire=rows1.prenom;
+
+							const result2 = await Borne.findAll({
+							where: {
+								idBorne: historiqueReservation[i].idBorneDestination,
+							},
+						}); 	
+							var rows2 = JSON.parse(JSON.stringify(result2[0]));
+							reservationDetails.nomBorneDestination=rows2.nomBorne;
+							reservationDetails.WilayaBorneDestination=rows2.wilaya; 
+
+							if (reservationDetails.etatReservation=="Terminée" || reservationDetails.etatReservation=="Active" ){
+
+								const result3 = await Trajet.findAll({
+									where: {
+										idReservation: historiqueReservation[i].idReservation,
+									},
+								}); 	
+									var rows3 = JSON.parse(JSON.stringify(result3[0]));
+									reservationDetails.idTrajet=rows3.idTrajet; 
+									if(rows3.dateDebut != null) {reservationDetails.dateDebut= rows3.dateDebut }
+									if(rows3.dateFin != null ) {	
+										reservationDetails.dateFin= rows3.dateFin;
+										reservationDetails.nbKm= rows3.kmParcourue;
+										reservationDetails.tempsReel = rows3.tempsEstime;
+										reservationDetails.prixAPayer= rows3.prixAPayer;
+									}
+							}
+							historytable.push(reservationDetails); 		
+					}
+					res.send(historytable);
+			}
+		} else next();
+	} catch (err) {
+		res.status(500).send({
+			error:
+				err.message || 'Some error occured while retreiving vehicule"s reservation history',
+		});
+	}
+};
+
+const selectVehicuesOfAGivenAgent = async (req, res) => {
 	try {
 		if (parseInt(req.params.id, 10)) {
 			const vehicules = await Vehicule.findAll({
@@ -389,6 +689,38 @@ const getVehiculesHorsServiceOfAGivenAgent = async (req, res) => {
 	}
 };
 
+// Count vehicles (en-service) and count vehicles (hors-service)
+const countVehicles = async (req,res) =>{
+	try {
+		const countAll = await Vehicule.findAll({
+			attributes: [
+				[sequelize.fn('COUNT', sequelize.col('numChassis')), 'countAll'],
+			],
+		})
+		const countHorsService = await Vehicule.findAll({
+			attributes: [
+				[sequelize.fn('COUNT', sequelize.col('numChassis')), 'countHorsService'],
+			],
+			where: {etat:'hors service'}
+		})
+		const result = {}
+		if (countAll.length != 0) {
+			res.send([countAll[0],countHorsService[0]]);
+		} else {
+			res.status(404).send({
+				error: 'not_found',
+				message: 'No content',
+				status: 404,
+			});
+		}
+	} catch (err) {
+		res.status(500).send({
+			error: err.message || 'Some error occured while counting vehicules'
+		});
+	}
+	
+}
+
 export default {
 	setEtatVehicule,
 	getVehiculeDetails,
@@ -400,5 +732,6 @@ export default {
 	deleteVehicule,
 	updateVehicule,
 	getAllVehicule,
-	//getVehiculeByCondition
+	getVehiculeReservations,
+	countVehicles
 };

@@ -7,6 +7,8 @@ var jwt = require("jsonwebtoken");
 const db = require("../models");
 const Administrateur = db.administrateur;
 
+//const cloudinary = require('cloudinary').v2;
+
 var passwdValidator = new passwordValidator();
  
 // ajouter des propriétés aux validateurs de mot de passe
@@ -85,7 +87,9 @@ const createAdmin = async(req,res)=>{
         prenom: req.body.prenom,
         email: req.body.email,
         motDePasse: req.body.motDePasse,
-        salaire: req.body.salaire   
+        salaire: req.body.salaire
+        //idCloudinary: '',
+        //secureUrl:''
     };
 
     //Validation de l'email de l'Administrateur à créer
@@ -118,6 +122,25 @@ const createAdmin = async(req,res)=>{
                     var salt = bcrypt.genSaltSync(10);
                     var hash = bcrypt.hashSync(admin.motDePasse, salt);
                     admin.motDePasse= hash;
+
+
+
+                    // upload image to cloudinary here
+                    /*if (req.body.image) {
+                        const image = req.body.image;
+                        try {
+                            ress = await cloudinary.uploader.upload(req.body.image).then((result) => {
+                                admin.idCloudinary = result.public_id;
+                                admin.secureUrl = result.secure_url;
+                            });
+                        } catch (error) {
+                            console.log(error);
+                        }
+                    }*/
+
+
+
+
                     //Créer l'Administrateur
                     Administrateur.create(admin)
                     .then(data => {

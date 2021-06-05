@@ -8,17 +8,18 @@ import locataireRouter from './routes/locataire.route';
 import vehiculeRouter from './routes/vehicule.route';
 import borneRoute from './routes/borne.route';
 import authRouter from './routes/auth.route';
-import administrateurRouter from './routes/administrateur.route';
-import operateurRouter from './routes/operateur.route';
-import agentRouter from './routes/agent.route';
-import dirigeantRouter from './routes/dirigeant.route';
-import reservationRouter from './routes/reservation.route';
-import trajetRouter from './routes/trajet.route';
-import stripePaymentRouter from './routes/payment.route';
+import administrateurRouter from './routes/administrateur.route'
+import operateurRouter from './routes/operateur.route'
+import agentRouter from './routes/agent.route'
+import dirigeantRouter from './routes/dirigeant.route'
+import reservationRouter from './routes/reservation.route'
+import trajetRouter from './routes/trajet.route'
+import stripePaymentRouter from './routes/payment.route'
+import reclamationRouter from './routes/reclamation.route'
 import planMaintenaceRouter from './routes/planMaintenance.route';
 import identiteRouter from './routes/identite.route';
 import transactionRouter from './routes/transaction.route';
-
+import algeria_citiesRouter from './routes/algeria_cities.route';
 
 dotenv.config();
 
@@ -80,6 +81,12 @@ app.use('/api/transaction', transactionRouter);
 
 // Trajet Route
 app.use('/api/trajet', trajetRouter);
+
+//Recalamation Router 
+app.use('/api/reclamation',reclamationRouter); 
+
+// algeria cities router
+app.use('/api/algeria_cities',algeria_citiesRouter); 
 
 //Home
 app.use((req, res) => {

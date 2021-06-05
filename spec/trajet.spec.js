@@ -20,20 +20,20 @@ describe('Testing GET on /api/trajet endpoint', () => {
 });
 describe('findTrajetById', () => {
 
-    it('returns 200 OK when using an exesting id 9', (done) => {
+    it('returns 200 OK when using an exesting id 35', (done) => {
         request
-            .get('/trajet/9')
+            .get('/trajet/35')
             .expect(200)
             .expect('Content-Type', 'application/json; charset=utf-8')
             .end((err, res) => {
                 if (err) done(err);
 
                 expect(function (res) {
-                    res.body.dateDebut= "2021-09-16T14:36:13.000Z";
-                    res.body.dateFin = "2021-10-16T14:36:19.000Z";
+                    res.body.dateDebut= "2021-01-16T14:34:34.000Z";
                     res.body.tempsEstime = null;
                     res.body.kmParcourue = null;
                     res.body.prixAPayer = null;
+                    res.body.idReservation=15
 
                 })
 
@@ -66,7 +66,7 @@ describe('creatertrajet api', () => {
             .post('/trajet/')
             .send({
 
-                idTrajet: 39,
+                idTrajet: 33,
                 dateDebut: "2021-01-16T14:34:34.000Z",
                 dateFin: "2021-02-16T14:34:34.000Z",
                 tempsEstime: 20,
@@ -141,7 +141,7 @@ describe('Get list of all traejt', () => {
                 if (err) done(err);
 
                 expect(res.body);
-                expect(res.body.length).toEqual(41);
+                expect(res.body.length).toEqual(11);
                 done();
             });
 

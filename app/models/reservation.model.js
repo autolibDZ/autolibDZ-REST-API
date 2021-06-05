@@ -23,6 +23,18 @@ module.exports = function(sequelize, Sequelize) {
             },
             codePin: {
                 type: Sequelize.STRING(255)
+            },
+            tempsEstime: {
+                type: Sequelize.INTEGER,
+
+            },
+            distanceEstime: {
+                type: Sequelize.FLOAT,
+
+            },
+            prixEstime: {
+                type: Sequelize.FLOAT,
+
             }
 
         }, {
@@ -34,26 +46,13 @@ module.exports = function(sequelize, Sequelize) {
 
         }
     );
-    // Déclaration des clès étrangères
-    Reservation.associate = models => {
-        Reservation.hasOne(models.locataire, {
+    Reservation.associate = function(models) {
+        Reservation.belongsTo(models.locataire, {
             foreignKey: 'idLocataire',
 
         });
     };
 
-    Reservation.associate = models => {
-        Reservation.hasOne(models.vehicules, {
-            foreignKey: 'numChassis',
-
-        });
-    };
-    Reservation.associate = models => {
-        Reservation.hasOne(models.vehicules, {
-            foreignKey: 'numChassis',
-
-        });
-    };
     return Reservation;
     /* Reservation.associate = function(models) {
          // associations can be defined here
@@ -67,5 +66,6 @@ module.exports = function(sequelize, Sequelize) {
              foreignKey: 'numChassis'
          });
      };*/
+
 
 };
