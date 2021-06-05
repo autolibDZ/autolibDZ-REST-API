@@ -7,7 +7,7 @@ describe('Testing GET on /api/vehicules endpoint', () => {
 			.get('/vehicules')
 			.set('Accept', 'application/json')
 			.expect('Content-Type', /json/)
-			.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
+			//.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
 			.expect(200)
 			.end((err, res) => {
 				if (err) {
@@ -23,7 +23,7 @@ describe('Testing GET on /api/vehicules endpoint', () => {
             request
                 .get('/vehicules')
                 .set('Accept', 'application/json')
-                .set('Authorization', 'Bearer ' + 'yJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
+                //.set('Authorization', 'Bearer ' + 'yJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
                 .expect(403)
                 .expect('Content-Type', 'application/json; charset=utf-8')
                 .end((err, res) => {
@@ -58,7 +58,7 @@ describe('createVehicule api', () => {
 				  idCloudinary: "qbhuwok5ssj646qbuj38", 
 				  secureUrl: "https://res.cloudinary.com/melb/image/upload/v1622583305/qbhuwok5ssj646qbuj38.png"
 			})
-			.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
+			//.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
 			.set('Accept', 'application/json')
 			.expect(200)
 			.end((err, res) => {
@@ -93,7 +93,7 @@ describe('createVehicule api', () => {
 				  idCloudinary: "xhellvdlmulzmhmkdbau", 
 				  secureUrl: "https://res.cloudinary.com/melb/image/upload/v1621962019/xhellvdlmulzmhmkdbau.png"
 			})
-			.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
+			//.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
 			.expect(400)
 			.expect('Content-Type','application/json; charset=utf-8')
 			.end((err, res) => {
@@ -129,7 +129,7 @@ describe('createVehicule api', () => {
 				secureUrl: "https://res.cloudinary.com/melb/image/upload/v1622583305/qbhuwok5ssj646qbuj38.png"
 
 			})
-			.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
+			//.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
 			.set('Accept', 'application/json')
 			.expect(400)
 			.end((err, res) => {
@@ -144,7 +144,7 @@ describe('createVehicule api', () => {
 		request
 			.get('/vehicules')
 			.set('Accept', 'application/json')
-			.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9')
+			//.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9')
 			.expect(403)
 			.expect('Content-Type', 'application/json; charset=utf-8')
 			.end((err, res) => {
@@ -159,7 +159,7 @@ describe('Testing GET on /api/vehicules/:id endpoint', () => {
 	it("should return details of vehicule's numChassis is 123456", (done) => {
 		request
 			.get('/vehicules/123456')
-			.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
+			//.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
 			.set('Accept', 'application/json')
 			.expect('Content-Type', /json/)
 			.expect(200)
@@ -176,7 +176,7 @@ describe('Testing GET on /api/vehicules/:id endpoint', () => {
        it('returns 404 Not found when using an non exesting id 20', (done) => {
             request
                 .get('/vehicules/20')
-			    .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
+			    //.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
                 .expect(404)
                 .expect('Content-Type', 'application/json; charset=utf-8')
                 .end((err, res) => {
@@ -189,7 +189,7 @@ describe('Testing GET on /api/vehicules/:id endpoint', () => {
         it('returns 500  server error when using a non integer ID like A521', (done) => {
             request
                 .get('/vehicules/A521')
-			    .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
+			   // .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
                 .expect(500)
                 .expect('Content-Type', 'application/json; charset=utf-8')
                 .end((err, res) => {
@@ -207,7 +207,7 @@ describe('Testing GET on /api/vehicules/:id endpoint', () => {
 		request
 			.get('/vehicules/32')
 			.set('Accept', 'application/json')
-			.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9')
+			//.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9')
 			.expect(403)
 			.expect('Content-Type', 'application/json; charset=utf-8')
 			.end((err, res) => {
@@ -227,7 +227,7 @@ describe('Testing GET on /api/vehicules/:id endpoint', () => {
 				etat : "hors service"
 			})
 			.set('Accept', 'application/json')
-			.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
+			//.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
 			.expect('Content-Type', /json/)
 			.expect(200)
 			.end((err, res) => {
@@ -248,7 +248,7 @@ describe('Testing GET on /api/vehicules/:id endpoint', () => {
 			.send({
 				etat : "hors service"
 			})
-			.set('Accept', 'application/json')
+			//.set('Accept', 'application/json')
 			.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0')
 			.expect('Content-Type', /json/)
 			.expect(403)
@@ -265,7 +265,7 @@ describe('Testing GET on /api/vehicules/:id endpoint', () => {
 			.put('/vehicules/20')
 			.send({ etat: "hors service" })
 			.set('Accept', 'application/json')
-			.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
+			//.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
 			.expect('Content-Type', /json/)
 			.expect(404)
 			.end((err, res) => {
@@ -282,7 +282,7 @@ describe('Testing GET on /api/vehicules/:id endpoint', () => {
 	it('returns 500  server error when using a wrong id like A547', (done) => {
 		request
 			.put('/vehicules/A547')
-			.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
+			//.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
 			.expect(500)
 			.expect('Content-Type', 'application/json; charset=utf-8')
 			.end((err, res) => {

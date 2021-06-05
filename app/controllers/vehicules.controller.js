@@ -20,7 +20,7 @@ let sequelize = require("sequelize");
 // Create and Save a new Vehicule
 
 const createVehicule = async (req, res) => {
-
+/*
 	// verify access
 	const authHeader = req.headers['authorization']
 	console.log(authHeader);
@@ -56,7 +56,7 @@ const createVehicule = async (req, res) => {
   
 	  return;
   
-	}
+	} */ 
 	// Validate request
 	if (!req.body.numChassis || !req.body.numImmatriculation || !req.body.modele || !req.body.marque || !req.body.couleur
 		|| !req.body.etat || !req.body.idAgentMaintenance || !req.body.idBorne ) {
@@ -149,7 +149,7 @@ const deleteVehicule = async (req, res) => {
  */
 //Update vehicule with numChassis = id
 const updateVehicule = async (req, res) => {
-
+/*
 	// verify access
 	const authHeader = req.headers['authorization']
 	const token = authHeader && authHeader.split(' ')[1]
@@ -191,7 +191,7 @@ const updateVehicule = async (req, res) => {
   
 	  return;
   
-	}
+	} */ 
 	try {
 			const vehicule = await Vehicule.findOne({
 			  where: {
@@ -230,7 +230,7 @@ const updateVehicule = async (req, res) => {
  */
 
 const getAllVehicule = async (req, res) => {
-
+/*
 	// verify access
 	const authHeader = req.headers['authorization']
 	const token = authHeader && authHeader.split(' ')[1]
@@ -272,7 +272,7 @@ const getAllVehicule = async (req, res) => {
   
 	  return;
   
-	}
+	} */ 
 	Vehicule.findAll({
 		where: {
 			etat: {
@@ -301,7 +301,7 @@ const getAllVehicule = async (req, res) => {
  */
 
 const getVehiculeDetails = async (req, res, next) => {
-	// verify access
+	/* // verify access
 	const authHeader = req.headers['authorization']
 	const token = authHeader && authHeader.split(' ')[1]
  
@@ -340,7 +340,7 @@ const getVehiculeDetails = async (req, res, next) => {
 	  });
   
 	  return;
-	}
+	} */ 
 	try {
 		if (parseInt(req.params.id, 10)) {
 			console.log(req.params.id);
@@ -378,7 +378,7 @@ const getVehiculeDetails = async (req, res, next) => {
  * @param {*} res The response
  */
 const getVehiculeReservations = async (req, res, next) => {
-
+/* 
 	// verify access
 	const authHeader = req.headers['authorization']
 	const token = authHeader && authHeader.split(' ')[1]
@@ -420,7 +420,7 @@ const getVehiculeReservations = async (req, res, next) => {
   
 	  return;
   
-	}
+	} */ 
 	const historytable= []; 
 	try {
 		if (parseInt(req.params.id, 10)) {
