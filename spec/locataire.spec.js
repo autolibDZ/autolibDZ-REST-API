@@ -1,4 +1,4 @@
-const Request = require('supertest');
+/*const Request = require('supertest');
 request = Request('https://autolib-dz.herokuapp.com/api/locataire');
 
 //Test unitaire pour la creation d'un locataire
@@ -124,7 +124,7 @@ describe('POST : Creation de locataire', () => {
             });*/
 
 //Test unitiare pour la récupération des locataires
-describe('GET : Recuperation des locataires', () => {
+/*describe('GET : Recuperation des locataires', () => {
     //Recuperation reussite
     it('returns 200 OK when using a valid input', (done) => {
         request
@@ -278,4 +278,4 @@ describe('PUT : Blocage/Déblocage de locataire', () => {
                 done();
             });
     });
-});
+});*/

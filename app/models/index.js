@@ -51,5 +51,5 @@ db.identites = require("./identite.model")(sequelize, Sequelize);
 db.trajet = require('./trajet.model')(sequelize, Sequelize);
 db.reservation = require('./reservation.model')(sequelize, Sequelize);
 db.transaction=require('./transaction.model')(sequelize, Sequelize);
-
+db.algeria_cities=require('./algeria_cities.model')(sequelize, Sequelize);
 module.exports = db;
