@@ -1,4 +1,4 @@
-/* const Request = require('supertest');
+const Request = require('supertest');
 request = Request('http://localhost:4000/api');
 
 describe('Testing GET on /api/vehicules endpoint', () => {
@@ -7,6 +7,7 @@ describe('Testing GET on /api/vehicules endpoint', () => {
 			.get('/vehicules')
 			.set('Accept', 'application/json')
 			.expect('Content-Type', /json/)
+			//.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
 			.expect(200)
 			.end((err, res) => {
 				if (err) {
@@ -17,26 +18,22 @@ describe('Testing GET on /api/vehicules endpoint', () => {
 				}
 			});
 	});
-});
 
-describe('Testing GET on /api/vehicules/:id endpoint', () => {
-	it("should return details of vehicule's numChassis is 123456", (done) => {
-		request
-			.get('/vehicules/123456')
-			.set('Accept', 'application/json')
-			.expect('Content-Type', /json/)
-			.expect(200)
-			.end((err, res) => {
-				if (err) {
-					done.fail(err);
-				} else {
-					expect(res.body.numChassis).toEqual(123456);
-					done();
-				}
-			});
-	});
-});
+	 it('returns 403 when using a wrong token to get all vehicules', (done) => {
+            request
+                .get('/vehicules')
+                .set('Accept', 'application/json')
+                //.set('Authorization', 'Bearer ' + 'yJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
+                .expect(403)
+                .expect('Content-Type', 'application/json; charset=utf-8')
+                .end((err, res) => {
+                    if (err) done(err);
+                    expect(res.body.message).toEqual("Access Forbidden,invalide token");
+                    done();
+                });
+        });
 
+});
 describe('createVehicule api', () => {
 	it('returns 200 OK when sending vehicule params that doesn"t exist in db', (done) => {
 		request
@@ -47,7 +44,7 @@ describe('createVehicule api', () => {
 				  modele: 'Ibiza',
 				  marque: 'Seat',
 				  couleur: 'Rouge', 
-				  etat: 'en cirulation', 
+				  etat: 'circulation', 
 				  tempsDeRefroidissement: 20, 
 				  pressionHuileMoteur: 20, 
 				  chargeBatterie: 20, 
@@ -56,8 +53,12 @@ describe('createVehicule api', () => {
 				  niveauMinimumHuile:20, 
 				  regulateurVitesse: 20, 
 				  limiteurVitesse: 20,
-				  idBorne: 1
+				  idBorne: 1, 
+				  idAgentMaintenance:1, 
+				  idCloudinary: "qbhuwok5ssj646qbuj38", 
+				  secureUrl: "https://res.cloudinary.com/melb/image/upload/v1622583305/qbhuwok5ssj646qbuj38.png"
 			})
+			//.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
 			.set('Accept', 'application/json')
 			.expect(200)
 			.end((err, res) => {
@@ -87,8 +88,12 @@ describe('createVehicule api', () => {
 				  niveauMinimumHuile:20, 
 				  regulateurVitesse: 20, 
 				  limiteurVitesse: 20,
+				  idBorne:1, 
 				  idAgentmaintenance: 1, 
+				  idCloudinary: "xhellvdlmulzmhmkdbau", 
+				  secureUrl: "https://res.cloudinary.com/melb/image/upload/v1621962019/xhellvdlmulzmhmkdbau.png"
 			})
+			//.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
 			.expect(400)
 			.expect('Content-Type','application/json; charset=utf-8')
 			.end((err, res) => {
@@ -102,14 +107,14 @@ describe('createVehicule api', () => {
 	it('returns 400 server error when sending an empty parameter', (done) => {
 		request
 		
-			.post('/vehicules')
+			.post('/vehicules/')
 			.send({
 				//numChassis:'',
 				numImmatriculation:125479684,
 				modele: 'Ibiza',
 				marque: 'Seat',
 				couleur: 'Rouge', 
-				etat: 'en cirulation', 
+				etat: 'circulation', 
 				tempsDeRefroidissement: 20, 
 				pressionHuileMoteur: 20, 
 				chargeBatterie: 20, 
@@ -118,8 +123,13 @@ describe('createVehicule api', () => {
 				niveauMinimumHuile:20, 
 				regulateurVitesse: 20, 
 				limiteurVitesse: 20,
-				idBorne: 1
+				idBorne: 1,
+				idAgentMaintenance:18, 
+				idCloudinary: "qbhuwok5ssj646qbuj38", 
+				secureUrl: "https://res.cloudinary.com/melb/image/upload/v1622583305/qbhuwok5ssj646qbuj38.png"
+
 			})
+			//.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
 			.set('Accept', 'application/json')
 			.expect(400)
 			.end((err, res) => {
@@ -130,8 +140,162 @@ describe('createVehicule api', () => {
 				done();
 			});
 	}); 
+	it('returns 403 when using a wrong token to get add a vehicule', (done) => {
+		request
+			.get('/vehicules')
+			.set('Accept', 'application/json')
+			//.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9')
+			.expect(403)
+			.expect('Content-Type', 'application/json; charset=utf-8')
+			.end((err, res) => {
+				if (err) done(err);
+				expect(res.body.message).toEqual("Access Forbidden,invalide token");
+				done();
+			});
+	});
 });
 
+describe('Testing GET on /api/vehicules/:id endpoint', () => {
+	it("should return details of vehicule's numChassis is 123456", (done) => {
+		request
+			.get('/vehicules/123456')
+			//.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
+			.set('Accept', 'application/json')
+			.expect('Content-Type', /json/)
+			.expect(200)
+			.end((err, res) => {
+				if (err) {
+					done.fail(err);
+				} else {
+					expect(res.body.numChassis).toEqual(123456);
+					done();
+				}
+			});
+	});
+
+       it('returns 404 Not found when using an non exesting id 20', (done) => {
+            request
+                .get('/vehicules/20')
+			    //.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
+                .expect(404)
+                .expect('Content-Type', 'application/json; charset=utf-8')
+                .end((err, res) => {
+                    if (err) done(err);
+                    expect(res.body.message).toBe('No vehicule with such numero chassis: 20');
+                    done();
+                });
+        });
+
+        it('returns 500  server error when using a non integer ID like A521', (done) => {
+            request
+                .get('/vehicules/A521')
+			   // .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
+                .expect(500)
+                .expect('Content-Type', 'application/json; charset=utf-8')
+                .end((err, res) => {
+                    if (err) done(err);
+
+                    expect(res.body.error)
+
+                    done();
+                });
+
+        });
+
+
+	it('returns 403 when using a wrong token to get add a vehicule', (done) => {
+		request
+			.get('/vehicules/32')
+			.set('Accept', 'application/json')
+			//.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9')
+			.expect(403)
+			.expect('Content-Type', 'application/json; charset=utf-8')
+			.end((err, res) => {
+				if (err) done(err);
+				expect(res.body.message).toEqual("Access Forbidden,invalide token");
+				done();
+			});
+	});
+
+});
+
+ describe('Testing Update vehicule', () => {
+	it('return 200 OK and the actual updated vehicule with numChassis=32', (done) => {
+		request
+			.put('/vehicules/187')
+			.send({
+				etat : "hors service"
+			})
+			.set('Accept', 'application/json')
+			//.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
+			.expect('Content-Type', /json/)
+			.expect(200)
+			.end((err, res) => {
+				if (err) {
+					done.fail(err);
+				} else {
+					let updatedBorne = res.body;
+					expect(updatedBorne.message).toEqual('Vehicule was updated successfully.');
+					expect(updatedBorne.data.numChassis).toEqual(187)
+					expect(updatedBorne.data.etat).toEqual("hors service");
+					done();
+				}
+			});
+	});
+  it('return 403 when using a wrong token', (done) => {
+		request
+			.put('/vehicules/32')
+			.send({
+				etat : "hors service"
+			})
+			//.set('Accept', 'application/json')
+			.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0')
+			.expect('Content-Type', /json/)
+			.expect(403)
+			.end((err, res) => {
+				if (err) {
+					done.fail(err);
+				}
+				expect(res.body.message).toEqual('Access Forbidden,invalide token')
+				done();
+			});
+	});
+	it("Return Error 404 if id vehicule not found", (done) => { 
+		request
+			.put('/vehicules/20')
+			.send({ etat: "hors service" })
+			.set('Accept', 'application/json')
+			//.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
+			.expect('Content-Type', /json/)
+			.expect(404)
+			.end((err, res) => {
+				if (err) {
+					done.fail(err);
+				} else {
+					expect(res.body.error).toEqual('not_found')
+					expect(res.body.message).toEqual('Vehicule not found');
+					done();
+				}
+			});
+	});
+
+	it('returns 500  server error when using a wrong id like A547', (done) => {
+		request
+			.put('/vehicules/A547')
+			//.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
+			.expect(500)
+			.expect('Content-Type', 'application/json; charset=utf-8')
+			.end((err, res) => {
+				if (err) done(err);
+				expect(res.body.error)
+				done();
+			});
+	});
+});
+
+
+
+/*
 
 describe('Testing GET on /api/agents/vehicules/:id endpoint', () => {
 	it('should return the list of all vehicules of a given agents, at least one vehicule for agent with id 1', (done) => {
@@ -263,5 +427,4 @@ describe('Testing GET on /api/vehicules/agents/:id/hors-service', () => {
 				}
 			});
 	}); 
-});
-*/
+});*/  

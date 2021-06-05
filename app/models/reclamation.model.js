@@ -12,7 +12,17 @@ module.exports = function(sequelize, Sequelize) {
         emailLocataire: {
             type: Sequelize.STRING(50),
             allowNull:false
-        }
+        },
+        type: {
+            type: Sequelize.ENUM,
+            values: ['bug', 'service', 'autre'],
+            allowNull: false,
+        },
+        date : {
+            type: Sequelize.DATE,
+            allowNull:false,
+            defaultValue: Sequelize.NOW
+        }, 
     }, {
         freezeTableName: true,
         tableName: 'reclamation',
