@@ -158,7 +158,7 @@ describe('createVehicule api', () => {
 describe('Testing GET on /api/vehicules/:id endpoint', () => {
 	it("should return details of vehicule's numChassis is 123456", (done) => {
 		request
-			.get('/vehicules/32')
+			.get('/vehicules/123456')
 			.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
 			.set('Accept', 'application/json')
 			.expect('Content-Type', /json/)
@@ -167,7 +167,7 @@ describe('Testing GET on /api/vehicules/:id endpoint', () => {
 				if (err) {
 					done.fail(err);
 				} else {
-					expect(res.body.numChassis).toEqual(32);
+					expect(res.body.numChassis).toEqual(123456);
 					done();
 				}
 			});
@@ -218,6 +218,82 @@ describe('Testing GET on /api/vehicules/:id endpoint', () => {
 	});
 
 });
+
+ describe('Testing Update vehicule', () => {
+	it('return 200 OK and the actual updated vehicule with numChassis=32', (done) => {
+		request
+			.put('/vehicules/187')
+			.send({
+				etat : "hors service"
+			})
+			.set('Accept', 'application/json')
+			.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
+			.expect('Content-Type', /json/)
+			.expect(200)
+			.end((err, res) => {
+				if (err) {
+					done.fail(err);
+				} else {
+					let updatedBorne = res.body;
+					expect(updatedBorne.message).toEqual('Vehicule was updated successfully.');
+					expect(updatedBorne.data.numChassis).toEqual(187)
+					expect(updatedBorne.data.etat).toEqual("hors service");
+					done();
+				}
+			});
+	});
+  it('return 403 when using a wrong token', (done) => {
+		request
+			.put('/vehicules/32')
+			.send({
+				etat : "hors service"
+			})
+			.set('Accept', 'application/json')
+			.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0')
+			.expect('Content-Type', /json/)
+			.expect(403)
+			.end((err, res) => {
+				if (err) {
+					done.fail(err);
+				}
+				expect(res.body.message).toEqual('Access Forbidden,invalide token')
+				done();
+			});
+	});
+	it("Return Error 404 if id vehicule not found", (done) => { 
+		request
+			.put('/vehicules/20')
+			.send({ etat: "hors service" })
+			.set('Accept', 'application/json')
+			.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
+			.expect('Content-Type', /json/)
+			.expect(404)
+			.end((err, res) => {
+				if (err) {
+					done.fail(err);
+				} else {
+					expect(res.body.error).toEqual('not_found')
+					expect(res.body.message).toEqual('Vehicule not found');
+					done();
+				}
+			});
+	});
+
+	it('returns 500  server error when using a wrong id like A547', (done) => {
+		request
+			.put('/vehicules/A547')
+			.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
+			.expect(500)
+			.expect('Content-Type', 'application/json; charset=utf-8')
+			.end((err, res) => {
+				if (err) done(err);
+				expect(res.body.error)
+				done();
+			});
+	});
+});
+
+
 
 /*
 
