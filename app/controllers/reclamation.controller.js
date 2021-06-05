@@ -10,7 +10,7 @@ var jwt = require("jsonwebtoken");
 // Create and Save a new Claim
 
 const createReclamation = async (req, res) => {
-      // verify access
+    /*  // verify access
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
     
@@ -50,7 +50,7 @@ const createReclamation = async (req, res) => {
     
       return;
     
-    }
+    }*/ 
 
   // Create a Claim
 
@@ -104,7 +104,7 @@ const createReclamation = async (req, res) => {
 //Return claim with idReclamation = id
 
 const getReclamationDetails = async (req, res) => {
-
+/*
       // verify access
       const authHeader = req.headers['authorization']
       const token = authHeader && authHeader.split(' ')[1]
@@ -156,7 +156,7 @@ const getReclamationDetails = async (req, res) => {
     });
 
     return;
-  }
+  }*/ 
 
   try {
     const id = req.params.id;
@@ -191,7 +191,7 @@ const getReclamationDetails = async (req, res) => {
  * @param {*} res response
  */
 const getAllReclamations = async (req, res) => {
-
+/*
   // verify access
 	const authHeader = req.headers['authorization']
 	const token = authHeader && authHeader.split(' ')[1]
@@ -232,7 +232,7 @@ const getAllReclamations = async (req, res) => {
   
 	  return;
   
-	}
+	}*/ 
 
   try {
 
@@ -271,7 +271,7 @@ const getAllReclamations = async (req, res) => {
 //Delete claim with idReclamaton = id
 
 const deleteReclamation = async (req, res) => {
-
+/*
         // verify access
       const authHeader = req.headers['authorization']
       const token = authHeader && authHeader.split(' ')[1]
@@ -312,7 +312,7 @@ const deleteReclamation = async (req, res) => {
       
         return;
       
-      }
+      } */ 
 	const id = req.params.id;
 
 	Reclamation.destroy({
