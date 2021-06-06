@@ -102,7 +102,7 @@ const createLocataire = async (req, res) => {
 				prenom: req.body.prenom,
 				email: req.body.email,
 				motDePasse: req.body.motDePasse,
-				Active: false,
+				Active: true,
 				ValidationGmail: false,
 			};
 			//Pour hasher le mot de passe
@@ -152,7 +152,7 @@ const createLocataireGmail = async (req, res) => {
 				prenom: payload.family_name,
 				email: payload.email,
 				motDePasse: payload.email, //Un mot de passe par defaut
-				Active: false,
+				Active: true,
 				ValidationGmail: true,
 			};
 			//Pour hasher le mot de passe
