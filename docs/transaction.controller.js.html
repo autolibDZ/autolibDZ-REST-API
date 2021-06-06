@@ -27,8 +27,10 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>const db = require("../models");
-const Transaction = db.transaction;
 const { Op } = require("sequelize");
+const jwt = require('jsonwebtoken');
+const Transaction = db.transaction;
+
 
 /**
  * Create and save a new transaction in database
@@ -38,6 +40,40 @@ const { Op } = require("sequelize");
  */
 
 const createTransaction = async (req, res) => {
+
+     const authHeader = req.headers['authorization']
+     const token = authHeader &amp;&amp; authHeader.split(' ')[1]
+
+     if (token == null) {
+          res.status(403).send({
+               error: "invalid_access_token",
+               message: "Access Forbidden,invalid token",
+          });
+          return;
+     }
+
+     try {
+          const user = jwt.verify(token, process.env.JWT_SECRET);
+          if (user != undefined) {
+               const role = user.role
+               if (role != "locataire" &amp;&amp; role != "administrateur") {
+                    res.status(403).send({
+                         error: "authorization_required",
+                         message: "Access Forbidden,you can't do this operation",
+                    });
+                    return;
+               }
+          }
+
+     } catch (err) {
+          res.status(403).send({
+               error: "invalid_access_token",
+               message: "Access Forbidden,invalid token",
+          });
+          return;
+     }
+
+
      // Validate request
 
      if (!req.body.idReservation) {
@@ -74,7 +110,7 @@ const createTransaction = async (req, res) => {
 
      // Create a transaction
      const transaction = {
-          idLocataire: req.body.idLocataire,   //sinon through session
+          idLocataire: req.body.idLocataire,
           idReservation: req.body.idReservation,
           montant: req.body.montant,
           moyenPayement: req.body.moyenPayement,
@@ -114,6 +150,37 @@ const createTransaction = async (req, res) => {
  */
 
 const getUserTransactions = async (req, res) => {
+
+     const authHeader = req.headers['authorization']
+     const token = authHeader &amp;&amp; authHeader.split(' ')[1]
+
+     if (token == null) {
+          res.status(403).send({
+               error: "invalid_access_token",
+               message: "Access Forbidden,invalid token",
+          });
+          return;
+     }
+     try {
+          const user = jwt.verify(token, process.env.JWT_SECRET);
+          if (user != undefined) {
+               const role = user.role
+               if (role != "locataire" &amp;&amp; role != "administrateur") {
+                    res.status(403).send({
+                         error: "authorization_required",
+                         message: "Access Forbidden,you can't do this operation",
+                    });
+                    return;
+               }
+          }
+     } catch (err) {
+          res.status(403).send({
+               error: "invalid_access_token",
+               message: "Access Forbidden,invalid token",
+          });
+          return;
+     }
+
      // Validate request
      if (!req.params.id) {
           res.status(400).send({
@@ -140,7 +207,7 @@ const getUserTransactions = async (req, res) => {
      }
      catch (err) {
           res.status(500).send({
-               error: err.message || "Some error occurred while creating the Transaction."
+               error: err.message || "Some error occurred while getting Transactions."
           });
      }
 };
@@ -155,6 +222,37 @@ const getUserTransactions = async (req, res) => {
 
 
 const getTransaction = async (req, res) => {
+     const authHeader = req.headers['authorization']
+     const token = authHeader &amp;&amp; authHeader.split(' ')[1]
+
+     if (token == null) {
+          res.status(403).send({
+               error: "invalid_access_token",
+               message: "Access Forbidden,invalid token",
+          });
+          return;
+     }
+
+     try {
+          const user = jwt.verify(token, process.env.JWT_SECRET);
+          if (user != undefined) {
+               const role = user.role
+               if (role != "locataire" &amp;&amp; role != "administrateur") {
+                    res.status(403).send({
+                         error: "authorization_required",
+                         message: "Access Forbidden,you can't do this operation",
+                    });
+                    return;
+               }
+          }
+     } catch (err) {
+          res.status(403).send({
+               error: "invalid_access_token",
+               message: "Access Forbidden,invalid token",
+          });
+          return;
+     }
+
      // Validate request
      if (!req.params.id) {
           res.status(400).send({
@@ -188,7 +286,7 @@ const getTransaction = async (req, res) => {
      }
      catch (err) {
           res.status(500).send({
-               error: err.message || "Some error occurred while creating the Transaction."
+               error: err.message || "Some error occurred while getting the Transaction."
           });
      }
 };
@@ -201,6 +299,36 @@ const getTransaction = async (req, res) => {
  */
 
 const filterTransaction = async (req, res) => {
+     const authHeader = req.headers['authorization']
+     const token = authHeader &amp;&amp; authHeader.split(' ')[1]
+
+     if (token == null) {
+          res.status(403).send({
+               error: "invalid_access_token",
+               message: "Access Forbidden,invalid token",
+          });
+          return;
+     }
+
+     try {
+          const user = jwt.verify(token, process.env.JWT_SECRET);
+          if (user != undefined) {
+               const role = user.role
+               if (role != "locataire" &amp;&amp; role != "administrateur") {
+                    res.status(403).send({
+                         error: "authorization_required",
+                         message: "Access Forbidden,you can't do this operation",
+                    });
+                    return;
+               }
+          }
+     } catch (err) {
+          res.status(403).send({
+               error: "invalid_access_token",
+               message: "Access Forbidden,invalid token",
+          });
+          return;
+     }
 
      // Validate request
      if (!req.params.id) {
@@ -251,7 +379,7 @@ const filterTransaction = async (req, res) => {
      }
      if (dateTo) {
           options.dateTransaction = {
-               [Op.lt]: prixTo
+               [Op.lt]: dateTo
           }
      }
 
@@ -277,7 +405,7 @@ const filterTransaction = async (req, res) => {
                          ]
                     },
                     order: [
-                         ['dateTransaction','DESC']
+                         ['dateTransaction', 'DESC']
                     ]
                })
                if (transactions.length &lt;= 0) {
@@ -288,7 +416,10 @@ const filterTransaction = async (req, res) => {
                     res.status(200).send(transactions);
                }
           } else {
-               res.status(404).send({ "error": "le locataire avec id " + id + " n'a pas encore de transactions." })
+               res.status(404).send({
+                    error: "not_found",
+                    message: "Locataire with ID " + id + " has no transaction yet"
+               })
           }
      }
      catch (err) {
@@ -298,11 +429,74 @@ const filterTransaction = async (req, res) => {
      }
 };
 
+const TransactionStats = async (req, res) => {
+     // Validate request
+     if (!req.params.year) {
+          res.status(400).send({
+               message: "params 'year' can not be empty!",
+          });
+          return;
+     }
+
+     try {
+          let year = req.params.year;
+          const transactionsByMonth = await Transaction.findAll({
+               attributes: [
+                    [sequelize.fn('date_part', 'month', sequelize.col('dateTransaction')), 'month'],
+                    [sequelize.fn('SUM', sequelize.col('montant')), 'sumTransactions'],
+               ],
+               where: sequelize.where(sequelize.fn('date_part', 'year', sequelize.col('dateTransaction')), year),
+               group: [sequelize.fn('date_part', 'month', sequelize.col('dateTransaction'))],
+               order: [sequelize.fn('date_part', 'month', sequelize.col('dateTransaction'))],
+          });
+          if (transactionsByMonth.length != 0) {
+               res.send(transactionsByMonth);
+          } else {
+               res.status(404).send({
+                    error: 'not_found',
+                    message: 'No content',
+                    status: 404,
+               });
+          }
+     } catch (err) {
+          res.status(500).send({
+               error: err.message || 'Some error occured while counting abonnements'
+          });
+     }
+}
+
+const getYears = async (req, res) => {
+     try {
+          const years = await Transaction.findAll({
+               attributes: [
+                    [sequelize.fn('date_part', 'year', sequelize.col('dateTransaction')), 'year'],
+               ],
+               group: [sequelize.fn('date_part', 'year', sequelize.col('dateTransaction'))],
+               order: [sequelize.fn('date_part', 'year', sequelize.col('dateTransaction'))],
+          })
+          if (years.length != 0) {
+               res.send(years);
+          } else {
+               res.status(404).send({
+                    error: 'not_found',
+                    message: 'No content',
+                    status: 404,
+               });
+          }
+     } catch (err) {
+          res.status(500).send({
+               error: err.message || 'Some error occured while getting years'
+          });
+     }
+};
+
 export default {
      createTransaction,
      getUserTransactions,
      getTransaction,
-     filterTransaction
+     filterTransaction,
+     TransactionStats,
+     getYears
 }</code></pre>
         </article>
     </section>
@@ -313,13 +507,13 @@ export default {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addPlanMaintenance">addPlanMaintenance</a></li><li><a href="global.html#createAdmin">createAdmin</a></li><li><a href="global.html#createAgent">createAgent</a></li><li><a href="global.html#createBorne">createBorne</a></li><li><a href="global.html#createDirigeant">createDirigeant</a></li><li><a href="global.html#createIdentite">createIdentite</a></li><li><a href="global.html#createOperateur">createOperateur</a></li><li><a href="global.html#createTransaction">createTransaction</a></li><li><a href="global.html#createVehicule">createVehicule</a></li><li><a href="global.html#deleteAdmin">deleteAdmin</a></li><li><a href="global.html#deleteAgent">deleteAgent</a></li><li><a href="global.html#deleteAllAdmins">deleteAllAdmins</a></li><li><a href="global.html#deleteAllAgents">deleteAllAgents</a></li><li><a href="global.html#deleteAllDirigeants">deleteAllDirigeants</a></li><li><a href="global.html#deleteAllOperateurs">deleteAllOperateurs</a></li><li><a href="global.html#deleteBorne">deleteBorne</a></li><li><a href="global.html#deleteDirigeant">deleteDirigeant</a></li><li><a href="global.html#deleteIdentite">deleteIdentite</a></li><li><a href="global.html#deleteOperateur">deleteOperateur</a></li><li><a href="global.html#deleteVehicule">deleteVehicule</a></li><li><a href="global.html#filterTransaction">filterTransaction</a></li><li><a href="global.html#getAdmin">getAdmin</a></li><li><a href="global.html#getAgent">getAgent</a></li><li><a href="global.html#getAllAdmins">getAllAdmins</a></li><li><a href="global.html#getAllAgents">getAllAgents</a></li><li><a href="global.html#getAllBornes">getAllBornes</a></li><li><a href="global.html#getAllDirigeants">getAllDirigeants</a></li><li><a href="global.html#getAllIdentite">getAllIdentite</a></li><li><a href="global.html#getAllOperateurs">getAllOperateurs</a></li><li><a href="global.html#getAllVehicule">getAllVehicule</a></li><li><a href="global.html#getBorne">getBorne</a></li><li><a href="global.html#getCommune">getCommune</a></li><li><a href="global.html#getDirigeant">getDirigeant</a></li><li><a href="global.html#getFilteredBornes">getFilteredBornes</a></li><li><a href="global.html#getLocataireOfIdentity">getLocataireOfIdentity</a></li><li><a href="global.html#getOneIdentite">getOneIdentite</a></li><li><a href="global.html#getOperateur">getOperateur</a></li><li><a href="global.html#getOperatorOfIdentity">getOperatorOfIdentity</a></li><li><a href="global.html#getPlanMaintenance">getPlanMaintenance</a></li><li><a href="global.html#getTransaction">getTransaction</a></li><li><a href="global.html#getUserTransactions">getUserTransactions</a></li><li><a href="global.html#getVehiclesInABorne">getVehiclesInABorne</a></li><li><a href="global.html#getVehiculeDetails">getVehiculeDetails</a></li><li><a href="global.html#getVehiculesEnServiceOfAGivenAgent">getVehiculesEnServiceOfAGivenAgent</a></li><li><a href="global.html#getVehiculesHorsServiceOfAGivenAgent">getVehiculesHorsServiceOfAGivenAgent</a></li><li><a href="global.html#getWilaya">getWilaya</a></li><li><a href="global.html#invalider">invalider</a></li><li><a href="global.html#selectIdentitiesOfAGivenOperateur">selectIdentitiesOfAGivenOperateur</a></li><li><a href="global.html#selectVehicuesOfAGivenAgent">selectVehicuesOfAGivenAgent</a></li><li><a href="global.html#setEtatVehicule">setEtatVehicule</a></li><li><a href="global.html#updateAdmin">updateAdmin</a></li><li><a href="global.html#updateAgent">updateAgent</a></li><li><a href="global.html#updateDirigeant">updateDirigeant</a></li><li><a href="global.html#updateOperateur">updateOperateur</a></li><li><a href="global.html#updateVehicule">updateVehicule</a></li><li><a href="global.html#valider">valider</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addPlanMaintenance">addPlanMaintenance</a></li><li><a href="global.html#createAdmin">createAdmin</a></li><li><a href="global.html#createAgent">createAgent</a></li><li><a href="global.html#createBorne">createBorne</a></li><li><a href="global.html#createDirigeant">createDirigeant</a></li><li><a href="global.html#createIdentite">createIdentite</a></li><li><a href="global.html#createOperateur">createOperateur</a></li><li><a href="global.html#createReclamation">createReclamation</a></li><li><a href="global.html#createTransaction">createTransaction</a></li><li><a href="global.html#createVehicule">createVehicule</a></li><li><a href="global.html#deleteAdmin">deleteAdmin</a></li><li><a href="global.html#deleteAgent">deleteAgent</a></li><li><a href="global.html#deleteAllAdmins">deleteAllAdmins</a></li><li><a href="global.html#deleteAllAgents">deleteAllAgents</a></li><li><a href="global.html#deleteAllDirigeants">deleteAllDirigeants</a></li><li><a href="global.html#deleteAllOperateurs">deleteAllOperateurs</a></li><li><a href="global.html#deleteBorne">deleteBorne</a></li><li><a href="global.html#deleteDirigeant">deleteDirigeant</a></li><li><a href="global.html#deleteIdentite">deleteIdentite</a></li><li><a href="global.html#deleteOperateur">deleteOperateur</a></li><li><a href="global.html#deletePlanMaintenance">deletePlanMaintenance</a></li><li><a href="global.html#deleteReclamation">deleteReclamation</a></li><li><a href="global.html#deleteVehicule">deleteVehicule</a></li><li><a href="global.html#filterTransaction">filterTransaction</a></li><li><a href="global.html#getAdmin">getAdmin</a></li><li><a href="global.html#getAgent">getAgent</a></li><li><a href="global.html#getAllAdmins">getAllAdmins</a></li><li><a href="global.html#getAllAgents">getAllAgents</a></li><li><a href="global.html#getAllBornes">getAllBornes</a></li><li><a href="global.html#getAllDirigeants">getAllDirigeants</a></li><li><a href="global.html#getAllIdentite">getAllIdentite</a></li><li><a href="global.html#getAllOperateurs">getAllOperateurs</a></li><li><a href="global.html#getAllReclamations">getAllReclamations</a></li><li><a href="global.html#getAllVehicule">getAllVehicule</a></li><li><a href="global.html#getBorne">getBorne</a></li><li><a href="global.html#getCommune">getCommune</a></li><li><a href="global.html#getDirigeant">getDirigeant</a></li><li><a href="global.html#getFilteredBornes">getFilteredBornes</a></li><li><a href="global.html#getLocataireOfIdentity">getLocataireOfIdentity</a></li><li><a href="global.html#getOneIdentite">getOneIdentite</a></li><li><a href="global.html#getOperateur">getOperateur</a></li><li><a href="global.html#getOperatorOfIdentity">getOperatorOfIdentity</a></li><li><a href="global.html#getPlanMaintenance">getPlanMaintenance</a></li><li><a href="global.html#getReclamationDetails">getReclamationDetails</a></li><li><a href="global.html#getTransaction">getTransaction</a></li><li><a href="global.html#getUserTransactions">getUserTransactions</a></li><li><a href="global.html#getVehiclesInABorne">getVehiclesInABorne</a></li><li><a href="global.html#getVehiculeDetails">getVehiculeDetails</a></li><li><a href="global.html#getVehiculeReservations">getVehiculeReservations</a></li><li><a href="global.html#getVehiculesEnServiceOfAGivenAgent">getVehiculesEnServiceOfAGivenAgent</a></li><li><a href="global.html#getVehiculesHorsServiceOfAGivenAgent">getVehiculesHorsServiceOfAGivenAgent</a></li><li><a href="global.html#getWilaya">getWilaya</a></li><li><a href="global.html#invalider">invalider</a></li><li><a href="global.html#selectIdentitieOfAGivenLocataire">selectIdentitieOfAGivenLocataire</a></li><li><a href="global.html#selectIdentitiesOfAGivenOperateur">selectIdentitiesOfAGivenOperateur</a></li><li><a href="global.html#setEtatVehicule">setEtatVehicule</a></li><li><a href="global.html#updateAdmin">updateAdmin</a></li><li><a href="global.html#updateAgent">updateAgent</a></li><li><a href="global.html#updateBorne">updateBorne</a></li><li><a href="global.html#updateDirigeant">updateDirigeant</a></li><li><a href="global.html#updateOperateur">updateOperateur</a></li><li><a href="global.html#updateVehicule">updateVehicule</a></li><li><a href="global.html#valider">valider</a></li><li><a href="global.html#verifyIfActionExists">verifyIfActionExists</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed May 26 2021 19:32:24 GMT+0200 (heure d’été d’Europe centrale)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Sat Jun 05 2021 14:55:02 GMT+0100 (heure normale d’Europe centrale)
 </footer>
 
 <script> prettyPrint(); </script>
