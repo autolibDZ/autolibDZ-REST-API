@@ -3,6 +3,17 @@ const Identite = db.identites;
 const Operator = db.operateur;
 const Locataire = db.locataire;
 
+const cloudinary = require('cloudinary').v2;
+require('dotenv').config();
+
+// cloudinary configuration
+cloudinary.config({
+	cloud_name: process.env.CLOUD_NAME,
+	api_key: process.env.API_KEY,
+	api_secret: process.env.API_SECRET,
+});
+
+
 /**
  * Creer une identité
  * @param {*} req la requete
@@ -22,7 +33,9 @@ const createIdentite = async (req, res) => {
         photo: req.body.photo,
         valide: req.body.valide,
         idLocataire: req.body.idLocataire,
-        idOperateur: req.body.idOperateur
+        idOperateur: req.body.idOperateur,
+        idCloudinary: '',
+        secureUrl:''
     };
 
     // Ajout d'une identité à la base de données
@@ -34,6 +47,24 @@ const createIdentite = async (req, res) => {
     }
     else{
       try{
+        // upload image to cloudinary here
+        if (req.body.photo) {
+            const image = req.body.photo;
+            try {
+              ress = await cloudinary.uploader.upload(req.body.photo).then((result) => {
+                identite.idCloudinary = result.public_id;
+                identite.secureUrl = result.secure_url;
+                console.log(result)
+            });
+            } catch (error) {
+                console.log(error);
+              }
+            }else{
+              res.status(500).send({
+                message:"Vous devez entrez une image!"             
+            });
+            return;
+            }
         data = await Identite.create(identite)
        .then(data => {
         res.status(200).send(data);
@@ -266,6 +297,30 @@ const selectIdentitiesOfAGivenOperateur = async (req, res) => {
 	}
 };
 
+/**
+ * GET All Identity for a certain locataire
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
+ const selectIdentitieOfAGivenLocataire = async (req, res) => {
+	try {
+		const identities = await Identite.findAll({
+			where: {
+				idLocataire: +req.params.id,
+			},
+		});
+		res.status(200).send(identities);
+	} catch (err) {
+		res.status(500).send({
+			error:
+				err.message ||
+				'Some error occured while retreiving identity of locataire id: ' +
+					req.params.id,
+		});
+	}
+};
+
+
 export default {
     selectIdentitiesOfAGivenOperateur,
     createIdentite, 
@@ -275,5 +330,6 @@ export default {
     getOperatorOfIdentity,
     getLocataireOfIdentity,
     valider,
-    invalider
+    invalider,
+    selectIdentitieOfAGivenLocataire
 };

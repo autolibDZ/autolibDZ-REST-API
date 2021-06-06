@@ -22,7 +22,13 @@ module.exports = function(sequelize, Sequelize) {
         },
         salaire: {
             type: Sequelize.DOUBLE
-        }
+        },
+        /*idCloudinary:{
+            type: Sequelize.STRING(128),
+        } , 
+        secureUrl: {
+            type: Sequelize.STRING(128),
+        }*/
     },
     {
         freezeTableName: true,
