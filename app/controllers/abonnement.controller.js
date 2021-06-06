@@ -308,6 +308,98 @@ const rechargezCarteAbonnement = async (req, res) => {
 	}
 };
 
+const createAbonnement = async (req, res) => {
+
+	// const authHeader = req.headers['authorization']
+	// const token = authHeader && authHeader.split(' ')[1]
+
+	// if (token == null) {
+
+	// 	res.status(403).send({
+	// 		message: "Access Forbidden,invalide token",
+	// 	});
+	// 	return;
+	// }
+
+	// try {
+	// 	const user = jwt.verify(token, process.env.JWT_SECRET);
+	// 	if (user != undefined) {
+
+	// 		const role = user.role
+
+	// 		if (role != "administrateur") { //only administrateur can do this operation
+	// 			res.status(403).send({
+	// 				message: "Access Forbidden,you can't do this operation",
+	// 			});
+	// 			return;
+
+	// 		} else {
+
+
+
+	// 		}
+
+	// 	}
+
+	// } catch (err) {
+	// 	console.log("---->"+err)
+	// 	res.status(403).send({
+	// 		message: "Access Forbidden,invalide token",
+	// 	});
+	// 	return;
+	// }
+
+	// Validate request
+
+	if (!req.params.id) {
+		res.status(400).send({
+			message: "params 'id' can not be empty!",
+		});
+		return;
+	}
+
+	if (!req.body.balance) {
+		res.status(400).send({
+			message: "body 'balance' element can not be empty!",
+		});
+		return;
+	}
+
+	if (isNaN(req.body.balance)) {
+		res.status(400).send({
+			message: "body 'balance' element must be a number",
+		});
+		return;
+	}
+
+	if (req.body.balance < 0) {
+		res.status(400).send({
+			message: "body 'balance' element must be a positive number",
+		});
+		return;
+	}
+
+	// update the balance from DB
+	try {
+		const id = req.params.id;
+		const balance = req.body.balance
+		const abonnement = {
+			balance : balance,
+			idLocataire : id,
+		}
+
+		let data = await Abonnement.create(abonnement)
+		res.send({
+			"message" : "Abonnement has been created Successfully !"
+		})
+
+	} catch (err) {
+		res.status(500).send({
+			error: err || 'Some error occurred !',
+		});
+	}
+};
+
 // For a specific year, return how much Abonnements there were for each month
 const countAbonnementsByMonth = async (req, res) => {
 	// Validate request
@@ -376,6 +468,7 @@ export default {
 	getUserBalance,
 	doPayment,
 	rechargezCarteAbonnement,
+	createAbonnement,
 	countAbonnementsByMonth,
 	getYears,
 };
