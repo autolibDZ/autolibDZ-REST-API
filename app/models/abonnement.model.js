@@ -14,7 +14,6 @@ module.exports = function (sequelize, Sequelize) {
 			idLocataire: {
 				type: Sequelize.INTEGER,
 				allowNull: false,
-    			unique: true
 			},
 		},
 		{
