@@ -177,7 +177,7 @@ const getFilteredBornes = async (req, res) => {
  
        // Only admin can create Borne
  
-       if (role != "administrateur" && role != "agent" && role != "locataire") {
+       if (role != "administrateur" && role != "agent" && role != "locataire" && role != "dirigeant" && role != "operateur") {
  
          res.status(403).send({
            message: "Access Forbidden,you can't do this operation",
@@ -195,7 +195,7 @@ const getFilteredBornes = async (req, res) => {
  
      return;
  
-   }*/
+   }
 
 
   if (!req.body) {
@@ -203,7 +203,7 @@ const getFilteredBornes = async (req, res) => {
       message: "body can not be empty!",
     });
     return;
-  }
+  }*/
 
   const ops = ['min', 'max']
 
@@ -283,7 +283,7 @@ const getFilteredBornes = async (req, res) => {
 
 const getBorne = async (req, res) => {
 
-  /* const authHeader = req.headers['authorization']
+  /*const authHeader = req.headers['authorization']
    const token = authHeader && authHeader.split(' ')[1]
  
    console.log("la val du token " + token);
@@ -304,7 +304,7 @@ const getBorne = async (req, res) => {
  
        // Only admin can create Borne
  
-       if (role != 'administrateur' && role != "agent" && role != "locataire") {
+       if (role != "administrateur" && role != "agent" && role != "locataire" && role != "dirigeant" && role != "operateur") {
          res.status(403).send({
            message: "Access Forbidden,you can't do this operation",
          });
@@ -405,7 +405,7 @@ const getAllBornes = async (req, res) => {
 
 
 
-        if (role != "administrateur" && role != "agent" && role != "locataire") {
+        if (role != "administrateur" && role != "agent" && role != "locataire" && role != "dirigeant" && role != "operateur") {
 
           res.status(403).send({
             message: "Access Forbidden,you can't do this operation",
@@ -471,7 +471,7 @@ const getWilaya = async (req, res) => {
   try {
 
     // Verify access
-    /*  const authHeader = req.headers['authorization']
+   /*   const authHeader = req.headers['authorization']
       const token = authHeader && authHeader.split(' ')[1]
   
   
@@ -492,7 +492,7 @@ const getWilaya = async (req, res) => {
           const role = user.role
   
   
-          if (role != "administrateur" && role != "agent" && role != "locataire") {
+          if (role != "administrateur" && role != "agent" && role != "locataire" && role != "dirigeant" && role != "operateur") {
   
             res.status(403).send({
               message: "Access Forbidden,you can't do this operation",
@@ -569,7 +569,7 @@ const getCommune = async (req, res) => {
   
           const role = user.role
   
-          if (role != "administrateur" && role != "agent" && role != "locataire") {
+          if (role != "administrateur" && role != "agent" && role != "locataire" && role != "dirigeant" && role != "operateur") {
   
             res.status(403).send({
               message: "Access Forbidden,you can't do this operation",
@@ -673,7 +673,7 @@ const getVehiclesInABorne = async (req, res) => {
 
       const role = user.role
 
-      if (role != "administrateur" && role != "agent" && role != "locataire") {
+      if (role != "administrateur" && role != "agent" && role != "locataire" && role != "dirigeant" && role != "operateur") {
 
         res.status(403).send({
           message: "Access Forbidden,you can't do this operation",
@@ -806,7 +806,7 @@ const deleteBorne = async (req, res) => {
 
   // verify access
 
-  /* const authHeader = req.headers['authorization']
+ /*  const authHeader = req.headers['authorization']
    const token = authHeader && authHeader.split(' ')[1]
  
  
