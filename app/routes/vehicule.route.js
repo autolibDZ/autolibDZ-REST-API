@@ -19,7 +19,7 @@ vehiculeRouter.get('/', vehiculeController.getAllVehicule);
 vehiculeRouter.get('/historique-reservation/:id',vehiculeController.getVehiculeReservations);
 
 // GET all bornes of a specified vehicule 
-vehiculeRouter.get('/bornes',vehiculeController.getBornesofVehicule);
+vehiculeRouter.post('/bornes',vehiculeController.getBornesofVehicule);
 
 // GET Vehicules of A given agent
 vehiculeRouter.get(

@@ -526,31 +526,41 @@ const getVehiculeReservations = async (req, res, next) => {
 };
 
 const getBornesofVehicule = async (req , res )=> {
-console.log("I'm herrre");
-console.log(req.body.marque); 
-console.log(req.body.modele);
+const bornes= []; 
 	if (!req.body.marque && !req.body.modele) {
 		res.status(400).send({
 		  message: "Content can not be empty!",
 		});
 		return;
 	  }
-
-	  try {
-
-		const vehicules = await Vehiucle.findAll({
-		  where: {
-			marque: {
-			  [Op.like]: (req.body.marque != null) ? req.body.marque : '%'
+	  try { 
+		
+		const vehicules = await Vehicule.findAll({
+			where: {
+				marque: {
+					[Op.like]: req.body.marque
+				},
+				modele: {
+					[Op.like]: req.body.modele
+				},
+				etat: {
+			  		[Op.ne]: "supprime", // Tous les véhicules sauf ceux qui sont supprimés
+				},
 			},
-			modele: {
-				[Op.like]: (req.body.modele != null) ? req.body.modele : '%'
-			  },
-		  },
-		});
-	
+		}); 
 		if (vehicules.length != 0) {
-		  res.send(vehicules);
+			for( var j=0; j<vehicules.length ; j++){
+				const result = await Borne.findAll({
+						where: {
+							idBorne: vehicules[j].idBorne,
+						},
+					}); 	
+				var rows = JSON.parse(JSON.stringify(result[0]));
+				    if(!bornes.includes(rows)){
+						bornes.push(rows);
+					}
+			}
+			res.send(bornes);
 		} else {
 		  res.status(404).send({
 			error: 'there is no vehiucle that matches your filter on the database',
