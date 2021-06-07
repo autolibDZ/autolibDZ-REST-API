@@ -18,6 +18,9 @@ vehiculeRouter.get('/', vehiculeController.getAllVehicule);
 // GET vehicul's reservation history
 vehiculeRouter.get('/historique-reservation/:id',vehiculeController.getVehiculeReservations);
 
+// GET all bornes of a specified vehicule 
+vehiculeRouter.get('/bornes',vehiculeController.getBornesofVehicule);
+
 // GET Vehicules of A given agent
 vehiculeRouter.get(
 	'/agents/:id',

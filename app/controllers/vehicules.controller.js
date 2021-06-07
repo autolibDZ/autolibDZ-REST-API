@@ -525,6 +525,50 @@ const getVehiculeReservations = async (req, res, next) => {
 	}
 };
 
+const getBornesofVehicule = async (req , res )=> {
+console.log("I'm herrre");
+console.log(req.body.marque); 
+console.log(req.body.modele);
+	if (!req.body.marque && !req.body.modele) {
+		res.status(400).send({
+		  message: "Content can not be empty!",
+		});
+		return;
+	  }
+
+	  try {
+
+		const vehicules = await Vehiucle.findAll({
+		  where: {
+			marque: {
+			  [Op.like]: (req.body.marque != null) ? req.body.marque : '%'
+			},
+			modele: {
+				[Op.like]: (req.body.modele != null) ? req.body.modele : '%'
+			  },
+		  },
+		});
+	
+		if (vehicules.length != 0) {
+		  res.send(vehicules);
+		} else {
+		  res.status(404).send({
+			error: 'there is no vehiucle that matches your filter on the database',
+		  });
+		}
+	
+	  }
+	  catch (err) {
+	
+		res.status(500).send({
+	
+		  error: err.message || "Some error occurred while getting list of Borne."
+	
+		});
+	  } 
+	
+	};
+
 const selectVehicuesOfAGivenAgent = async (req, res) => {
 	try {
 		if (parseInt(req.params.id, 10)) {
@@ -724,6 +768,7 @@ const countVehicles = async (req,res) =>{
 export default {
 	setEtatVehicule,
 	getVehiculeDetails,
+	getBornesofVehicule,
 	selectVehicuesOfAGivenAgent,
 	getVehiculesEnServiceOfAGivenAgent,
 	getVehiculesHorsServiceOfAGivenAgent,
