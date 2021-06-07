@@ -427,8 +427,4 @@ describe('Testing GET on /api/vehicules/agents/:id/hors-service', () => {
 				}
 			});
 	}); 
-<<<<<<< HEAD
-});
-=======
 });*/  
->>>>>>> bb4ce5ccf214c7055bb9b3a1015e540e919dc159
