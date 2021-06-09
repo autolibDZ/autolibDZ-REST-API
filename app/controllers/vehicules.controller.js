@@ -278,6 +278,9 @@ const getAllVehicule = async (req, res) => {
 			etat: {
 			  [Op.ne]: "supprime", // Tous les véhicules sauf ceux qui sont supprimés
 			},
+			idBorne: {
+				[Op.ne]: null, 
+			}
 		  },
 	})  
 		.then((data) => {
@@ -541,22 +544,28 @@ const bornes= [];
 					[Op.like]: req.body.marque
 				},
 				modele: {
-					[Op.like]: req.body.modele
+					[Op.like]: (req.body.modele != "") ? req.body.modele : '%'
 				},
 				etat: {
 			  		[Op.ne]: "supprime", // Tous les véhicules sauf ceux qui sont supprimés
 				},
+				idBorne: {
+					[Op.ne]: null, 
+				}
 			},
 		}); 
 		if (vehicules.length != 0) {
 			for( var j=0; j<vehicules.length ; j++){
-				const result = await Borne.findAll({
+			const result = await Borne.findAll({
 						where: {
 							idBorne: vehicules[j].idBorne,
 						},
-					}); 	
+					}); 
+			
 				var rows = JSON.parse(JSON.stringify(result[0]));
-				    if(!bornes.includes(rows)){
+				console.log(rows)
+				
+				    if(!(bornes.includes(rows.idBorne))){
 						bornes.push(rows);
 					}
 			}
