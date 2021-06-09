@@ -1,5 +1,7 @@
 const db = require('../models');
 var bcrypt = require('bcryptjs');
+var jwt = require("jsonwebtoken");
+
 const Reservation = db.reservation;
 const Borne = db.borne;
 const Locataire = db.locataire;
@@ -8,9 +10,58 @@ const Trajet = db.trajet;
 
 
 
+/**
+ * Creer une reservation
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
 
 
 const createReservation = async(req, res) => {
+    // verify access
+   /* const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(' ')[1]
+
+
+    if (token == null) {
+
+      res.status(403).send({
+        message: "Access Forbidden,invalide token",
+      });
+      return;
+    }
+
+    try {
+
+      const user = jwt.verify(token, process.env.JWT_SECRET);
+
+      if (user != undefined) {
+
+        const role = user.role
+
+
+
+        if (role != "administrateur") {
+
+          res.status(403).send({
+            message: "Access Forbidden,you can't do this operation",
+          });
+
+          return;
+        }
+      }
+
+    } catch (err) {
+
+      res.status(403).send({
+        message: "Access Forbidden,invalide token",
+      });
+
+      return;
+
+    }
+
+*/
 
     if (!req.body.etat || !req.body.idVehicule || !req.body.idLocataire || !req.body.idBorneDepart || !req.body.idBorneDestination) {
         res.status(400).send({
@@ -40,6 +91,7 @@ const createReservation = async(req, res) => {
         res.status(200).send({
             codePin: pin,
             id: data.idReservation
+
         })
 
     } catch (err) {
@@ -52,6 +104,81 @@ const createReservation = async(req, res) => {
 
 
 const listAllReservations = (req, res) => {
+   /* const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(' ')[1]
+
+
+    if (token == null) {
+        res.status(403).send({
+            message: "Access Forbidden,invalide token",
+        });
+        return;
+    }
+
+    try {
+
+        const user = jwt.verify(token, process.env.JWT_SECRET);
+
+        if (user != undefined) {
+
+            const role = user.role
+            if (role != "administrateur") {
+
+                res.status(403).send({
+                    message: "Access Forbidden,you can't do this operation",
+                });
+
+                return;}
+        }
+    } catch (err) {
+        res.status(403).send({
+            message: "Access Forbidden,invalide token",
+        });
+
+        return;
+
+    }*/
+  /*  const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(' ')[1]
+
+
+    if (token == null) {
+
+        res.status(403).send({
+            message: "Access Forbidden,invalide token",
+        });
+        return;
+    }
+
+    try {
+
+        const user = jwt.verify(token, process.env.JWT_SECRET);
+
+        if (user != undefined) {
+
+            const role = user.role
+
+
+
+            if (role != "locataire"   && role != "administrateur") {
+
+                res.status(403).send({
+                    message: "Access Forbidden,you can't do this operation",
+                });
+
+                return;
+            }
+        }
+
+    } catch (err) {
+
+        res.status(403).send({
+            message: "Access Forbidden,invalide token",
+        });
+
+        return;
+
+    }*/
     var condition = 1 === 1
 
     Reservation.findAll({ where: condition })
@@ -66,6 +193,48 @@ const listAllReservations = (req, res) => {
 };
 
 const findReservationById = async(req, res) => {
+  /*  const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(' ')[1]
+
+
+    if (token == null) {
+
+        res.status(403).send({
+            message: "Access Forbidden,invalide token",
+        });
+        return;
+    }
+
+    try {
+
+        const user = jwt.verify(token, process.env.JWT_SECRET);
+
+        if (user != undefined) {
+
+            const role = user.role
+
+
+
+            if (role != "administrateur") {
+
+                res.status(403).send({
+                    message: "Access Forbidden,you can't do this operation",
+                });
+
+                return;
+            }
+        }
+
+    } catch (err) {
+
+        res.status(403).send({
+            message: "Access Forbidden,invalide token",
+        });
+
+        return;
+
+    }
+*/
     try {
         const reservation = await Reservation.findAll({
             where: {
@@ -337,14 +506,15 @@ if (reservation.etat!="Active"){
 
 
 export default {
-    createReservation,
-    listAllReservations,
-    findReservationById,
+    createReservation,//locataire
+    listAllReservations,//admin
+    findReservationById,//admin+Locataire
     deleteReservationById,
-    updateReservationById,
+    updateReservationById,//admin+locataire
     verifyCodePin,
-    selectReservationOfAGivenUser,
+    selectReservationOfAGivenUser,//admin+locataire
     getReservationAnnulee,
-    getHistoriqueReservationsLocataire,
-    getHistoriqueReservationsAllLocataire,
+    getHistoriqueReservationsLocataire,//locataire
+    getHistoriqueReservationsAllLocataire,//locataire
+
 }

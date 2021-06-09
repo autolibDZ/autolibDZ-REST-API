@@ -166,11 +166,12 @@ describe('POST : Verifier code pin', () => {
         });
 
     });
-
+*/
+/* vvvvvvvvvvvv
     describe('Get list of all Reservations in a given user of id 3', () => {
         it('Should returns 200 OK when getting all reservations', (done) => {
             request
-                .get('/locataires/3')
+                .get('/reservation/locataires/3')
                 .set('Accept', 'application/json')
                 .expect(200)
                 .expect('Content-Type', /json/)
@@ -183,7 +184,7 @@ describe('POST : Verifier code pin', () => {
 
         it('Should returns 404 when using an non exesting idLocataire=0 ', (done) => {
             request
-                .get('/locataires/0')
+                .get('/reservation/locataires/-1')
                 .set('Accept', 'application/json')
                 .expect(404)
                 .expect('Content-Type', /json/)
@@ -192,9 +193,10 @@ describe('POST : Verifier code pin', () => {
                     expect(res.body.error == 'No locataires with id: 0')
                     done();
                 });
-        });*/
+        });
+    });
 
-describe('Testing GET on /api/reservation endpoint', () => {
+/*describe('Testing GET on /api/reservation endpoint', () => {
     it('should return the list of all Reservations stored in the database, at least one Reservation', (done) => {
         request
             .get('/reservation')
@@ -210,8 +212,10 @@ describe('Testing GET on /api/reservation endpoint', () => {
                 }
             });
     });
-});
+});*/
+/* vvvvvvvvvvvvvvvvvv
 describe('findById', () => {
+
 
     it('returns 200 OK when using an exesting id 9', (done) => {
         request
@@ -224,6 +228,7 @@ describe('findById', () => {
                 expect(function (res) {
                     res.body.etat= "Active",
                         res.body.idLocataire= 3,
+                        res.body.idVehicule= 1837919,
                         res.body.idBorneDepart= 4,
                         res.body.idBorneDestination= 4,
                         res.body.codePin= "$2a$10$c0D3bVy6fe8uyX/lbmlQ4Owq8mz8lZp0eRbtXXzlBlNVNyF0K8pWm",
@@ -255,15 +260,18 @@ describe('findById', () => {
             });
 
     });
-});
-/*describe('createrReservation api', () => {
+});*/
+/*
+vvvvvvvvvvvvv
+describe('createrReservation api', () => {
     it('returns 200 OK when reservation doesn"t exist in db', (done) => {
         request
             .post('/reservation/')
             .send({
-idReservation:500,
+
                 etat: "En cours",
                 idLocataire: 3,
+                idVehicule: 1837919,
                 idBorneDepart: 4,
                 idBorneDestination: 4,
                 codePin:"$2a$10$c0DBBbVy6fe8uyX/lbmlQ4Owq8mz8lZp0eRbtXXzlBlNVNyF0K8pWm",
@@ -283,32 +291,18 @@ idReservation:500,
             });
     });
 
-    it('returns 400 When trajet exists', (done) => {
+
+
+    it('returns 400 server error when sending an empty parameter', (done) => {
         request
+
             .post('/reservation')
             .send({
-                idTrajet: 900,
 
-            })
-            .expect(400)
-            .expect('Content-Type','application/json; charset=utf-8')
-            .end((err, res) => {
-                console.log(res.body.err);
-                if (err) done(err);
-                expect(res.body);
-                done();
-            });
-    });
-
-    it('returns 500 server error when sending an empty parameter', (done) => {
-        request
-
-            .post('/trajet')
-            .send({
-                idReservation:null,
-                etat: "En cours",
+                etat: "Active",
                 idLocataire: 3,
-                idBorneDepart: 4,
+                idVehicule:  1837919,
+
                 idBorneDestination: 4,
                 codePin:"$2a$10$c0DBBbVy6fe8uyX/lbmlQ4Owq8mz8lZp0eRbtXXzlBlNVNyF0K8pWm",
                 tempsEstime: 3000,
@@ -316,7 +310,7 @@ idReservation:500,
                 prixEstime: 1200
             })
             .set('Accept', 'application/json')
-            .expect(500)
+            .expect(400)
             .end((err, res) => {
                 if (err) done(err);
 
@@ -325,8 +319,12 @@ idReservation:500,
                 done();
             });
     });
-});
- */
+
+
+});*/
+/*
+vvvvvvvvvvvvvvvv
+
 describe('Get list of all reservation', () => {
 
     it('returns 200 OK when getting all trajet', (done) => {
@@ -341,11 +339,75 @@ describe('Get list of all reservation', () => {
                 if (err) done(err);
 
                 expect(res.body);
-                expect(res.body.length).toEqual(22);
+                expect(res.body.length).toEqual(45);
                 done();
             });
 
     });
 
 });
+*/
+/*vvvvvvvvvvvv
+describe('Testing Update borne', () => {
+    it('return 200 OK and the actual updated borne with id= 54', (done) => {
+        request
+            .put('/reservation/54')
+            .send({
+                etat: "En cours",
+                idVehicule: 456749,
+                idLocataire: 3,
+                idBorneDepart: 4,
+                idBorneDestination: 9,
+                codePin: "$2a$10$zywJaMb4jbEuPVCvQwQ41OpvKXtKj0lStSdvu.ZkhKez7zVYORAxu",
+                tempsEstime:10,
+                distanceEstime: 10,
+                prixEstime: 10
 
+            })
+            .set('Accept', 'application/json')
+            //  .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
+            .expect('Content-Type', /json/)
+            .expect(200)
+            .end((err, res) => {
+                if (err) {
+                    done.fail(err);
+                } else {
+                    let updatedReserevation = res.body;
+                    expect(updatedReserevation.message).toEqual('Reservation was updated successfully.');
+
+                    done();
+                }
+            });
+    });
+    it("Return Error if id borne not found", (done) => {
+        request
+            .put('/400')
+            .send({ etat: 0 })
+            .set('Accept', 'application/json')
+            //  .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
+            .expect('Content-Type', /json/)
+            .expect(404)
+            .end((err, res) => {
+                if (err) {
+                    done.fail(err);
+                } else {
+                    expect(res.body.error).toEqual('not_found')
+                    expect(res.body.message).toEqual('Borne not found');
+                    done();
+                }
+            });
+    });
+
+    it('returns 500  server error when using a wrong id like a', (done) => {
+        request
+            .put('/a')
+            //  .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
+            .expect(500)
+            .expect('Content-Type', 'application/json; charset=utf-8')
+            .end((err, res) => {
+                if (err) done(err);
+                expect(res.body.error)
+                done();
+            });
+    });
+});*/
