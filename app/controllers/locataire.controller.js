@@ -216,7 +216,7 @@ const updateEmail = async (req, res) => {
 	
 	//Pour tester l'existance de l'email
 	const locataires = await Locataire.findOne({
-		where: { email: req.body.email },
+		where: { email: req.body.email, isDelete: false },
 	});
 	const locataire = await Locataire.findOne({
 		where: {
