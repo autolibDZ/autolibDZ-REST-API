@@ -18,7 +18,7 @@ describe('Transaction route test', () => {
                     .send({
                          "idLocataire": 3,
                          "montant": 222.2,
-                         "moyenPayement": "Stripe",
+                         "modePaiement": "Stripe",
                          "idReservation": 10
                     })
                     .set('Accept', 'application/json')
@@ -39,7 +39,7 @@ describe('Transaction route test', () => {
                               .send({
                                    "idLocataire": 3,
                                    "montant": 222.2,
-                                   "moyenPayement": "Stripe",
+                                   "modePayement": "Stripe",
                                    "idReservation": 10
                               })
                               .set('Accept', 'application/json')
@@ -59,7 +59,7 @@ describe('Transaction route test', () => {
                     .send({
                          "idLocataire": 3,
                          "montant": 222.2,
-                         "moyenPayement": "Stripe",
+                         "modePayement": "Stripe",
                          "idReservation": 10
                     })
                     .set("authorization", " Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjYyOTY3OX0.3oO8qBjv6jwQsQTIp6TaK8pvfKG9be8bn1btdHtKb00")
@@ -78,7 +78,7 @@ describe('Transaction route test', () => {
                     .send({
                          "idLocataire": 1,
                          "montant": 222.2,
-                         "moyenPayement": "Stripe",
+                         "modePaiement": "Stripe",
                          "idReservation": 9
                     })
                     .set('Accept', 'application/json')
@@ -92,11 +92,12 @@ describe('Transaction route test', () => {
                     });
           });
 
+
           it('returns 400 when when not sending an idReservation or idLocataire or "montant"', (done) => {
                request
                     .post('/')
                     .send({
-                         "moyenPayement": "Stripe",
+                         "modePaiement": "Stripe",
                     })
                     .expect(400)
                     .set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjYyOTY3OX0.3oO8qBjv6jwQsQTIp6TaK8pvfKG9be8bn1btdHtKb00")
@@ -108,6 +109,26 @@ describe('Transaction route test', () => {
                     });
           });
 
+          it('returns 400  when not sending an ModePaiement', (done) => {
+               request
+                    .post('/')
+                    .send({
+                         "idLocataire": 1,
+                         "montant": 222.2,
+                         "idReservation": 12
+                    })
+                    .set('Accept', 'application/json')
+                    .set("authorization", " Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjYyOTY3OX0.3oO8qBjv6jwQsQTIp6TaK8pvfKG9be8bn1btdHtKb00")
+                    .expect(400)
+                    .expect('Content-Type', /json/)
+                    .end((err, res) => {
+                         if (err) done(err);
+                         expect(res.body.error).toBe('validation_error')
+                         expect(res.body.message).toBe('Mode Paiement can not be empty!')
+                         done();
+                    });
+          });
+
 
           it('returns 400 when sending a negative number in "montant"', (done) => {
                request
@@ -115,7 +136,7 @@ describe('Transaction route test', () => {
                     .send({
                          "idLocataire": 1,
                          "montant": -222,
-                         "moyenPayement": "Stripe",
+                         "modePaiement": "Stripe",
                          "idReservation": 9
                     })
                     .set("authorization", " Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjYyOTY3OX0.3oO8qBjv6jwQsQTIp6TaK8pvfKG9be8bn1btdHtKb00")
@@ -134,7 +155,8 @@ describe('Transaction route test', () => {
                     .send({
                          "idLocataire": 1,
                          "montant": "22",
-                         "idReservation": 9
+                         "idReservation": 9,
+                         "modePaiement": "Stripe"
                     })
                     .set("authorization", " Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjYyOTY3OX0.3oO8qBjv6jwQsQTIp6TaK8pvfKG9be8bn1btdHtKb00")
                     .expect(400)
@@ -239,7 +261,7 @@ describe('Transaction route test', () => {
 
           it('returns 403 invalid_access_token when token is invalid', (done) => {
                request
-                    .get('/1/14')
+                    .get('/1/1')
                     .set("authorization", "aaaa")
                     .expect(403)
                     .expect('Content-Type', 'application/json; charset=utf-8')
@@ -253,7 +275,7 @@ describe('Transaction route test', () => {
           /*
                     it('returns 403 authorization_required when user is Unauthorized ', (done) => {
                          request
-                              .get('/1/14')
+                              .get('/1/1')
                               .set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjYyOTY3OX0.3oO8qBjv6jwQsQTIp6TaK8pvfKG9be8bn1btdHtKb00")
                               .expect(403)
                               .expect('Content-Type', 'application/json; charset=utf-8')
@@ -268,7 +290,7 @@ describe('Transaction route test', () => {
           */
           it('returns 200 OK when using an exesting id of user and transaction: 14', (done) => {
                request
-                    .get('/1/14')
+                    .get('/1/1')
                     .expect(200)
                     .expect('Content-Type', 'application/json; charset=utf-8')
                     .set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjYyOTY3OX0.3oO8qBjv6jwQsQTIp6TaK8pvfKG9be8bn1btdHtKb00")
@@ -277,7 +299,7 @@ describe('Transaction route test', () => {
                          else {
                               expect(res.body).not.toEqual(null)
                               expect(res.body.idLocataire).toEqual(1)
-                              expect(res.body.idTransaction).toEqual(14)
+                              expect(res.body.idTransaction).toEqual(1)
                               done();
                          }
                     });
