@@ -8,9 +8,18 @@ module.exports = function(sequelize, Sequelize) {
         description: {
             type: Sequelize.STRING(255)
         },
-        position: {
-            type: Sequelize.STRING(30)
+        latitude: {
+            type: Sequelize.DOUBLE
         },
+        longtitude: {
+            type: Sequelize.DOUBLE
+        },
+        idVehicule: {
+            type: Sequelize.INTEGER
+        },
+        etat: {
+            type: Sequelize.BOOLEAN
+        }
 
     }, {
         freezeTableName: true,
