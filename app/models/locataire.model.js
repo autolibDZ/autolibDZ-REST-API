@@ -24,8 +24,13 @@ module.exports = function(sequelize, Sequelize) {
         Active: {
             type: Sequelize.BOOLEAN
         },
-    },
-     {
+        ValidationGmail: {
+            type: Sequelize.BOOLEAN
+        },
+        isDeleted: {
+            type: Sequelize.BOOLEAN
+        }
+    }, {
         freezeTableName: true,
         tableName: 'locataire',
         createdAt: false,
@@ -34,6 +39,7 @@ module.exports = function(sequelize, Sequelize) {
 
     return Locataire;
 };
+
 /*
 Locataire.associate = (models) => {
     Locataire.hasMany(models.Abonnement, {
