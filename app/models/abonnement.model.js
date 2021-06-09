@@ -6,18 +6,20 @@ module.exports = function (sequelize, Sequelize) {
 			idAbonnement: {
 				type: Sequelize.INTEGER,
 				primaryKey: true,
+				autoIncrement: true,
 			},
 			balance: {
 				type: Sequelize.DOUBLE,
 			},
 			idLocataire: {
 				type: Sequelize.INTEGER,
+				allowNull: false,
 			},
 		},
 		{
 			freezeTableName: true,
 			tableName: 'abonnement',
-			createdAt: false,
+			createdAt: true,
 			updatedAt: false,
 		}
 	);

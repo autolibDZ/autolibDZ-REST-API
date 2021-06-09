@@ -4,15 +4,24 @@ module.exports = function(sequelize, Sequelize) {
             type: Sequelize.DOUBLE,
             primaryKey: true,
         },
-        photo: {
+        /*photo: {
             type: Sequelize.STRING(255)
-        },
+        },*/
         idLocataire: {
             type: Sequelize.INTEGER,
 
         },
         idOperateur: {
             type: Sequelize.INTEGER,
+        },
+        valide: {
+            type : Sequelize.INTEGER
+        },
+        idCloudinary:{
+            type: Sequelize.STRING(128),
+        } , 
+        secureUrl: {
+            type: Sequelize.STRING(128),
         }
     }, {
         freezeTableName: true,
@@ -21,6 +30,14 @@ module.exports = function(sequelize, Sequelize) {
         updatedAt: false
     });
 
-
+    // Déclaration des clès étrangères
+    Identite.associate = (models) => {
+        Identite.belongsTo(models.Operateur, {
+       foreignKey: 'idOperateur',
+        });
+   Identite.belongsTo(models.Locataire, {
+          foreignKey: 'idLocataire',
+        });
+   }
     return Identite;
 };

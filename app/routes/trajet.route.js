@@ -1,9 +1,18 @@
 import trajetController from "../controllers/trajet.controller";
 
-var router = require("express").Router();
+
+var trajetRouter = require("express").Router();
+
+trajetRouter.get("/countByMonth/:year", trajetController.countTrajetsByMonth);
+trajetRouter.get("/getYears", trajetController.getYears);
+trajetRouter.post('/', trajetController.createTrajet);
+trajetRouter.post('/createDebutTrajet', trajetController.createDebutTrajet);
+trajetRouter.put('/updateFinTrajet', trajetController.updateFinTrajet);
+
+trajetRouter.get('/', trajetController.listAllTrajets);
+trajetRouter.get('/:id', trajetController.findTrajetById);
+trajetRouter.put('/:id', trajetController.updateTrajetById);
+trajetRouter.delete('/:id', trajetController.deleteTrajetById);
 
 
-router.get("/countByMonth/:year", trajetController.countTrajetsByMonth);
-
-
-export default router;
+export default trajetRouter;

@@ -105,6 +105,7 @@ const createLocataire = async (req, res) => {
 				Active: true,
 				ValidationGmail: false,
 				isDeleted: false
+
 			};
 			//Pour hasher le mot de passe
 			var salt = bcrypt.genSaltSync(10);
@@ -183,7 +184,6 @@ const createLocataireGmail = async (req, res) => {
 
 //Retourner tout les locataires
 const findAll = (req, res) => {
-
 	Locataire.findAll({ where: {isDeleted:false} })
 		.then((data) => {
 			res.status(200).send(data);

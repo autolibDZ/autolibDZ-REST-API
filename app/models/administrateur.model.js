@@ -6,6 +6,7 @@ module.exports = function(sequelize, Sequelize) {
         idAdministrateur: {
             type: Sequelize.INTEGER,
             primaryKey: true,
+            autoIncrement: true,
         },
         nom: {
             type: Sequelize.STRING
@@ -21,7 +22,13 @@ module.exports = function(sequelize, Sequelize) {
         },
         salaire: {
             type: Sequelize.DOUBLE
-        }
+        },
+        /*idCloudinary:{
+            type: Sequelize.STRING(128),
+        } , 
+        secureUrl: {
+            type: Sequelize.STRING(128),
+        }*/
     },
     {
         freezeTableName: true,

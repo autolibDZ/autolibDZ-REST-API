@@ -2,6 +2,8 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const validator = require('validator');
 const passwordValidator = require('password-validator')
+var bcrypt = require("bcryptjs");
+var jwt = require("jsonwebtoken");
 const db = require("../models");
 const Operateur = db.operateur;
 
@@ -14,9 +16,14 @@ passwdValidator
 .has().uppercase()                              // Doit avoir des lettre en majuscules
 .has().lowercase()                              // Doit avoir des lettres en miniscules
 
+/**
+ * Récupérer un Operateur avec un id donné
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
 // Récupérer un Operateur avec un id donné
 
-exports.findOne = (req, res) => {
+const getOperateur = (req, res) => {
 
     //Récupérer l'id de l'Operateur à modifier de l'url
     const id = req.params.id;
@@ -32,9 +39,15 @@ exports.findOne = (req, res) => {
     });
 };
 
+/**
+ * Récupérer des Operateurs avec une condition sur le nom
+ * ou sans condition, dans ce cas retourne tout les Operateurs
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
 //Récupérer des Operateurs avec une condition sur le nom (ou sans condition, dans ce cas retourne tout les Operateurs)
 
-exports.findAll = (req, res) => {
+const getAllOperateurs = (req, res) => {
 
     //Récupérer le nom de l'Operateur de l'url
     const nom = req.query.nom;
@@ -54,13 +67,18 @@ exports.findAll = (req, res) => {
     });
 };
 
+/**
+ * Création d'un Operateur
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
 //Création d'un Operateur
 
-exports.create = (req, res) => {
+const createOperateur = (req, res) => {
           
     //Initialiser les attributs de l'Operateur à créer
     const operateur = {
-        idOperateur:req.body.id,
+        //idOperateur:req.body.id,
         nom: req.body.nom,
         prenom: req.body.prenom,
         email: req.body.email,
@@ -94,6 +112,10 @@ exports.create = (req, res) => {
                     });
                     return;
                 }else{
+                    //hasher le mot de passe
+                    var salt = bcrypt.genSaltSync(10);
+                    var hash = bcrypt.hashSync(operateur.motDePasse, salt);
+                    operateur.motDePasse= hash;
                     //Créer l'Operateur
                     Operateur.create(operateur)
                     .then(data => {
@@ -110,10 +132,12 @@ exports.create = (req, res) => {
         }
     }     
 };
-
-//Modification d'un Operateur
-
-exports.update = (req, res) => {
+/**
+ * Modification d'un Operateur
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
+const updateOperateur = (req, res) => {
 
     //Récupérer l'id de l'Operateur à modifier de l'url
     const id = req.params.id;
@@ -178,9 +202,14 @@ exports.update = (req, res) => {
     });
 };
 
+/**
+ * Supprimer un Operateur
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
 //Supprimer un Operateur
 
-exports.delete = (req, res) => {
+const deleteOperateur = (req, res) => {
 
     //Récupérer l'id de l'Operateur à modifier de l'url
     const id = req.params.id;
@@ -206,9 +235,14 @@ exports.delete = (req, res) => {
     });
 };
 
+/**
+ * Supprimer tout les Operateurs 
+ * @param {*} req la requete
+ * @param {*} res la reponse
+ */
 //Supprimer tout les Operateurs 
 
-exports.deleteAll = (req, res) => {
+const deleteAllOperateurs = (req, res) => {
 
     Operateur.destroy({
         where: {},
@@ -222,4 +256,13 @@ exports.deleteAll = (req, res) => {
             message: err.message || "Une erreur est survenue lors de la suppression!"
         });
     });
+};
+
+export default {
+    createOperateur,
+    getAllOperateurs,
+    getOperateur,
+    updateOperateur,
+    deleteOperateur,
+    deleteAllOperateurs
 };
