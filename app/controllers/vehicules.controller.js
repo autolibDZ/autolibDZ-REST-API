@@ -564,11 +564,12 @@ const bornes= [];
 			
 				var rows = JSON.parse(JSON.stringify(result[0]));
 				console.log(rows)
-				
+				console.log(bornes.includes(rows.idBorne))
 				    if(!(bornes.includes(rows.idBorne))){
 						bornes.push(rows);
 					}
 			}
+			console.log(bornes);
 			res.send(bornes);
 		} else {
 		  res.status(404).send({

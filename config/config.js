@@ -20,7 +20,7 @@ if(environment != "test"){
     }
   };
 }else {
-
+console.log("TEST*************")
   toExport = {
     HOST: "localhost",
     USER: "root",
