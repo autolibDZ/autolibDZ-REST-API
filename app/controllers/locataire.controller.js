@@ -104,6 +104,8 @@ const createLocataire = async (req, res) => {
 				motDePasse: req.body.motDePasse,
 				Active: true,
 				ValidationGmail: false,
+				isDeleted: false
+
 			};
 			//Pour hasher le mot de passe
 			var salt = bcrypt.genSaltSync(10);
@@ -154,6 +156,7 @@ const createLocataireGmail = async (req, res) => {
 				motDePasse: payload.email, //Un mot de passe par defaut
 				Active: true,
 				ValidationGmail: true,
+				isDeleted: false
 			};
 			//Pour hasher le mot de passe
 			var salt = bcrypt.genSaltSync(10);
@@ -181,9 +184,7 @@ const createLocataireGmail = async (req, res) => {
 
 //Retourner tout les locataires
 const findAll = (req, res) => {
-	var condition = 1 === 1;
-
-	Locataire.findAll({ where: condition })
+	Locataire.findAll({ where: {isDeleted:false} })
 		.then((data) => {
 			res.status(200).send(data);
 		})
@@ -196,7 +197,7 @@ const findAll = (req, res) => {
 };
 
 const findOne = async (req, res) => {
-	Locataire.findOne({ where: { idLocataire: req.params.id } })
+	Locataire.findOne({ where: { idLocataire: req.params.id, isDeleted: false } })
 		.then((data) => {
 			if (!data) res.status(404).send({ message: 'Locataire non existant' });
 			else res.status(200).send(data);
@@ -210,54 +211,111 @@ const findOne = async (req, res) => {
 };
 // Update a Locataire by the id in the request
 
-const update = async (req, res) => {
+const updateEmail = async (req, res) => {
 	const id = req.params.id;
+	
 	//Pour tester l'existance de l'email
 	const locataires = await Locataire.findOne({
 		where: { email: req.body.email },
 	});
-	if (locataires != null) {
-		delete req.body.email;
+	const locataire = await Locataire.findOne({
+		where: {
+				idLocataire: id, 
+		}
+	});
+	const motdepasseCorrect = await bcrypt.compare(req.body.motDePasse, locataire.motDePasse);
+	if (locataires != null || !motdepasseCorrect) {
+		res.status(400).send({
+			message: `On peut peut pas modifier le locataire avec id=${id}.`,
+		});	
 	}
-	var salt = bcrypt.genSaltSync(10);
-	var hash = bcrypt.hashSync(req.body.motDePasse, salt);
-	req.body.motDePasse = hash;
-	Locataire.update(req.body, {
-		where: { idLocataire: id },
-	})
-		.then((num) => {
-			if (num == 1) {
-				res.status(200).send({
-					message: 'Locataire was updated successfully.',
-				});
-			} else {
-				res.status(400).send({
-					message: `Cannot update Locataire with id=${id}. Maybe Locataire was not found or req.body is empty!`,
-				});
-			}
+	else{
+		delete req.body.motDePasse;
+		Locataire.update(req.body, {
+			where: { idLocataire: id },
 		})
-		.catch((err) => {
-			res.status(500).send({
-				message: 'Error updating Locataire with id=' + id,
+			.then((num) => {
+				if (num == 1) {
+					res.status(200).send({
+						message: 'Locataire a été crée avec succes',
+					});
+				} else {
+					res.status(400).send({
+						message: `On peut peut pas modifier le locataire avec id=${id}.`,
+					});
+				}
+			})
+			.catch((err) => {
+				res.status(500).send({
+					message: 'Error updating Locataire with id=' + id,
+				});
 			});
-		});
+	}
+};
+// Update a Locataire by the id in the request
+
+const updatePassword = async (req, res) => {
+	const id = req.params.id;
+	
+	const locataire = await Locataire.findOne({
+		where: { 
+			idLocataire: id,
+				},
+	});
+	const motdepasseCorrect = await bcrypt.compare(req.body.motDePasse, locataire.motDePasse);
+	if (!motdepasseCorrect) {
+		res.status(400).send({
+			message: "Ancienne mot de passe n'est pas correct"
+		})
+	}else{
+		var salt = bcrypt.genSaltSync(10);
+		var hash = bcrypt.hashSync(req.body.newMotDePasse, salt);
+		req.body.motDePasse = hash;
+		delete req.body.newMotDePasse;
+		Locataire.update(req.body, {
+			where: { idLocataire: id },
+		})
+			.then((num) => {
+				if (num == 1) {
+					res.status(200).send({
+						message: 'Locataire a été mis à jour avec succes',
+					});
+				} else {
+					res.status(400).send({
+						message: `On peut peut pas modifier le locataire avec id=${id}.`,
+					});
+				}
+			})
+			.catch((err) => {
+				res.status(500).send({
+					message: 'Error updating Locataire with id=' + id,
+				});
+			});
+	}
 };
 
 // Delete a Locataire with the specified id in the request
 const deleteLocataire = (req, res) => {
 	const id = req.params.id;
 
-	Locataire.destroy({
-		where: { idLocataire: id },
-	})
+	Locataire.update(
+		{
+			isDeleted: false,
+		},
+		{
+			where: {
+				idLocataire: id,
+			},
+		}
+	)
 		.then((num) => {
 			if (num == 1) {
 				res.status(200).send({
-					message: 'Locataire was deleted successfully!',
+					message: 'Locataire a été supprimé avec succes!',
 				});
 			} else {
 				res.status(400).send({
-					message: `Cannot delete Locataire with id=${id}. Maybe Locataire was not found!`,
+					message: `On peut pas supprimer le locataire avev id=${id}.`,
 				});
 			}
 		})
@@ -306,7 +364,8 @@ export default {
 	findOne,
 	validateAccount,
 	createLocataireGmail,
-	update,
+	updateEmail,
+	updatePassword,
 	deleteLocataire,
 	block,
 };

@@ -10,10 +10,12 @@ router.post("/createLocataireGmail", locataireController.createLocataireGmail);
 router.get("/getLocataires", locataireController.findAll);
 //Get one locataire
 router.get("/:id", locataireController.findOne);
-//Update locataire
-router.put("/:id", locataireController.update);
+//Update locataire Email
+router.put("/email/:id", locataireController.updateEmail);
+//Update locataire Password
+router.put("/password/:id", locataireController.updatePassword);
 // Delete a Locataire with id
-router.delete("/:id", locataireController.deleteLocataire);
+router.put("/delete/:id", locataireController.deleteLocataire);
 //Block or Unblock Locataire with id
 router.put('/block/:id', locataireController.block);
 //
