@@ -20,7 +20,6 @@ import planMaintenaceRouter from './routes/planMaintenance.route';
 import identiteRouter from './routes/identite.route';
 import transactionRouter from './routes/transaction.route';
 import algeria_citiesRouter from './routes/algeria_cities.route';
-import trackRouter from './routes/track.route';
 
 dotenv.config();
 
@@ -54,7 +53,6 @@ app.use('/api/administrateur', administrateurRouter);
 app.use('/api/agent', agentRouter);
 app.use('/api/operateur', operateurRouter);
 app.use('/api/dirigeant', dirigeantRouter);
-app.use('/api/track', trackRouter)
 
 
 //identite router
