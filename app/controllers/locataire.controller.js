@@ -300,7 +300,7 @@ const deleteLocataire = (req, res) => {
 
 	Locataire.update(
 		{
-			isDeleted: false,
+			isDeleted: true,
 		},
 		{
 			where: {
