@@ -56,10 +56,19 @@ const createTransaction = async (req, res) => {
           return;
      }
 
+
      if (!req.body.idLocataire) {
           res.status(400).send({
                error: "validation_error",
                message: "Id locataire can not be empty!"
+          });
+          return;
+     }
+
+     if (!req.body.modePaiement) {
+          res.status(400).send({
+               error: "validation_error",
+               message: "Mode Paiement can not be empty!"
           });
           return;
      }
@@ -85,7 +94,7 @@ const createTransaction = async (req, res) => {
           idLocataire: req.body.idLocataire,
           idReservation: req.body.idReservation,
           montant: req.body.montant,
-          moyenPayement: req.body.moyenPayement,
+          modePaiement: req.body.modePaiement,
           dateTransaction: req.body.dateTransaction ? req.body.dateTransaction : Date.now(),
      };
 
@@ -320,7 +329,7 @@ const filterTransaction = async (req, res) => {
      let montantFrom = req.body.montantFrom;
      let montantTo = req.body.montantTo;
 
-     let moyenPayement = req.body.moyenPayement
+     let modePaiement = req.body.modePaiement
 
 
      if (montant) {
@@ -355,8 +364,8 @@ const filterTransaction = async (req, res) => {
           }
      }
 
-     if (moyenPayement) {
-          options.moyenPayement = moyenPayement
+     if (modePaiement) {
+          options.modePaiement = modePaiement
      }
 
      console.log(options)
