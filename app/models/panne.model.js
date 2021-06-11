@@ -1,24 +1,26 @@
-module.exports = function(sequelize, Sequelize) {
+module.exports = function (sequelize, Sequelize) {
 
     const Panne = sequelize.define("panne", {
         idPanne: {
             type: Sequelize.INTEGER,
             primaryKey: true,
+            autoIncrement: true,
         },
         description: {
             type: Sequelize.STRING(255)
         },
         latitude: {
-            type: Sequelize.DOUBLE
+            type: Sequelize.FLOAT
         },
         longtitude: {
-            type: Sequelize.DOUBLE
+            type: Sequelize.FLOAT
         },
         idVehicule: {
             type: Sequelize.INTEGER
         },
         etat: {
-            type: Sequelize.BOOLEAN
+            type: Sequelize.BOOLEAN,
+            defaultValue: true
         }
 
     }, {
