@@ -3,9 +3,11 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const environment = process.env.NODE_ENV;
+console.log(process.env.NODE_ENV);
 var toExport;
 console.log("---------_>"+environment)
-if(environment != "test"){
+if(environment == "development"){
+  console.log("***** DEV Environment *****")
   toExport = {
     HOST: process.env.DB_HOST,
     USER: process.env.DB_USER,
@@ -20,7 +22,7 @@ if(environment != "test"){
     }
   };
 }else {
-console.log("TEST*************")
+console.log("***** TEST Environment *****")
   toExport = {
     HOST: "localhost",
     USER: "root",

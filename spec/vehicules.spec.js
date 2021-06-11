@@ -33,6 +33,20 @@ describe('Testing GET on /api/vehicules endpoint', () => {
                 });
         });
 
+		it('returns 403 when using a token other than administrateur/agent/dirigeant token to  get all vehicules from the db', (done) => {
+			request
+				.get('/vehicules')
+				.set('Accept', 'application/json')
+				//.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQyLCJyb2xlIjoibG9jYXRhaXJlIiwiaWF0IjoxNjIzNDIyNDk2fQ._mI-aMZbE9_N6hxK_m_cAoEuQeHJZB3AWrGlINg00Ng')
+				.expect(403)
+				.expect('Content-Type', 'application/json; charset=utf-8')
+				.end((err, res) => {
+					if (err) done(err);
+					expect(res.body.message).toEqual("Access Forbidden,you can't do this operation");
+					done();
+				});
+		});
+
 });
 describe('createVehicule api', () => {
 	it('returns 200 OK when sending vehicule params that doesn"t exist in db', (done) => {
@@ -140,7 +154,7 @@ describe('createVehicule api', () => {
 				done();
 			});
 	}); 
-	it('returns 403 when using a wrong token to get add a vehicule', (done) => {
+	it('returns 403 when using a wrong token to add a vehicule', (done) => {
 		request
 			.get('/vehicules')
 			.set('Accept', 'application/json')
@@ -150,6 +164,19 @@ describe('createVehicule api', () => {
 			.end((err, res) => {
 				if (err) done(err);
 				expect(res.body.message).toEqual("Access Forbidden,invalide token");
+				done();
+			});
+	});
+	it('returns 403 when using a token other than administrateur token to  add a vehicule', (done) => {
+		request
+			.get('/vehicules')
+			.set('Accept', 'application/json')
+			//.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQyLCJyb2xlIjoibG9jYXRhaXJlIiwiaWF0IjoxNjIzNDIyNDk2fQ._mI-aMZbE9_N6hxK_m_cAoEuQeHJZB3AWrGlINg00Ng')
+			.expect(403)
+			.expect('Content-Type', 'application/json; charset=utf-8')
+			.end((err, res) => {
+				if (err) done(err);
+				expect(res.body.message).toEqual("Access Forbidden,you can't do this operation");
 				done();
 			});
 	});
@@ -189,7 +216,7 @@ describe('Testing GET on /api/vehicules/:id endpoint', () => {
         it('returns 500  server error when using a non integer ID like A521', (done) => {
             request
                 .get('/vehicules/A521')
-			   // .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
+			    //.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
                 .expect(500)
                 .expect('Content-Type', 'application/json; charset=utf-8')
                 .end((err, res) => {
@@ -203,7 +230,7 @@ describe('Testing GET on /api/vehicules/:id endpoint', () => {
         });
 
 
-	it('returns 403 when using a wrong token to get add a vehicule', (done) => {
+	it('returns 403 when using a wrong token to get a vehicule details', (done) => {
 		request
 			.get('/vehicules/32')
 			.set('Accept', 'application/json')
@@ -220,7 +247,7 @@ describe('Testing GET on /api/vehicules/:id endpoint', () => {
 });
 
  describe('Testing Update vehicule', () => {
-	it('return 200 OK and the actual updated vehicule with numChassis=32', (done) => {
+	it('return 200 OK and the actual updated vehicule with numChassis=187', (done) => {
 		request
 			.put('/vehicules/187')
 			.send({
@@ -244,12 +271,12 @@ describe('Testing GET on /api/vehicules/:id endpoint', () => {
 	});
   it('return 403 when using a wrong token', (done) => {
 		request
-			.put('/vehicules/32')
+			.put('/vehicules/187')
 			.send({
 				etat : "hors service"
 			})
-			//.set('Accept', 'application/json')
-			.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0')
+			.set('Accept', 'application/json')
+			//.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0')
 			.expect('Content-Type', /json/)
 			.expect(403)
 			.end((err, res) => {
@@ -288,6 +315,20 @@ describe('Testing GET on /api/vehicules/:id endpoint', () => {
 			.end((err, res) => {
 				if (err) done(err);
 				expect(res.body.error)
+				done();
+			});
+	});
+	it('returns 403 when using a token other than administrateur token to update a vehicule', (done) => {
+		request
+			.put('/vehicules/20')
+			.send({ etat: "hors service" })
+			.set('Accept', 'application/json')
+			//.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQyLCJyb2xlIjoibG9jYXRhaXJlIiwiaWF0IjoxNjIzNDIyNDk2fQ._mI-aMZbE9_N6hxK_m_cAoEuQeHJZB3AWrGlINg00Ng')
+			.expect(403)
+			.expect('Content-Type', 'application/json; charset=utf-8')
+			.end((err, res) => {
+				if (err) done(err);
+				expect(res.body.message).toEqual("Access Forbidden,you can't do this operation");
 				done();
 			});
 	});
