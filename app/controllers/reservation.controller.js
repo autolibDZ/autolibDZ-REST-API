@@ -19,7 +19,7 @@ const Trajet = db.trajet;
 
 const createReservation = async(req, res) => {
     // verify access
-    const authHeader = req.headers['authorization']
+  /*  const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
 
 
@@ -61,7 +61,7 @@ const createReservation = async(req, res) => {
 
     }
 
-
+*/
 
     if (!req.body.etat || !req.body.idVehicule || !req.body.idLocataire || !req.body.idBorneDepart || !req.body.idBorneDestination) {
         res.status(400).send({
@@ -94,22 +94,7 @@ const createReservation = async(req, res) => {
             id: data.idReservation
 
         })
-     /*  const bornes = await Borne.findOne({ where: { idBorne: req.body.idBorneDepart } })
 
-      var nb=
-
-     //   console.log(nb-1)
-       // console.log(re)
-
-      Borne.update(
-            { nbVehicules: Sequelize.literal(-1) },
-            {
-                returning: true,
-                where: {
-                    idBorne: req.body.idBorneDepart
-                },
-
-            } );*/
         const bornes = await Borne.findAll({ where: { idBorne: req.body.idBorneDepart} })
 
 
@@ -291,7 +276,7 @@ const findReservationById = async(req, res) => {
 
 
 const updateReservationById = async(req, res) => {
-    const authHeader = req.headers['authorization']
+    /*const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
 
 
@@ -331,7 +316,7 @@ const updateReservationById = async(req, res) => {
 
         return;
 
-    }
+    }*/
     const id = req.params.id;
     const reservations = await Reservation.findOne({ where: { idReservation: id} })
     const bornes = await Borne.findAll({ where: { idBorne: req.body.idBorneDepart} })
@@ -408,7 +393,7 @@ const deleteReservationById = async (req, res) => {
         });
 };
 const selectReservationOfAGivenUser = async(req, res) => {
-    const authHeader = req.headers['authorization']
+   /* const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
 
 
@@ -448,7 +433,7 @@ const selectReservationOfAGivenUser = async(req, res) => {
 
         return;
 
-    }
+    }*/
     try {
         const reservations = await Reservation.findAll({
             where: {
@@ -523,7 +508,7 @@ const verifyCodePin = async(req, res) => {
 
 
 const getHistoriqueReservationsAllLocataire = async(req, res) => {
-    const authHeader = req.headers['authorization']
+ /*   const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
 
 
@@ -564,7 +549,7 @@ const getHistoriqueReservationsAllLocataire = async(req, res) => {
         return;
 
     }
-
+*/
     const reservations = await Reservation.findAll({ where: { idLocataire: req.params.id } })
 
     let historiqueReser = []
@@ -630,7 +615,7 @@ const getHistoriqueReservationsAllLocataire = async(req, res) => {
 }
 
 const getHistoriqueReservationsLocataire = async(req, res) => {
-    const authHeader = req.headers['authorization']
+   /* const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
 
 
@@ -671,6 +656,8 @@ const getHistoriqueReservationsLocataire = async(req, res) => {
         return;
 
     }
+
+    */
 
     const reservations = await Reservation.findAll({ where: { idLocataire: req.params.id} })
 
