@@ -44,7 +44,7 @@ describe('createReclamation api', () => {
 					emailLocataire:"hz_boutata@esi.dz", 
 					type:"bug"
 			})
-			//.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
+			//.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQyLCJyb2xlIjoibG9jYXRhaXJlIiwiaWF0IjoxNjIzNDIyNDk2fQ._mI-aMZbE9_N6hxK_m_cAoEuQeHJZB3AWrGlINg00Ng')
 			.set('Accept', 'application/json')
 			.expect(200)
 			.end((err, res) => {
@@ -64,7 +64,7 @@ describe('createReclamation api', () => {
                 emailLocataire:"hm_boutata@esi.dz",
 				type:"bug"
 			})
-			//.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
+			//.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQyLCJyb2xlIjoibG9jYXRhaXJlIiwiaWF0IjoxNjIzNDIyNDk2fQ._mI-aMZbE9_N6hxK_m_cAoEuQeHJZB3AWrGlINg00Ng')
 			.expect(400)
 			.expect('Content-Type','application/json; charset=utf-8')
 			.end((err, res) => {
@@ -84,7 +84,7 @@ describe('createReclamation api', () => {
                 emailLocataire:"hm_boutata@esi.dz"
 
 			})
-			//.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjUwNDMxNH0.2Z68JvipWECaPh0Rl7k9jNjQCCt-6t_wSODn5AWU6ng')
+			//.set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQyLCJyb2xlIjoibG9jYXRhaXJlIiwiaWF0IjoxNjIzNDIyNDk2fQ._mI-aMZbE9_N6hxK_m_cAoEuQeHJZB3AWrGlINg00Ng')
 			.set('Accept', 'application/json')
 			.expect(400)
 			.end((err, res) => {
@@ -95,7 +95,7 @@ describe('createReclamation api', () => {
 				done();
 			});
 	}); 
-	it('returns 403 when using a wrong token to get add a reclamation', (done) => {
+	it('returns 403 when using a wrong token to add a reclamation', (done) => {
 		request
 			.get('/')
 			.set('Accept', 'application/json')
@@ -157,7 +157,3 @@ describe('Testing GET on /api/reclamation/:id endpoint', () => {
 	});
 
 });
-
-
-
-/////NB: Replace tokens in createReclamation with locataire tokens 
