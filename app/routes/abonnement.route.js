@@ -12,8 +12,11 @@ router.get("/:id", AbonnementCtrl.getUserBalance);
 // do payment with carte d'abonnement
 router.post("/:id", AbonnementCtrl.doPayment);
 
-// do payment with carte d'abonnement
+// rechargez la  carte d'abonnement
 router.post("/rechargez-carte-abonnement/:id", AbonnementCtrl.rechargezCarteAbonnement);
+
+// create abonnement
+router.post("/create-abonnement/:id", AbonnementCtrl.createAbonnement);
 
 // count abonnements for every month in a specific year
 router.get("/countByMonth/:year", AbonnementCtrl.countAbonnementsByMonth);

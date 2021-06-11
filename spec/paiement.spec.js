@@ -1,4 +1,4 @@
-const Request = require('supertest');
+/*const Request = require('supertest');
 request = Request('http://localhost:4000/api/payment');
 
 
@@ -85,4 +85,4 @@ describe("Payment route test",()=>{
       });
 
 
-})
+})*/

@@ -1,7 +1,8 @@
 const db = require("../models");
-const Transaction = db.transaction;
 const { Op } = require("sequelize");
-const sequelize = require("sequelize");
+const jwt = require('jsonwebtoken');
+const Transaction = db.transaction;
+
 
 /**
  * Create and save a new transaction in database
@@ -11,6 +12,40 @@ const sequelize = require("sequelize");
  */
 
 const createTransaction = async (req, res) => {
+
+     const authHeader = req.headers['authorization']
+     const token = authHeader && authHeader.split(' ')[1]
+
+     if (token == null) {
+          res.status(403).send({
+               error: "invalid_access_token",
+               message: "Access Forbidden,invalid token",
+          });
+          return;
+     }
+
+     try {
+          const user = jwt.verify(token, process.env.JWT_SECRET);
+          if (user != undefined) {
+               const role = user.role
+               if (role != "locataire" && role != "administrateur") {
+                    res.status(403).send({
+                         error: "authorization_required",
+                         message: "Access Forbidden,you can't do this operation",
+                    });
+                    return;
+               }
+          }
+
+     } catch (err) {
+          res.status(403).send({
+               error: "invalid_access_token",
+               message: "Access Forbidden,invalid token",
+          });
+          return;
+     }
+
+
      // Validate request
 
      if (!req.body.idReservation) {
@@ -47,7 +82,7 @@ const createTransaction = async (req, res) => {
 
      // Create a transaction
      const transaction = {
-          idLocataire: req.body.idLocataire,   //sinon through session
+          idLocataire: req.body.idLocataire,
           idReservation: req.body.idReservation,
           montant: req.body.montant,
           moyenPayement: req.body.moyenPayement,
@@ -87,6 +122,37 @@ const createTransaction = async (req, res) => {
  */
 
 const getUserTransactions = async (req, res) => {
+
+     const authHeader = req.headers['authorization']
+     const token = authHeader && authHeader.split(' ')[1]
+
+     if (token == null) {
+          res.status(403).send({
+               error: "invalid_access_token",
+               message: "Access Forbidden,invalid token",
+          });
+          return;
+     }
+     try {
+          const user = jwt.verify(token, process.env.JWT_SECRET);
+          if (user != undefined) {
+               const role = user.role
+               if (role != "locataire" && role != "administrateur") {
+                    res.status(403).send({
+                         error: "authorization_required",
+                         message: "Access Forbidden,you can't do this operation",
+                    });
+                    return;
+               }
+          }
+     } catch (err) {
+          res.status(403).send({
+               error: "invalid_access_token",
+               message: "Access Forbidden,invalid token",
+          });
+          return;
+     }
+
      // Validate request
      if (!req.params.id) {
           res.status(400).send({
@@ -113,7 +179,7 @@ const getUserTransactions = async (req, res) => {
      }
      catch (err) {
           res.status(500).send({
-               error: err.message || "Some error occurred while creating the Transaction."
+               error: err.message || "Some error occurred while getting Transactions."
           });
      }
 };
@@ -128,6 +194,37 @@ const getUserTransactions = async (req, res) => {
 
 
 const getTransaction = async (req, res) => {
+     const authHeader = req.headers['authorization']
+     const token = authHeader && authHeader.split(' ')[1]
+
+     if (token == null) {
+          res.status(403).send({
+               error: "invalid_access_token",
+               message: "Access Forbidden,invalid token",
+          });
+          return;
+     }
+
+     try {
+          const user = jwt.verify(token, process.env.JWT_SECRET);
+          if (user != undefined) {
+               const role = user.role
+               if (role != "locataire" && role != "administrateur") {
+                    res.status(403).send({
+                         error: "authorization_required",
+                         message: "Access Forbidden,you can't do this operation",
+                    });
+                    return;
+               }
+          }
+     } catch (err) {
+          res.status(403).send({
+               error: "invalid_access_token",
+               message: "Access Forbidden,invalid token",
+          });
+          return;
+     }
+
      // Validate request
      if (!req.params.id) {
           res.status(400).send({
@@ -161,7 +258,7 @@ const getTransaction = async (req, res) => {
      }
      catch (err) {
           res.status(500).send({
-               error: err.message || "Some error occurred while creating the Transaction."
+               error: err.message || "Some error occurred while getting the Transaction."
           });
      }
 };
@@ -174,6 +271,36 @@ const getTransaction = async (req, res) => {
  */
 
 const filterTransaction = async (req, res) => {
+     const authHeader = req.headers['authorization']
+     const token = authHeader && authHeader.split(' ')[1]
+
+     if (token == null) {
+          res.status(403).send({
+               error: "invalid_access_token",
+               message: "Access Forbidden,invalid token",
+          });
+          return;
+     }
+
+     try {
+          const user = jwt.verify(token, process.env.JWT_SECRET);
+          if (user != undefined) {
+               const role = user.role
+               if (role != "locataire" && role != "administrateur") {
+                    res.status(403).send({
+                         error: "authorization_required",
+                         message: "Access Forbidden,you can't do this operation",
+                    });
+                    return;
+               }
+          }
+     } catch (err) {
+          res.status(403).send({
+               error: "invalid_access_token",
+               message: "Access Forbidden,invalid token",
+          });
+          return;
+     }
 
      // Validate request
      if (!req.params.id) {
@@ -224,7 +351,7 @@ const filterTransaction = async (req, res) => {
      }
      if (dateTo) {
           options.dateTransaction = {
-               [Op.lt]: prixTo
+               [Op.lt]: dateTo
           }
      }
 
@@ -250,7 +377,7 @@ const filterTransaction = async (req, res) => {
                          ]
                     },
                     order: [
-                         ['dateTransaction','DESC']
+                         ['dateTransaction', 'DESC']
                     ]
                })
                if (transactions.length <= 0) {
@@ -261,7 +388,10 @@ const filterTransaction = async (req, res) => {
                     res.status(200).send(transactions);
                }
           } else {
-               res.status(404).send({ "error": "le locataire avec id " + id + " n'a pas encore de transactions." })
+               res.status(404).send({
+                    error: "not_found",
+                    message: "Locataire with ID " + id + " has no transaction yet"
+               })
           }
      }
      catch (err) {
@@ -271,65 +401,65 @@ const filterTransaction = async (req, res) => {
      }
 };
 
-const TransactionStats= async (req,res)=>{
-    // Validate request
-	if (!req.params.year) {
-		res.status(400).send({
-			message: "params 'year' can not be empty!",
-		});
-		return;
-	}
+const TransactionStats = async (req, res) => {
+     // Validate request
+     if (!req.params.year) {
+          res.status(400).send({
+               message: "params 'year' can not be empty!",
+          });
+          return;
+     }
 
-	try {
-		let year = req.params.year;
-		const transactionsByMonth = await Transaction.findAll({
-			attributes: [
-				[sequelize.fn('date_part', 'month', sequelize.col('dateTransaction')), 'month'],
-				[sequelize.fn('SUM', sequelize.col('montant')), 'sumTransactions'],
-			],
-			where: sequelize.where(sequelize.fn('date_part', 'year', sequelize.col('dateTransaction')), year),
-			group: [sequelize.fn('date_part', 'month', sequelize.col('dateTransaction'))],
-			order: [sequelize.fn('date_part', 'month', sequelize.col('dateTransaction'))],
-		});
-		if (transactionsByMonth.length != 0) {
-			res.send(transactionsByMonth);
-		} else {
-			res.status(404).send({
-				error: 'not_found',
-				message: 'No content',
-				status: 404,
-			});
-		}
-	} catch (err) {
-		res.status(500).send({
-			error: err.message || 'Some error occured while counting abonnements'
-		});
-	}
+     try {
+          let year = req.params.year;
+          const transactionsByMonth = await Transaction.findAll({
+               attributes: [
+                    [sequelize.fn('date_part', 'month', sequelize.col('dateTransaction')), 'month'],
+                    [sequelize.fn('SUM', sequelize.col('montant')), 'sumTransactions'],
+               ],
+               where: sequelize.where(sequelize.fn('date_part', 'year', sequelize.col('dateTransaction')), year),
+               group: [sequelize.fn('date_part', 'month', sequelize.col('dateTransaction'))],
+               order: [sequelize.fn('date_part', 'month', sequelize.col('dateTransaction'))],
+          });
+          if (transactionsByMonth.length != 0) {
+               res.send(transactionsByMonth);
+          } else {
+               res.status(404).send({
+                    error: 'not_found',
+                    message: 'No content',
+                    status: 404,
+               });
+          }
+     } catch (err) {
+          res.status(500).send({
+               error: err.message || 'Some error occured while counting abonnements'
+          });
+     }
 }
 
 const getYears = async (req, res) => {
-	try {
-		const years = await Transaction.findAll({
-			attributes: [
-				[sequelize.fn('date_part', 'year', sequelize.col('dateTransaction')), 'year'],
-			],
-			group: [sequelize.fn('date_part', 'year', sequelize.col('dateTransaction'))],
-			order: [sequelize.fn('date_part', 'year', sequelize.col('dateTransaction'))],
-		})
-		if (years.length != 0) {
-			res.send(years);
-		} else {
-			res.status(404).send({
-				error: 'not_found',
-				message: 'No content',
-				status: 404,
-			});
-		}
-	} catch (err) {
-		res.status(500).send({
-			error: err.message || 'Some error occured while getting years'
-		});
-	}
+     try {
+          const years = await Transaction.findAll({
+               attributes: [
+                    [sequelize.fn('date_part', 'year', sequelize.col('dateTransaction')), 'year'],
+               ],
+               group: [sequelize.fn('date_part', 'year', sequelize.col('dateTransaction'))],
+               order: [sequelize.fn('date_part', 'year', sequelize.col('dateTransaction'))],
+          })
+          if (years.length != 0) {
+               res.send(years);
+          } else {
+               res.status(404).send({
+                    error: 'not_found',
+                    message: 'No content',
+                    status: 404,
+               });
+          }
+     } catch (err) {
+          res.status(500).send({
+               error: err.message || 'Some error occured while getting years'
+          });
+     }
 };
 
 export default {

@@ -4,9 +4,9 @@ module.exports = function(sequelize, Sequelize) {
             type: Sequelize.DOUBLE,
             primaryKey: true,
         },
-        photo: {
+        /*photo: {
             type: Sequelize.STRING(255)
-        },
+        },*/
         idLocataire: {
             type: Sequelize.INTEGER,
 
@@ -16,6 +16,12 @@ module.exports = function(sequelize, Sequelize) {
         },
         valide: {
             type : Sequelize.INTEGER
+        },
+        idCloudinary:{
+            type: Sequelize.STRING(128),
+        } , 
+        secureUrl: {
+            type: Sequelize.STRING(128),
         }
     }, {
         freezeTableName: true,
