@@ -347,9 +347,9 @@ describe('Get list of all reservation', () => {
 
 });
 */
-/*vvvvvvvvvvvv
-describe('Testing Update borne', () => {
-    it('return 200 OK and the actual updated borne with id= 54', (done) => {
+
+/*describe('Testing Update borne', () => {
+   /* it('return 200 OK and the actual updated borne with id= 54', (done) => {
         request
             .put('/reservation/54')
             .send({
@@ -365,7 +365,7 @@ describe('Testing Update borne', () => {
 
             })
             .set('Accept', 'application/json')
-            //  .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
+            .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQyLCJyb2xlIjoibG9jYXRhaXJlIiwiaWF0IjoxNjIzMzY1MzAzfQ.YXhFgN8j07HlhX8XAg8eAkeXAJqiXmaubgfUtGRHMNA')
             .expect('Content-Type', /json/)
             .expect(200)
             .end((err, res) => {
@@ -379,12 +379,12 @@ describe('Testing Update borne', () => {
                 }
             });
     });
-    it("Return Error if id borne not found", (done) => {
+   it("Return Error if id reservation not found", (done) => {
         request
-            .put('/400')
+            .put('/reservation/667')
             .send({ etat: 0 })
             .set('Accept', 'application/json')
-            //  .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
+            .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQyLCJyb2xlIjoibG9jYXRhaXJlIiwiaWF0IjoxNjIzMzY1MzAzfQ.YXhFgN8j07HlhX8XAg8eAkeXAJqiXmaubgfUtGRHMNA')
             .expect('Content-Type', /json/)
             .expect(404)
             .end((err, res) => {
@@ -392,7 +392,7 @@ describe('Testing Update borne', () => {
                     done.fail(err);
                 } else {
                     expect(res.body.error).toEqual('not_found')
-                    expect(res.body.message).toEqual('Borne not found');
+                    expect(res.body.message).toEqual('Cannot update Reservation with id=667. Maybe Reservation was not found or req.body is empty!');
                     done();
                 }
             });
@@ -400,8 +400,8 @@ describe('Testing Update borne', () => {
 
     it('returns 500  server error when using a wrong id like a', (done) => {
         request
-            .put('/a')
-            //  .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
+            .put('/reservation/a')
+            .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQyLCJyb2xlIjoibG9jYXRhaXJlIiwiaWF0IjoxNjIzMzY1MzAzfQ.YXhFgN8j07HlhX8XAg8eAkeXAJqiXmaubgfUtGRHMNA')
             .expect(500)
             .expect('Content-Type', 'application/json; charset=utf-8')
             .end((err, res) => {
