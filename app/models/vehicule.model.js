@@ -64,7 +64,7 @@ module.exports = function (sequelize, Sequelize) {
 				type: Sequelize.STRING(128),
 			},
 			id: {
-				type: Sequelize.INTEGER,
+				type: Sequelize.STRING(128),
 				unique: true
 			}, 
 			latitude: {
@@ -82,15 +82,15 @@ module.exports = function (sequelize, Sequelize) {
 		}
 	);
 
-	// Déclaration des clès étrangères
-	Vehicule.associate = (models) => {
-		Vehicule.hasOne(models.utilisateur, {
-			foreignKey: 'idAgentMaintenace',
-		});
-		Vehicule.hasOne(models.borne, {
-			foreignKey: 'idBorne',
-		});
-	};
+    // Déclaration des clès étrangères
+    Vehicule.associate = (models) => {
+        Vehicule.hasOne(models.utilisateur, {
+            foreignKey: 'idAgentMaintenace',
+        });
+        Vehicule.hasOne(models.borne, {
+            foreignKey: 'idBorne',
+        });
+    };
 
-	return Vehicule;
+    return Vehicule;
 };
