@@ -66,7 +66,13 @@ module.exports = function (sequelize, Sequelize) {
 			id: {
 				type: Sequelize.INTEGER,
 				unique: true
-			}
+			}, 
+			latitude: {
+				type: Sequelize.FLOAT,
+			  },
+			longitude: {
+				type: Sequelize.FLOAT,
+			  },
 		},
 		{
 			freezeTableName: true,

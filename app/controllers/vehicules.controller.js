@@ -278,9 +278,6 @@ const getAllVehicule = async (req, res) => {
 			etat: {
 			  [Op.ne]: "supprime", // Tous les véhicules sauf ceux qui sont supprimés
 			},
-			idBorne: {
-				[Op.ne]: null, 
-			}
 		  },
 	})  
 		.then((data) => {
