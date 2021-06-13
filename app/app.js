@@ -21,7 +21,8 @@ import identiteRouter from './routes/identite.route';
 import transactionRouter from './routes/transaction.route';
 import algeria_citiesRouter from './routes/algeria_cities.route';
 import trackRouter from './routes/track.route';
-
+import PanneRouter from './routes/panne.route';
+import pannesNotifcationsRouter from './routes/pannes_notifications.route'
 dotenv.config();
 
 const app = express();
@@ -58,8 +59,10 @@ app.use('/api/dirigeant', dirigeantRouter);
 app.use('/api/track', trackRouter);
 
 //identite router
-app.use('/api/identites',identiteRouter)
+app.use('/api/identites', identiteRouter)
 
+//panne router
+app.use('/api/pannes', PanneRouter)
 
 // Ajouter un plan de maintenace
 app.use('/api/plan-maintenance', planMaintenaceRouter);
@@ -85,10 +88,13 @@ app.use('/api/transaction', transactionRouter);
 app.use('/api/trajet', trajetRouter);
 
 //Recalamation Router 
-app.use('/api/reclamation',reclamationRouter); 
+app.use('/api/reclamation', reclamationRouter);
 
 // algeria cities router
-app.use('/api/algeria_cities',algeria_citiesRouter); 
+app.use('/api/algeria_cities', algeria_citiesRouter);
+
+// Pannes notifications router
+app.use('/api/pannes', pannesNotifcationsRouter)
 
 //Home
 app.use((req, res) => {

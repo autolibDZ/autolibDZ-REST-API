@@ -29,7 +29,7 @@ const startTracking = async (req,res)=>{
     await hypertrack.devices.startTracking(id_device).then((data) => {
         var message = data.message
         console.log('tracking')
-        res.send(message)
+        res.send({ message: message})
 
       }).catch(error => {
         console.log("Hypertrack error: "+ error)
@@ -82,16 +82,34 @@ const stopTracking = async function (req, res) {
      await hypertrack.devices.stopTracking("165C663A-F158-3015-8EE2-88F6490EA372").then((data) => {
           var message = data.message
           console.log('stopped tracking')
-          res.send(message);
+          res.send({ message: message });
         }).catch(error => {
             console.log("Hypertrack error: "+error)
         })}
   
   };
 
+  const getDevices = async function (req, res) {
+
+    await hypertrack.devices.getAll().then(devices => {
+        let tablettes = [];
+        devices.forEach((element, index, array)=>{
+            tablettes.push({"id_device" : element.device_id, "device_info" : element.device_info});
+        })
+        
+        
+        res.send(tablettes)
+      }).catch(error => {
+        console.log(error)
+      })
+
+  }
+
+
   export default {
     startTracking,
     getPosition,
-    stopTracking
+    stopTracking,
+    getDevices
    }
    
