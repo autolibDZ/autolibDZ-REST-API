@@ -23,8 +23,7 @@ module.exports = function (sequelize, Sequelize) {
         },
         idReservation: {
             type: Sequelize.INTEGER,
-            unique: true,
-            allowNull: false
+            unique: true
         },
     }, {
         freezeTableName: true,
