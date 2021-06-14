@@ -291,7 +291,7 @@ const getHistoriqueReservationsLocataire = async(req, res) => {
 if (reservation.etat!="Active"){
             let reservationFinale = {
                 idReservation: 0, etat: "", nomBorneDepart: "", numChassisVehicule: 0,
-                numImmatriculationVehicule: 0, modeleVehicule: "", marqueVehicule: "", nomBorneDestination: "",
+                numImmatriculationVehicule: 0, modeleVehicule: "", marqueVehicule: "", nomBorneDestination: "",secureUrl:"",
                 dateReservation: null, dure: null, distance: null
             }
 
@@ -312,6 +312,8 @@ if (reservation.etat!="Active"){
                 reservationFinale.numImmatriculationVehicule = vehiculeInfo.numImmatriculation
                 reservationFinale.modeleVehicule = vehiculeInfo.modele
                 reservationFinale.marqueVehicule = vehiculeInfo.marque
+                reservationFinale.secureUrl= vehiculeInfo.secureUrl
+
             }
             if (reservation.etat == "Terminée") {
                 const trajetInfo = await Trajet.findOne({where: {idReservation: reservation.idReservation}})
