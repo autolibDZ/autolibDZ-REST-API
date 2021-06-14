@@ -1,5 +1,6 @@
 const db = require('../models');
 var bcrypt = require('bcryptjs');
+let sequelize = require("sequelize");
 const Reservation = db.reservation;
 const Borne = db.borne;
 const Locataire = db.locataire;
@@ -335,6 +336,58 @@ if (reservation.etat!="Active"){
 
 }
 
+// Retourne une la liste des reservations avec retard de remise
+const getReservationsAvecRetard = async (req,res) => {
+    const etatReservation = 'En cours'
+    try {
+        Reservation.belongsTo(Locataire,{foreignKey:'idLocataire'})
+        Reservation.belongsTo(Vehicule,{foreignKey:'idVehicule'})
+        Trajet.belongsTo(Reservation,{foreignKey:'idReservation'})
+        const retards = await Trajet.findAll({
+            include: [
+                {
+                    model:Reservation,
+                    include:[
+                        {
+                            model:Locataire,
+                            attributes:['idLocataire','nom','prenom']
+                        },
+                        {
+                            model: Vehicule,
+                            attributes:['numChassis','marque','modele']
+                        }
+                    ],
+                    attributes:['idReservation'],
+                    where:{
+                        etat:etatReservation
+                    }
+                },
+            ],
+            attributes: ['dateFin'],
+            where:{
+                dateFin:{
+                    [sequelize.Op.lt]: sequelize.fn('NOW'),
+                }
+            },
+            order: [['idReservation','ASC']]
+        })
+        if(retards.length!=0){
+            res.send(retards)
+        }
+        else{
+            res.status(404).send({
+                error: 'not_found',
+                message: 'No content',
+                status: 404,
+            });
+        }
+    } 
+    catch (err) {
+        res.status(500).send({
+            error: err.message || 'Some error occured while getting retards'
+        });
+    }
+}
 
 export default {
     createReservation,
@@ -347,4 +400,5 @@ export default {
     getReservationAnnulee,
     getHistoriqueReservationsLocataire,
     getHistoriqueReservationsAllLocataire,
+    getReservationsAvecRetard,
 }
