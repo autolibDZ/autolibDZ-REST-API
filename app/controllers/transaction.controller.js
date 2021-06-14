@@ -47,19 +47,29 @@ const createTransaction = async (req, res) => {
 
 
      // Validate request
-
-     if (!req.body.idReservation) {
-          res.status(400).send({
-               error: "validation_error",
-               message: "Id reservation can not be empty!"
-          });
-          return;
+     if (req.body.modePaiement !== "Rechargement") {
+          if (!req.body.idReservation) {
+               res.status(400).send({
+                    error: "validation_error",
+                    message: "Id reservation can not be empty!"
+               });
+               return;
+          }
      }
+
 
      if (!req.body.idLocataire) {
           res.status(400).send({
                error: "validation_error",
                message: "Id locataire can not be empty!"
+          });
+          return;
+     }
+
+     if (!req.body.modePaiement) {
+          res.status(400).send({
+               error: "validation_error",
+               message: "Mode Paiement can not be empty!"
           });
           return;
      }
@@ -83,25 +93,32 @@ const createTransaction = async (req, res) => {
      // Create a transaction
      const transaction = {
           idLocataire: req.body.idLocataire,
-          idReservation: req.body.idReservation,
+          idReservation: req.body.idReservation ? req.body.idReservation : null,
           montant: req.body.montant,
-          moyenPayement: req.body.moyenPayement,
+          modePaiement: req.body.modePaiement,
           dateTransaction: req.body.dateTransaction ? req.body.dateTransaction : Date.now(),
      };
 
 
      // Save Transaction in the database
      try {
-          let reseravation = await Transaction.findAll({
-               where: {
-                    idReservation: req.body.idReservation
+          console.log(transaction)
+          if (transaction.idReservation) {
+               let reseravation = await Transaction.findAll({
+                    where: {
+                         idReservation: req.body.idReservation
+                    }
+               })
+               if (reseravation.length > 0) {
+                    res.status(400).send({
+                         message: "Reservation already paid."
+                    });
+               } else {
+                    let data = await Transaction.create(transaction)
+                    res.status(201).send(data);
                }
-          })
-          if (reseravation.length > 0) {
-               res.status(400).send({
-                    message: "Reservation already paid."
-               });
-          } else {
+          }
+          else {
                let data = await Transaction.create(transaction)
                res.status(201).send(data);
           }
@@ -320,7 +337,7 @@ const filterTransaction = async (req, res) => {
      let montantFrom = req.body.montantFrom;
      let montantTo = req.body.montantTo;
 
-     let moyenPayement = req.body.moyenPayement
+     let modePaiement = req.body.modePaiement
 
 
      if (montant) {
@@ -355,8 +372,8 @@ const filterTransaction = async (req, res) => {
           }
      }
 
-     if (moyenPayement) {
-          options.moyenPayement = moyenPayement
+     if (modePaiement) {
+          options.modePaiement = modePaiement
      }
 
      console.log(options)

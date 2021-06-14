@@ -65,6 +65,24 @@ const createIdentite = async (req, res) => {
             });
             return;
             }
+
+            if (req.body.selfie) {
+              const image = req.body.photo;
+              try {
+                ress = await cloudinary.uploader.upload(req.body.photo).then((result) => {
+                  identite.idCloudinaryPhotoSelfie = result.public_id;
+                  identite.secureUrlPhotoSelfie = result.secure_url;
+                  console.log(result)
+              });
+              } catch (error) {
+                  console.log(error);
+                }
+              }else{
+                res.status(500).send({
+                  message:"Vous devez entrez une image de votre visage dans la borne!"             
+              });
+              return;
+              }
         data = await Identite.create(identite)
        .then(data => {
         res.status(200).send(data);
