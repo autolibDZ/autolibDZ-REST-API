@@ -11,15 +11,16 @@ const Trajet = db.trajet;
 
 
 /**
- * Creer une reservation
- * @param {*} req la requete
- * @param {*} res la reponse
+ * Create and save a new reservation in database
+ * @param {*} req The request
+ * @param {*} res The response
+ * @returns {object} The reservation that created
  */
 
 
 const createReservation = async(req, res) => {
     // verify access
-  /*  const authHeader = req.headers['authorization']
+   const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
 
 
@@ -61,7 +62,7 @@ const createReservation = async(req, res) => {
 
     }
 
-*/
+
 
     if (!req.body.etat || !req.body.idVehicule || !req.body.idLocataire || !req.body.idBorneDepart || !req.body.idBorneDestination) {
         res.status(400).send({
@@ -125,7 +126,12 @@ const createReservation = async(req, res) => {
 
 };
 
-
+/**
+ *Returns all the reservations in the database
+ * @param {*} req The request
+ * @param {*} res The response
+ * @returns {*} A list of reservations
+ */
 const listAllReservations = (req, res) => {
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
@@ -214,7 +220,12 @@ const listAllReservations = (req, res) => {
             });
         });
 };
-
+/**
+ *Returns a specific reservation
+ * @param {*} req The request
+ * @param {*} res The response
+ * @returns {*} One reservation
+ */
 const findReservationById = async(req, res) => {
    const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
@@ -274,9 +285,14 @@ const findReservationById = async(req, res) => {
     }
 };
 
-
+/**
+ *Updates a specific reservation
+ * @param {*} req The request
+ * @param {*} res The response
+ * @returns {*} a message
+ */
 const updateReservationById = async(req, res) => {
-    /*const authHeader = req.headers['authorization']
+    const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
 
 
@@ -316,7 +332,7 @@ const updateReservationById = async(req, res) => {
 
         return;
 
-    }*/
+    }
     const id = req.params.id;
     const reservations = await Reservation.findOne({ where: { idReservation: id} })
     const bornes = await Borne.findAll({ where: { idBorne: req.body.idBorneDepart} })
@@ -392,8 +408,14 @@ const deleteReservationById = async (req, res) => {
             });
         });
 };
+/**
+ *Returns the  reservations of a specific user
+ * @param {*} req The request
+ * @param {*} res The response
+ * @returns {*} A list of reservations
+ */
 const selectReservationOfAGivenUser = async(req, res) => {
-   /* const authHeader = req.headers['authorization']
+    const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
 
 
@@ -433,7 +455,7 @@ const selectReservationOfAGivenUser = async(req, res) => {
 
         return;
 
-    }*/
+    }
     try {
         const reservations = await Reservation.findAll({
             where: {
@@ -459,6 +481,12 @@ const selectReservationOfAGivenUser = async(req, res) => {
         });
     }
 };
+/**
+ *Returns all the annuled reservations
+ * @param {*} req The request
+ * @param {*} res The response
+ * @returns {*} A list of reservations
+ */
 const getReservationAnnulee = async(req, res) => {
     try {
         const annulee = await Reservation.findAll({
@@ -506,9 +534,14 @@ const verifyCodePin = async(req, res) => {
     }
 }
 
-
+/**
+ *Returns the reservation history of a specific user
+ * @param {*} req The request
+ * @param {*} res The response
+ * @returns {*} A list of reservations
+ */
 const getHistoriqueReservationsAllLocataire = async(req, res) => {
- /*   const authHeader = req.headers['authorization']
+    const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
 
 
@@ -549,7 +582,7 @@ const getHistoriqueReservationsAllLocataire = async(req, res) => {
         return;
 
     }
-*/
+
     const reservations = await Reservation.findAll({ where: { idLocataire: req.params.id } })
 
     let historiqueReser = []
@@ -615,7 +648,7 @@ const getHistoriqueReservationsAllLocataire = async(req, res) => {
 }
 
 const getHistoriqueReservationsLocataire = async(req, res) => {
-   /* const authHeader = req.headers['authorization']
+    const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
 
 
@@ -657,7 +690,7 @@ const getHistoriqueReservationsLocataire = async(req, res) => {
 
     }
 
-    */
+
 
     const reservations = await Reservation.findAll({ where: { idLocataire: req.params.id} })
 

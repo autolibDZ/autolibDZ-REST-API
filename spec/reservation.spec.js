@@ -167,7 +167,7 @@ describe('POST : Verifier code pin', () => {
 
     });
 */
-/* vvvvvvvvvvvv
+/*vvvvvvv
     describe('Get list of all Reservations in a given user of id 3', () => {
         it('Should returns 200 OK when getting all reservations', (done) => {
             request
@@ -175,19 +175,37 @@ describe('POST : Verifier code pin', () => {
                 .set('Accept', 'application/json')
                 .expect(200)
                 .expect('Content-Type', /json/)
+                .set("authorization", " Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQyLCJyb2xlIjoibG9jYXRhaXJlIiwiaWF0IjoxNjIzNjI2NzAxfQ.NkxwWh01dFTCl3LbzXZTJgJq0VRvPetp_jJqOlmHhs4")
+
                 .end((err, res) => {
                     if (err) done(err);
                     expect(res.body.length).not.toEqual(0);
                     done();
                 });
         });
+        it('returns 403 invalid_access_token when token is invalid', (done) => {
+            request
+                .get('/reservation/locataires/3')
+                .set('Accept', 'application/json')
+                .expect(403)
+                .expect('Content-Type', /json/)
+                .set("authorization", " aaaa")
+                .end((err, res) => {
+                    if (err) done(err);
+                    expect(res.body.message).toBe("Access Forbidden,invalide token")
+                    done();
+                });
+        });
 
-        it('Should returns 404 when using an non exesting idLocataire=0 ', (done) => {
+
+        it('Should returns 404 when using an non exesting idLocataire ', (done) => {
             request
                 .get('/reservation/locataires/-1')
                 .set('Accept', 'application/json')
                 .expect(404)
                 .expect('Content-Type', /json/)
+                .set("authorization", " Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQyLCJyb2xlIjoibG9jYXRhaXJlIiwiaWF0IjoxNjIzNjI2NzAxfQ.NkxwWh01dFTCl3LbzXZTJgJq0VRvPetp_jJqOlmHhs4")
+
                 .end((err, res) => {
                     if (err) done(err);
                     expect(res.body.error == 'No locataires with id: 0')
@@ -195,7 +213,7 @@ describe('POST : Verifier code pin', () => {
                 });
         });
     });
-
+*/
 /*describe('Testing GET on /api/reservation endpoint', () => {
     it('should return the list of all Reservations stored in the database, at least one Reservation', (done) => {
         request
@@ -261,8 +279,8 @@ describe('findById', () => {
 
     });
 });*/
-/*
-vvvvvvvvvvvvv
+
+/*vvvvvvv
 describe('createrReservation api', () => {
     it('returns 200 OK when reservation doesn"t exist in db', (done) => {
         request
@@ -281,11 +299,70 @@ describe('createrReservation api', () => {
 
             })
             .set('Accept', 'application/json')
+            .set("authorization", " Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQyLCJyb2xlIjoibG9jYXRhaXJlIiwiaWF0IjoxNjIzNjI2NzAxfQ.NkxwWh01dFTCl3LbzXZTJgJq0VRvPetp_jJqOlmHhs4")
+
             .expect(200)
             .end((err, res) => {
                 if (err) done(err);
 
                 expect(res.body.error);
+
+                done();
+            });
+    });
+    it('returns 403 invalid_access_token when token is invalid', (done) => {
+        request
+            .post('/reservation/')
+            .send({
+
+                etat: "En cours",
+                idLocataire: 3,
+                idVehicule: 1837919,
+                idBorneDepart: 4,
+                idBorneDestination: 4,
+                codePin:"$2a$10$c0DBBbVy6fe8uyX/lbmlQ4Owq8mz8lZp0eRbtXXzlBlNVNyF0K8pWm",
+                tempsEstime: 3000,
+                distanceEstime: 60,
+                prixEstime: 1200
+
+            })
+            .set('Accept', 'application/json')
+            .set("authorization", "aaaa")
+
+            .expect(403)
+            .end((err, res) => {
+                if (err) done(err);
+
+                expect(res.body.message).toBe("Access Forbidden,invalide token")
+
+                done();
+            });
+    });
+
+    it('returns 403 authorization_required when user is Unauthorized', (done) => {
+        request
+            .post('/reservation/')
+            .send({
+
+                etat: "En cours",
+                idLocataire: 3,
+                idVehicule: 1837919,
+                idBorneDepart: 4,
+                idBorneDestination: 4,
+                codePin:"$2a$10$c0DBBbVy6fe8uyX/lbmlQ4Owq8mz8lZp0eRbtXXzlBlNVNyF0K8pWm",
+                tempsEstime: 3000,
+                distanceEstime: 60,
+                prixEstime: 1200
+
+            })
+            .set('Accept', 'application/json')
+            .set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjYyOTY3OX0.3oO8qBjv6jwQsQTIp6TaK8pvfKG9be8bn1btdHtKb00")
+
+            .expect(403)
+            .end((err, res) => {
+                if (err) done(err);
+
+                expect(res.body.message).toBe("Access Forbidden,you can't do this operation")
 
                 done();
             });
@@ -310,6 +387,8 @@ describe('createrReservation api', () => {
                 prixEstime: 1200
             })
             .set('Accept', 'application/json')
+            .set("authorization", " Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQyLCJyb2xlIjoibG9jYXRhaXJlIiwiaWF0IjoxNjIzNjI2NzAxfQ.NkxwWh01dFTCl3LbzXZTJgJq0VRvPetp_jJqOlmHhs4")
+
             .expect(400)
             .end((err, res) => {
                 if (err) done(err);
@@ -348,8 +427,8 @@ describe('Get list of all reservation', () => {
 });
 */
 
-/*describe('Testing Update borne', () => {
-   /* it('return 200 OK and the actual updated borne with id= 54', (done) => {
+describe('Testing Update Reservation', () => {
+   it('return 200 OK and the actual updated borne with id= 54', (done) => {
         request
             .put('/reservation/54')
             .send({
@@ -379,35 +458,5 @@ describe('Get list of all reservation', () => {
                 }
             });
     });
-   it("Return Error if id reservation not found", (done) => {
-        request
-            .put('/reservation/667')
-            .send({ etat: 0 })
-            .set('Accept', 'application/json')
-            .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQyLCJyb2xlIjoibG9jYXRhaXJlIiwiaWF0IjoxNjIzMzY1MzAzfQ.YXhFgN8j07HlhX8XAg8eAkeXAJqiXmaubgfUtGRHMNA')
-            .expect('Content-Type', /json/)
-            .expect(404)
-            .end((err, res) => {
-                if (err) {
-                    done.fail(err);
-                } else {
-                    expect(res.body.error).toEqual('not_found')
-                    expect(res.body.message).toEqual('Cannot update Reservation with id=667. Maybe Reservation was not found or req.body is empty!');
-                    done();
-                }
-            });
-    });
 
-    it('returns 500  server error when using a wrong id like a', (done) => {
-        request
-            .put('/reservation/a')
-            .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQyLCJyb2xlIjoibG9jYXRhaXJlIiwiaWF0IjoxNjIzMzY1MzAzfQ.YXhFgN8j07HlhX8XAg8eAkeXAJqiXmaubgfUtGRHMNA')
-            .expect(500)
-            .expect('Content-Type', 'application/json; charset=utf-8')
-            .end((err, res) => {
-                if (err) done(err);
-                expect(res.body.error)
-                done();
-            });
-    });
-});*/
+});
