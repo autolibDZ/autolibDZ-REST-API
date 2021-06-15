@@ -209,6 +209,14 @@ const updateVehicule = async (req, res) => {
 			if (vehicule) {    // Check if record exists in db
 			  let updatedVehicule = await vehicule.update(req.body)
 			  if (updatedVehicule) {
+				  if(req.body.etat="supprime"){
+						const borne = await Borne.findOne({ where: { idBorne: req.body.idBorne } })
+						// update borne params 
+						const update = await Borne.update(
+							{ nbPlaces: borne.nbPlaces+1},
+							{ where: { idBorne: req.body.idBorne } }
+						)
+				  }
 				res.status(200).send({
 				  data: updatedVehicule,
 				  message: 'Vehicule was updated successfully.',
