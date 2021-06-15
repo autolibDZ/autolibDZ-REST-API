@@ -99,6 +99,13 @@ const createVehicule = async (req, res) => {
 				message: 'Vehicule already exists!',
 			});
 		} else {
+			const borne = await Borne.findOne({ where: { idBorne: req.body.idBorne } })
+			// update borne params 
+			const update = await Borne.update(
+				{ nbPlaces: borne.nbPlaces-1},
+				{ where: { idBorne: req.body.idBorne } }
+			  )
+
 			let data;
 			data = await Vehicule.create(vehicule).then((data) => {
 				res.send(data);
@@ -617,7 +624,7 @@ const bornes= [];
 					}
 			}
 			console.log(bornes);
-			res.send(bornes);s
+			res.send(bornes);
 		} else {
 		  res.status(404).send({
 			error: 'there is no vehiucle that matches your filter on the database',
