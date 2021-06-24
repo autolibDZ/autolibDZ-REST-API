@@ -86,9 +86,9 @@ const createBorne = async (req, res) => {
         commune: req.body.commune,
         latitude: req.body.latitude,
         longitude: req.body.longitude,
-        nbVehicules: req.body.nbVehicules,
-        nbPlaces: req.body.nbPlaces,
-        // etat:1
+        //nbVehicules: req.body.nbVehicules,
+        //nbPlaces: req.body.nbPlaces,
+        //etat:1
       }
 
     })
@@ -96,7 +96,10 @@ const createBorne = async (req, res) => {
     if (result.length > 0) {
       if (result[0].etat == 0) {
         const updatedBorne = Borne.update(
-          { etat: 1 },
+          { etat: 1,
+            nbVehicules: req.body.nbVehicules,
+            nbPlaces: req.body.nbPlaces,
+          },
 
           {
             where: {
@@ -105,13 +108,15 @@ const createBorne = async (req, res) => {
               commune: req.body.commune,
               latitude: req.body.latitude,
               longitude: req.body.longitude,
-              nbVehicules: req.body.nbVehicules,
-              nbPlaces: req.body.nbPlaces,
+            //  nbVehicules: req.body.nbVehicules,
+             // nbPlaces: req.body.nbPlaces,
               etat: 0
             }
           }
         )
         result[0].etat = 1
+        result[0].nbVehicules = req.body.nbVehicules
+        result[0].nbPlaces = req.body.nbPlaces
         res.send(result)
       } else {
         res.status(400).send({

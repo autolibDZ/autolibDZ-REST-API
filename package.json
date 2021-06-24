@@ -9,6 +9,8 @@
 	"scripts": {
 		"test-init": "node_modules/.bin/jasmine init",
 		"test": "node_modules/.bin/jasmine",
+		"start-test": "export NODE_ENV=test &&  nodemon --exec babel-node app/server.js",
+		"start-test-windows": "set NODE_ENV=test &&  nodemon --exec babel-node app/server.js",
 		"test-coverage": "nyc npm run test",
 		"start": "nodemon --exec babel-node app/server.js",
 		"doc": "jsdoc -c jsdoc.json"
@@ -38,6 +40,7 @@
 		"pg-hstore": "^2.3.3",
 		"request": "^2.88.2",
 		"sequelize": "^6.6.2",
+		"sqlite3": "^5.0.2",
 		"stripe": "^8.148.0",
 		"swagger-jsdoc": "^7.0.0-rc.6",
 		"swagger-ui-express": "^4.1.6",
