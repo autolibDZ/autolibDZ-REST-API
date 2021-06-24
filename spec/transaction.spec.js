@@ -4,6 +4,8 @@ request = Request('http://localhost:4000/api/transaction');
 
 
 describe('Transaction route test', () => {
+     var header = { "authorization": " Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjYyOTY3OX0.3oO8qBjv6jwQsQTIp6TaK8pvfKG9be8bn1btdHtKb00" };
+
 
      /**
      * Test "createTransaction" method 
@@ -11,15 +13,57 @@ describe('Transaction route test', () => {
 
      describe('Add one transaction', () => {
 
+          it('returns 403 invalid_access_token when token is invalid ', (done) => {
+               request
+                    .post('/')
+                    .send({
+                         "idLocataire": 3,
+                         "montant": 222.2,
+                         "modePaiement": "Stripe",
+                         "idReservation": 10
+                    })
+                    .set('Accept', 'application/json')
+                    .set("authorization", "aaaa")
+                    .expect(403)
+                    .expect('Content-Type', /json/)
+                    .end((err, res) => {
+                         if (err) done(err);
+                         expect(res.body.error).toBe("invalid_access_token")
+                         expect(res.body.message).toBe("Access Forbidden,invalid token")
+                         done();
+                    });
+          });
+
+          it('returns 403 authorization_required when user is Unauthorized ', (done) => {
+               request
+                    .post('/')
+                    .send({
+                         "idLocataire": 3,
+                         "montant": 222.2,
+                         "modePayement": "Stripe",
+                         "idReservation": 10
+                    })
+                    .set('Accept', 'application/json')
+                    .set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzAsInJvbGUiOiJBZ2VudE1haW50ZW5hbmNlIiwiaWF0IjoxNjIzMjc5NzE3fQ.3mxpzv-U9WhM8vizNlAucLHdz8tkgbiLI36z1MHRSu0")
+                    .expect(403)
+                    .end((err, res) => {
+                         if (err) done(err);
+                         expect(res.body.error).toBe("authorization_required")
+                         expect(res.body.message).toBe("Access Forbidden,you can't do this operation")
+                         done();
+                    });
+          });
+
           it('returns 201 when the id reservation does not existe', (done) => {
                request
                     .post('/')
                     .send({
                          "idLocataire": 3,
                          "montant": 222.2,
-                         "moyenPayement": "Stripe",
+                         "modePayement": "Stripe",
                          "idReservation": 10
                     })
+                    .set(header)
                     .set('Accept', 'application/json')
                     .expect('Content-Type', /json/)
                     .end((err, res) => {
@@ -35,10 +79,11 @@ describe('Transaction route test', () => {
                     .send({
                          "idLocataire": 1,
                          "montant": 222.2,
-                         "moyenPayement": "Stripe",
+                         "modePaiement": "Stripe",
                          "idReservation": 9
                     })
                     .set('Accept', 'application/json')
+                    .set(header)
                     .expect(400)
                     .expect('Content-Type', /json/)
                     .end((err, res) => {
@@ -48,17 +93,39 @@ describe('Transaction route test', () => {
                     });
           });
 
+
           it('returns 400 when when not sending an idReservation or idLocataire or "montant"', (done) => {
                request
                     .post('/')
                     .send({
-                         "moyenPayement": "Stripe",
+                         "modePaiement": "Stripe",
                     })
                     .expect(400)
+                    .set(header)
                     .expect('Content-Type', 'application/json; charset=utf-8')
                     .end((err, res) => {
                          if (err) done(err);
                          expect(res.body.error).toBe('validation_error')
+                         done();
+                    });
+          });
+
+          it('returns 400  when not sending an ModePaiement', (done) => {
+               request
+                    .post('/')
+                    .send({
+                         "idLocataire": 1,
+                         "montant": 222.2,
+                         "idReservation": 12
+                    })
+                    .set('Accept', 'application/json')
+                    .set(header)
+                    .expect(400)
+                    .expect('Content-Type', /json/)
+                    .end((err, res) => {
+                         if (err) done(err);
+                         expect(res.body.error).toBe('validation_error')
+                         expect(res.body.message).toBe('Mode Paiement can not be empty!')
                          done();
                     });
           });
@@ -70,9 +137,10 @@ describe('Transaction route test', () => {
                     .send({
                          "idLocataire": 1,
                          "montant": -222,
-                         "moyenPayement": "Stripe",
+                         "modePaiement": "Stripe",
                          "idReservation": 9
                     })
+                    .set(header)
                     .expect(400)
                     .expect('Content-Type', 'application/json; charset=utf-8')
                     .end((err, res) => {
@@ -83,34 +151,66 @@ describe('Transaction route test', () => {
           });
 
           it('returns 400 when sending a string value in "montant"', (done) => {
-			request
-				.post('/')
-				.send({
+               request
+                    .post('/')
+                    .send({
                          "idLocataire": 1,
                          "montant": "22",
-                         "idReservation": 9
-				})
-				.expect(400)
-				.expect('Content-Type', 'application/json; charset=utf-8')
-				.end((err, res) => {
-					if (err) done(err);
+                         "idReservation": 9,
+                         "modePaiement": "Stripe"
+                    })
+                    .set(header)
+                    .expect(400)
+                    .expect('Content-Type', 'application/json; charset=utf-8')
+                    .end((err, res) => {
+                         if (err) done(err);
                          expect(res.body.message).toBe("montant must be a number")
-					done();
-				});
-		});
+                         done();
+                    });
+          });
      })
 
 
      /**
-      * Test "getUserTransactions" method 
+      * Test "getUserTransactions" method
       */
 
      describe('Get transactions by user id', () => {
+
+          it('returns 403 invalid_access_token when token is invalid', (done) => {
+               request
+                    .get('/1')
+                    .set("Authorization", "aaaa")
+                    .expect(403)
+                    .expect('Content-Type', 'application/json; charset=utf-8')
+                    .end((err, res) => {
+                         if (err) done(err);
+                         expect(res.body.error).toBe("invalid_access_token")
+                         expect(res.body.message).toBe("Access Forbidden,invalid token")
+                         done();
+                    });
+          });
+
+          it('returns 403 authorization_required when user is Unauthorized ', (done) => {
+               request
+                    .get('/1')
+                    .set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzAsInJvbGUiOiJBZ2VudE1haW50ZW5hbmNlIiwiaWF0IjoxNjIzMjc5NzE3fQ.3mxpzv-U9WhM8vizNlAucLHdz8tkgbiLI36z1MHRSu0")
+                    .expect(403)
+                    .expect('Content-Type', 'application/json; charset=utf-8')
+                    .end((err, res) => {
+                         if (err) done(err);
+                         expect(res.body.error).toBe("authorization_required")
+                         expect(res.body.message).toBe("Access Forbidden,you can't do this operation")
+                         done();
+                    });
+          });
+
           it('returns 200 OK when using an exesting id 1', (done) => {
                request
                     .get('/1')
                     .expect(200)
                     .expect('Content-Type', 'application/json; charset=utf-8')
+                    .set(header)
                     .end((err, res) => {
                          if (err) done(err);
                          else {
@@ -129,6 +229,8 @@ describe('Transaction route test', () => {
                     .get('/5')
                     .expect(404)
                     .expect('Content-Type', 'application/json; charset=utf-8')
+                    .set(header)
+
                     .end((err, res) => {
                          if (err) done(err);
                          expect(res.body.message).toBe('Locataire with ID 5 has no transaction yet');
@@ -139,6 +241,7 @@ describe('Transaction route test', () => {
           it('returns 500  server error when using a wrong id like a', (done) => {
                request
                     .get('/a')
+                    .set(header)
                     .expect(500)
                     .expect('Content-Type', 'application/json; charset=utf-8')
                     .end((err, res) => {
@@ -150,34 +253,67 @@ describe('Transaction route test', () => {
      })
 
      /**
-      * Test "getTransaction" method 
+      * Test "getTransaction" method
       */
 
      describe('Visualize transaction details  ', () => {
+
+
+          it('returns 403 invalid_access_token when token is invalid', (done) => {
+               request
+                    .get('/1/1')
+                    .set("authorization", "aaaa")
+                    .expect(403)
+                    .expect('Content-Type', 'application/json; charset=utf-8')
+                    .end((err, res) => {
+                         if (err) done(err);
+                         expect(res.body.error).toBe("invalid_access_token")
+                         expect(res.body.message).toBe("Access Forbidden,invalid token")
+                         done();
+                    });
+          });
+
+          it('returns 403 authorization_required when user is Unauthorized ', (done) => {
+               request
+                    .get('/1/1')
+                    .set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzAsInJvbGUiOiJBZ2VudE1haW50ZW5hbmNlIiwiaWF0IjoxNjIzMjc5NzE3fQ.3mxpzv-U9WhM8vizNlAucLHdz8tkgbiLI36z1MHRSu0")
+                    .expect(403)
+                    .expect('Content-Type', 'application/json; charset=utf-8')
+                    .end((err, res) => {
+                         if (err) done(err);
+                         expect(res.body.error).toBe("authorization_required")
+                         expect(res.body.message).toBe("Access Forbidden,you can't do this operation")
+                         done();
+                    });
+          });
+
+
           it('returns 200 OK when using an exesting id of user and transaction: 14', (done) => {
                request
-                    .get('/1/14')
+                    .get('/1/1')
                     .expect(200)
                     .expect('Content-Type', 'application/json; charset=utf-8')
+                    .set(header)
                     .end((err, res) => {
                          if (err) done(err);
                          else {
                               expect(res.body).not.toEqual(null)
                               expect(res.body.idLocataire).toEqual(1)
-                              expect(res.body.idTransaction).toEqual(14)
+                              expect(res.body.idTransaction).toEqual(1)
                               done();
                          }
                     });
           });
 
-          it('returns 404 when using an non exesting id of transaction 5', (done) => {
+          it('returns 404 when using an non exesting id of transaction 50', (done) => {
                request
-                    .get('/1/5')
+                    .get('/1/50')
+                    .set(header)
                     .expect(404)
                     .expect('Content-Type', 'application/json; charset=utf-8')
                     .end((err, res) => {
                          if (err) done(err);
-                         expect(res.body.message).toBe("Locataire transaction with ID: 5 does not exist")
+                         expect(res.body.message).toBe("Locataire transaction with ID: 50 does not exist")
                          done();
                     });
           });
@@ -185,6 +321,7 @@ describe('Transaction route test', () => {
           it('returns 500  server error when using a wrong id like a', (done) => {
                request
                     .get('/a')
+                    .set(header)
                     .expect(500)
                     .expect('Content-Type', 'application/json; charset=utf-8')
                     .end((err, res) => {
@@ -201,11 +338,43 @@ describe('Transaction route test', () => {
 
      describe('Post filterTransaction : returns a list of filtered user transactions ', () => {
 
+          it('returns 403 invalid_access_token when token is invalid', (done) => {
+               request
+                    .post('/1/filter')
+                    .send({})
+                    .set("authorization", "aaaa")
+                    .expect(403)
+                    .expect('Content-Type', 'application/json; charset=utf-8')
+                    .end((err, res) => {
+                         if (err) done(err);
+                         expect(res.body.error).toBe("invalid_access_token")
+                         expect(res.body.message).toBe("Access Forbidden,invalid token")
+                         done();
+                    });
+          });
+
+          it('returns 403 authorization_required when user is Unauthorized ', (done) => {
+               request
+                    .post('/1/filter')
+                    .send({})
+                    .set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzAsInJvbGUiOiJBZ2VudE1haW50ZW5hbmNlIiwiaWF0IjoxNjIzMjc5NzE3fQ.3mxpzv-U9WhM8vizNlAucLHdz8tkgbiLI36z1MHRSu0")
+                    .expect(403)
+                    .expect('Content-Type', 'application/json; charset=utf-8')
+                    .end((err, res) => {
+                         if (err) done(err);
+                         expect(res.body.error).toBe("authorization_required")
+                         expect(res.body.message).toBe("Access Forbidden,you can't do this operation")
+                         done();
+                    });
+          });
+
+
           it('should returns 200 OK and a list of user transaction when using an existing id 1 and no value chosen for filtering', (done) => {
                request
                     .post('/1/filter')
                     .send({})
                     .set('Accept', 'application/json')
+                    .set(header)
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .end((err, res) => {
@@ -221,6 +390,7 @@ describe('Transaction route test', () => {
                     .send({
                          "montantTo": 2230
                     })
+                    .set(header)
                     .set('Accept', 'application/json')
                     .expect(200)
                     .expect('Content-Type', /json/)
@@ -244,6 +414,7 @@ describe('Transaction route test', () => {
                          "montant": 223,
                          "dateFrom": "2021-05-15"
                     })
+                    .set(header)
                     .set('Accept', 'application/json')
                     .expect(404)
                     .expect('Content-Type', /json/)
@@ -260,10 +431,11 @@ describe('Transaction route test', () => {
                     .send({})
                     .set('Accept', 'application/json')
                     .expect(404)
+                    .set(header)
                     .expect('Content-Type', /json/)
                     .end((err, res) => {
                          if (err) done(err);
-                         expect(res.body.error == 'le locataire avec id 144 n\'a pas encore de transactions.').toBe(true);
+                         expect(res.body.message).toBe('Locataire with ID 144 has no transaction yet');
                          done();
                     });
           });

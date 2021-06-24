@@ -127,7 +127,7 @@ const getReclamationDetails = async (req, res) => {
       
         // Only admin can create Vehicule
       
-        if (role != "administrateur"  && role != "dirigeant") { //Ajouter dirigeant 
+        if (role != "administrateur"  && role != "dirigeant") {
       
           res.status(403).send({
           message: "Access Forbidden,you can't do this operation",

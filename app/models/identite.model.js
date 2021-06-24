@@ -22,6 +22,12 @@ module.exports = function(sequelize, Sequelize) {
         } , 
         secureUrl: {
             type: Sequelize.STRING(128),
+        },
+        idCloudinaryPhotoSelfie: {
+            type: Sequelize.STRING(128),
+        },
+        secureUrlPhotoSelfie: {
+            type: Sequelize.STRING(128),
         }
     }, {
         freezeTableName: true,

@@ -41,7 +41,7 @@ const { Op } = require("sequelize");
 const createBorne = async (req, res) => {
 
   // verify access
-  const authHeader = req.headers['authorization']
+  /*const authHeader = req.headers['authorization']
   const token = authHeader &amp;&amp; authHeader.split(' ')[1]
 
 
@@ -63,7 +63,7 @@ const createBorne = async (req, res) => {
 
       // Only admin can create Borne
 
-      if (role != "admin") {
+      if (role != "administrateur") {
 
         res.status(403).send({
           message: "Access Forbidden,you can't do this operation",
@@ -81,7 +81,7 @@ const createBorne = async (req, res) => {
 
     return;
 
-  }
+  }*/
 
 
   // Create a Borne
@@ -116,38 +116,39 @@ const createBorne = async (req, res) => {
         longitude: req.body.longitude,
         nbVehicules: req.body.nbVehicules,
         nbPlaces: req.body.nbPlaces,
-       // etat:1
+        // etat:1
       }
 
     })
-   console.log("resultt" + result.length);
+    console.log("resultt" + result.length);
     if (result.length > 0) {
-      if(result[0].etat==0){
-          const updatedBorne = Borne.update(
-            {etat : 1},
-            
-             { where: {
-                nomBorne: req.body.nomBorne,
-                wilaya: req.body.wilaya,
-                commune: req.body.commune,
-                latitude: req.body.latitude,
-                longitude: req.body.longitude,
-                nbVehicules: req.body.nbVehicules,
-                nbPlaces: req.body.nbPlaces,
-                etat:0
+      if (result[0].etat == 0) {
+        const updatedBorne = Borne.update(
+          { etat: 1 },
+
+          {
+            where: {
+              nomBorne: req.body.nomBorne,
+              wilaya: req.body.wilaya,
+              commune: req.body.commune,
+              latitude: req.body.latitude,
+              longitude: req.body.longitude,
+              nbVehicules: req.body.nbVehicules,
+              nbPlaces: req.body.nbPlaces,
+              etat: 0
             }
           }
-          )
-          result[0].etat =1 
-          res.send(result)
-      }else{
+        )
+        result[0].etat = 1
+        res.send(result)
+      } else {
         res.status(400).send({
 
           message: "Borne already exists!"
-  
+
         })
       }
-      
+
     } else {
       let data = await Borne.create(borne)
       res.send(data);
@@ -181,6 +182,49 @@ const createBorne = async (req, res) => {
 //Returne list of Bornes
 
 const getFilteredBornes = async (req, res) => {
+  // verify access
+  /* const authHeader = req.headers['authorization']
+   const token = authHeader &amp;&amp; authHeader.split(' ')[1]
+ 
+ 
+   if (token == null) {
+ 
+     res.status(403).send({
+       message: "Access Forbidden,invalide token",
+     });
+     return;
+   }
+ 
+   try {
+ 
+     const user = jwt.verify(token, process.env.JWT_SECRET);
+ 
+     if (user != undefined) {
+ 
+       const role = user.role
+ 
+       // Only admin can create Borne
+ 
+       if (role != "administrateur" &amp;&amp; role != "agent" &amp;&amp; role != "locataire") {
+ 
+         res.status(403).send({
+           message: "Access Forbidden,you can't do this operation",
+         });
+ 
+         return;
+       }
+     }
+ 
+   } catch (err) {
+ 
+     res.status(403).send({
+       message: "Access Forbidden,invalide token",
+     });
+ 
+     return;
+ 
+   }*/
+
 
   if (!req.body) {
     res.status(400).send({
@@ -235,7 +279,7 @@ const getFilteredBornes = async (req, res) => {
           [nbPlacesSquelizeOp]: (req.body.nbPlaces != null) ? req.body.nbPlaces : 0
 
         },
-        etat:1
+        etat: 1
       },
     });
 
@@ -267,6 +311,47 @@ const getFilteredBornes = async (req, res) => {
 
 const getBorne = async (req, res) => {
 
+  /* const authHeader = req.headers['authorization']
+   const token = authHeader &amp;&amp; authHeader.split(' ')[1]
+ 
+   console.log("la val du token " + token);
+   if (token == null) {
+ 
+     res.status(403).send({
+       message: "Access Forbidden,invalide token",
+     });
+     return;
+   }
+ 
+   try {
+     const user = jwt.verify(token, process.env.JWT_SECRET);
+     console.log("in user" + user)
+     if (user != undefined) {
+ 
+       const role = user.role
+ 
+       // Only admin can create Borne
+ 
+       if (role != 'administrateur' &amp;&amp; role != "agent" &amp;&amp; role != "locataire") {
+         res.status(403).send({
+           message: "Access Forbidden,you can't do this operation",
+         });
+ 
+         return;
+       }
+     }
+ 
+   } catch (err) {
+ 
+     res.status(403).send({
+       message: "Access Forbidden,invalide token",
+     });
+ 
+     return;
+ 
+   }*/
+
+
   // Validate request
 
   if (!req.params.id) {
@@ -286,7 +371,7 @@ const getBorne = async (req, res) => {
     const data = await Borne.findAll({
       where: {
         idBorne: id,
-        etat:1
+        etat: 1
       }
 
     })
@@ -325,9 +410,53 @@ const getBorne = async (req, res) => {
 const getAllBornes = async (req, res) => {
   try {
 
+    //Verify access
+    /*const authHeader = req.headers['authorization']
+    const token = authHeader &amp;&amp; authHeader.split(' ')[1]
+
+
+    if (token == null) {
+
+      res.status(403).send({
+        message: "Access Forbidden,invalide token",
+      });
+      return;
+    }
+
+    try {
+
+      const user = jwt.verify(token, process.env.JWT_SECRET);
+
+      if (user != undefined) {
+
+        const role = user.role
+
+
+
+        if (role != "administrateur" &amp;&amp; role != "agent" &amp;&amp; role != "locataire") {
+
+          res.status(403).send({
+            message: "Access Forbidden,you can't do this operation",
+          });
+
+          return;
+        }
+      }
+
+    } catch (err) {
+
+      res.status(403).send({
+        message: "Access Forbidden,invalide token",
+      });
+
+      return;
+
+    }*/
+
+
     const data = await Borne.findAll({
-      where :{
-        etat : 1
+      where: {
+        etat: 1
       }
     })
 
@@ -369,7 +498,50 @@ const getAllBornes = async (req, res) => {
 const getWilaya = async (req, res) => {
   try {
 
-    const data = await Borne.findAll({ attributes: [[Borne.sequelize.fn('DISTINCT', Borne.sequelize.col('wilaya')), 'wilaya']] , where :  {etat:1}}); 
+    // Verify access
+    /*  const authHeader = req.headers['authorization']
+      const token = authHeader &amp;&amp; authHeader.split(' ')[1]
+  
+  
+      if (token == null) {
+  
+        res.status(403).send({
+          message: "Access Forbidden,invalide token",
+        });
+        return;
+      }
+  
+      try {
+  
+        const user = jwt.verify(token, process.env.JWT_SECRET);
+  
+        if (user != undefined) {
+  
+          const role = user.role
+  
+  
+          if (role != "administrateur" &amp;&amp; role != "agent" &amp;&amp; role != "locataire") {
+  
+            res.status(403).send({
+              message: "Access Forbidden,you can't do this operation",
+            });
+  
+            return;
+          }
+        }
+  
+      } catch (err) {
+  
+        res.status(403).send({
+          message: "Access Forbidden,invalide token",
+        });
+  
+        return;
+  
+      }*/
+
+
+    const data = await Borne.findAll({ attributes: [[Borne.sequelize.fn('DISTINCT', Borne.sequelize.col('wilaya')), 'wilaya']], where: { etat: 1 } });
 
     if (data.length != 0 &amp;&amp; data != null) {
 
@@ -405,11 +577,52 @@ const getWilaya = async (req, res) => {
 const getCommune = async (req, res) => {
   try {
 
+    /*  const authHeader = req.headers['authorization']
+      const token = authHeader &amp;&amp; authHeader.split(' ')[1]
+  
+  
+      if (token == null) {
+  
+        res.status(403).send({
+          message: "Access Forbidden,invalide token",
+        });
+        return;
+      }
+  
+      try {
+  
+        const user = jwt.verify(token, process.env.JWT_SECRET);
+  
+        if (user != undefined) {
+  
+          const role = user.role
+  
+          if (role != "administrateur" &amp;&amp; role != "agent" &amp;&amp; role != "locataire") {
+  
+            res.status(403).send({
+              message: "Access Forbidden,you can't do this operation",
+            });
+  
+            return;
+          }
+        }
+  
+      } catch (err) {
+  
+        res.status(403).send({
+          message: "Access Forbidden,invalide token",
+        });
+  
+        return;
+  
+      }*/
+
+
     let wilaya = req.params.wilaya
 
     if (wilaya == "all") {
 
-      const data = await Borne.findAll({ attributes: [[Borne.sequelize.fn('DISTINCT', Borne.sequelize.col('commune')), 'commune']] , where: {etat: 1} }); 
+      const data = await Borne.findAll({ attributes: [[Borne.sequelize.fn('DISTINCT', Borne.sequelize.col('commune')), 'commune']], where: { etat: 1 } });
 
       if (data.length != 0) {
 
@@ -427,7 +640,7 @@ const getCommune = async (req, res) => {
 
     } else {
 
-      const data = await Borne.findAll({ attributes: [[Borne.sequelize.fn('DISTINCT', Borne.sequelize.col('commune')), 'commune']], where: { wilaya: wilaya ,etat:1} });
+      const data = await Borne.findAll({ attributes: [[Borne.sequelize.fn('DISTINCT', Borne.sequelize.col('commune')), 'commune']], where: { wilaya: wilaya, etat: 1 } });
 
       if (data.length != 0) {
 
@@ -467,6 +680,48 @@ const getCommune = async (req, res) => {
 
 const getVehiclesInABorne = async (req, res) => {
 
+  // Verify access
+  /*const authHeader = req.headers['authorization']
+  const token = authHeader &amp;&amp; authHeader.split(' ')[1]
+
+
+  if (token == null) {
+
+    res.status(403).send({
+      message: "Access Forbidden,invalide token",
+    });
+    return;
+  }
+
+  try {
+
+    const user = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (user != undefined) {
+
+      const role = user.role
+
+      if (role != "administrateur" &amp;&amp; role != "agent" &amp;&amp; role != "locataire") {
+
+        res.status(403).send({
+          message: "Access Forbidden,you can't do this operation",
+        });
+
+        return;
+      }
+    }
+
+  } catch (err) {
+
+    res.status(403).send({
+      message: "Access Forbidden,invalide token",
+    });
+
+    return;
+
+  }*/
+
+
   try {
     const vehicules = await Vehicule.findAll({
       where: {
@@ -496,6 +751,48 @@ const getVehiclesInABorne = async (req, res) => {
 
 const updateBorne = async (req, res) => {
 
+  /*const authHeader = req.headers['authorization']
+  const token = authHeader &amp;&amp; authHeader.split(' ')[1]
+
+
+  if (token == null) {
+
+    res.status(403).send({
+      message: "Access Forbidden,invalide token",
+    });
+    return;
+  }
+
+  try {
+
+    const user = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (user != undefined) {
+
+      const role = user.role
+
+      // Only admin can update Borne
+
+      if (role != "administrateur") {
+
+        res.status(403).send({
+          message: "Access Forbidden,you can't do this operation",
+        });
+
+        return;
+      }
+    }
+
+  } catch (err) {
+
+    res.status(403).send({
+      message: "Access Forbidden,invalide token",
+    });
+
+    return;
+
+  }*/
+
   try {
     const borne = await Borne.findOne({
       where: {
@@ -506,7 +803,7 @@ const updateBorne = async (req, res) => {
       let updatedBorne = await borne.update(req.body)
       if (updatedBorne) {
         res.status(200).send({
-          data:updatedBorne,
+          data: updatedBorne,
           message: 'Borne was updated successfully.',
         });
       } else {
@@ -537,57 +834,57 @@ const deleteBorne = async (req, res) => {
 
   // verify access
 
-  const authHeader = req.headers['authorization']
-  const token = authHeader &amp;&amp; authHeader.split(' ')[1]
-
-
-  if (token == null) {
-
-    res.status(403).send({
-      message: "Access Forbidden,invalide token",
-    });
-
-    return;
-  }
-
-  try {
-
-    const user = jwt.verify(token, process.env.JWT_SECRET);
-
-    if (user != undefined) {
-
-      const role = user.role
-
-      // Only admin can delete Borne
-
-      if (role != "admin") {
-
-        res.status(403).send({
-          message: "Access Forbidden,you can't do this operation",
-        });
-
-        return;
-      }
-    }
-
-  } catch (err) {
-
-    res.status(403).send({
-      message: "Access Forbidden,invalide token",
-    });
-
-    return;
-  }
+  /* const authHeader = req.headers['authorization']
+   const token = authHeader &amp;&amp; authHeader.split(' ')[1]
+ 
+ 
+   if (token == null) {
+ 
+     res.status(403).send({
+       message: "Access Forbidden,invalide token",
+     });
+ 
+     return;
+   }
+ 
+   try {
+ 
+     const user = jwt.verify(token, process.env.JWT_SECRET);
+ 
+     if (user != undefined) {
+ 
+       const role = user.role
+ 
+       // Only admin can delete Borne
+ 
+       if (role != "administrateur") {
+ 
+         res.status(403).send({
+           message: "Access Forbidden,you can't do this operation",
+         });
+ 
+         return;
+       }
+     }
+ 
+   } catch (err) {
+ 
+     res.status(403).send({
+       message: "Access Forbidden,invalide token",
+     });
+ 
+     return;
+   }*/
 
   try {
     const data = await Borne.update(
-      {etat : 0},
+      { etat: 0 },
       {
         where: {
-        idBorne: req.params.id,
-        etat : 1
+          idBorne: req.params.id,
+          etat: 1
+        }
       }
-    }
     )
     if (data == 1) {
       res.status(201).send({
@@ -639,13 +936,13 @@ export default {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#createBorne">createBorne</a></li><li><a href="global.html#deleteBorne">deleteBorne</a></li><li><a href="global.html#getAllBornes">getAllBornes</a></li><li><a href="global.html#getBorne">getBorne</a></li><li><a href="global.html#getCommune">getCommune</a></li><li><a href="global.html#getFilteredBornes">getFilteredBornes</a></li><li><a href="global.html#getVehiclesInABorne">getVehiclesInABorne</a></li><li><a href="global.html#getWilaya">getWilaya</a></li><li><a href="global.html#updateBorne">updateBorne</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addPlanMaintenance">addPlanMaintenance</a></li><li><a href="global.html#createAdmin">createAdmin</a></li><li><a href="global.html#createAgent">createAgent</a></li><li><a href="global.html#createBorne">createBorne</a></li><li><a href="global.html#createDirigeant">createDirigeant</a></li><li><a href="global.html#createIdentite">createIdentite</a></li><li><a href="global.html#createOperateur">createOperateur</a></li><li><a href="global.html#createReclamation">createReclamation</a></li><li><a href="global.html#createTransaction">createTransaction</a></li><li><a href="global.html#createVehicule">createVehicule</a></li><li><a href="global.html#deleteAdmin">deleteAdmin</a></li><li><a href="global.html#deleteAgent">deleteAgent</a></li><li><a href="global.html#deleteAllAdmins">deleteAllAdmins</a></li><li><a href="global.html#deleteAllAgents">deleteAllAgents</a></li><li><a href="global.html#deleteAllDirigeants">deleteAllDirigeants</a></li><li><a href="global.html#deleteAllOperateurs">deleteAllOperateurs</a></li><li><a href="global.html#deleteBorne">deleteBorne</a></li><li><a href="global.html#deleteDirigeant">deleteDirigeant</a></li><li><a href="global.html#deleteIdentite">deleteIdentite</a></li><li><a href="global.html#deleteOperateur">deleteOperateur</a></li><li><a href="global.html#deletePlanMaintenance">deletePlanMaintenance</a></li><li><a href="global.html#deleteReclamation">deleteReclamation</a></li><li><a href="global.html#deleteVehicule">deleteVehicule</a></li><li><a href="global.html#filterTransaction">filterTransaction</a></li><li><a href="global.html#getAdmin">getAdmin</a></li><li><a href="global.html#getAgent">getAgent</a></li><li><a href="global.html#getAllAdmins">getAllAdmins</a></li><li><a href="global.html#getAllAgents">getAllAgents</a></li><li><a href="global.html#getAllBornes">getAllBornes</a></li><li><a href="global.html#getAllDirigeants">getAllDirigeants</a></li><li><a href="global.html#getAllIdentite">getAllIdentite</a></li><li><a href="global.html#getAllOperateurs">getAllOperateurs</a></li><li><a href="global.html#getAllReclamations">getAllReclamations</a></li><li><a href="global.html#getAllVehicule">getAllVehicule</a></li><li><a href="global.html#getBorne">getBorne</a></li><li><a href="global.html#getCommune">getCommune</a></li><li><a href="global.html#getDirigeant">getDirigeant</a></li><li><a href="global.html#getFilteredBornes">getFilteredBornes</a></li><li><a href="global.html#getLocataireOfIdentity">getLocataireOfIdentity</a></li><li><a href="global.html#getOneIdentite">getOneIdentite</a></li><li><a href="global.html#getOperateur">getOperateur</a></li><li><a href="global.html#getOperatorOfIdentity">getOperatorOfIdentity</a></li><li><a href="global.html#getPlanMaintenance">getPlanMaintenance</a></li><li><a href="global.html#getReclamationDetails">getReclamationDetails</a></li><li><a href="global.html#getTransaction">getTransaction</a></li><li><a href="global.html#getUserTransactions">getUserTransactions</a></li><li><a href="global.html#getVehiclesInABorne">getVehiclesInABorne</a></li><li><a href="global.html#getVehiculeDetails">getVehiculeDetails</a></li><li><a href="global.html#getVehiculeReservations">getVehiculeReservations</a></li><li><a href="global.html#getVehiculesEnServiceOfAGivenAgent">getVehiculesEnServiceOfAGivenAgent</a></li><li><a href="global.html#getVehiculesHorsServiceOfAGivenAgent">getVehiculesHorsServiceOfAGivenAgent</a></li><li><a href="global.html#getWilaya">getWilaya</a></li><li><a href="global.html#invalider">invalider</a></li><li><a href="global.html#selectIdentitieOfAGivenLocataire">selectIdentitieOfAGivenLocataire</a></li><li><a href="global.html#selectIdentitiesOfAGivenOperateur">selectIdentitiesOfAGivenOperateur</a></li><li><a href="global.html#setEtatVehicule">setEtatVehicule</a></li><li><a href="global.html#updateAdmin">updateAdmin</a></li><li><a href="global.html#updateAgent">updateAgent</a></li><li><a href="global.html#updateBorne">updateBorne</a></li><li><a href="global.html#updateDirigeant">updateDirigeant</a></li><li><a href="global.html#updateOperateur">updateOperateur</a></li><li><a href="global.html#updateVehicule">updateVehicule</a></li><li><a href="global.html#valider">valider</a></li><li><a href="global.html#verifyIfActionExists">verifyIfActionExists</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Sat May 29 2021 23:47:29 GMT+0200 (heure d’été d’Europe centrale)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Sat Jun 05 2021 14:55:02 GMT+0100 (heure normale d’Europe centrale)
 </footer>
 
 <script> prettyPrint(); </script>

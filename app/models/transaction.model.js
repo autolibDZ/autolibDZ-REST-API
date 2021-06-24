@@ -13,9 +13,9 @@ module.exports = function (sequelize, Sequelize) {
         montant: {
             type: Sequelize.FLOAT(5, 4)
         },
-        moyenPayement: {
+        modePaiement: {
             type: Sequelize.DataTypes.ENUM({
-                values: ['Stripe', 'Carte d\'abonnement']
+                values: ['Stripe', 'Paiement Carte d\'abonnement', 'Rechargement']
             })
         },
         idLocataire: { //not sure if we need it
@@ -23,8 +23,7 @@ module.exports = function (sequelize, Sequelize) {
         },
         idReservation: {
             type: Sequelize.INTEGER,
-            unique: true,
-            allowNull: false
+            unique: true
         },
     }, {
         freezeTableName: true,

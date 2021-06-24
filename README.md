@@ -11,6 +11,11 @@ Please read the blog post in order to have a good understanding of the project a
 - install the dependencies.
 - run `npm start`.
 
+## tests
+To work in test environment, run:
+- npm run start-test (if you have a linux kernel)
+- npm run start-test-windows (if you're on linux)
+
 ## Development
 
 We use `node` version `14.15.5`
