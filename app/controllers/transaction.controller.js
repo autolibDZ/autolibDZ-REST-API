@@ -1,5 +1,6 @@
 const db = require("../models");
 const { Op } = require("sequelize");
+const sequelize = require("sequelize");
 const jwt = require('jsonwebtoken');
 const Transaction = db.transaction;
 
@@ -47,13 +48,14 @@ const createTransaction = async (req, res) => {
 
 
      // Validate request
-
-     if (!req.body.idReservation) {
-          res.status(400).send({
-               error: "validation_error",
-               message: "Id reservation can not be empty!"
-          });
-          return;
+     if (req.body.modePaiement !== "Rechargement") {
+          if (!req.body.idReservation) {
+               res.status(400).send({
+                    error: "validation_error",
+                    message: "Id reservation can not be empty!"
+               });
+               return;
+          }
      }
 
 
@@ -92,7 +94,7 @@ const createTransaction = async (req, res) => {
      // Create a transaction
      const transaction = {
           idLocataire: req.body.idLocataire,
-          idReservation: req.body.idReservation,
+          idReservation: req.body.idReservation ? req.body.idReservation : null,
           montant: req.body.montant,
           modePaiement: req.body.modePaiement,
           dateTransaction: req.body.dateTransaction ? req.body.dateTransaction : Date.now(),
@@ -101,16 +103,23 @@ const createTransaction = async (req, res) => {
 
      // Save Transaction in the database
      try {
-          let reseravation = await Transaction.findAll({
-               where: {
-                    idReservation: req.body.idReservation
+          console.log(transaction)
+          if (transaction.idReservation) {
+               let reseravation = await Transaction.findAll({
+                    where: {
+                         idReservation: req.body.idReservation
+                    }
+               })
+               if (reseravation.length > 0) {
+                    res.status(400).send({
+                         message: "Reservation already paid."
+                    });
+               } else {
+                    let data = await Transaction.create(transaction)
+                    res.status(201).send(data);
                }
-          })
-          if (reseravation.length > 0) {
-               res.status(400).send({
-                    message: "Reservation already paid."
-               });
-          } else {
+          }
+          else {
                let data = await Transaction.create(transaction)
                res.status(201).send(data);
           }

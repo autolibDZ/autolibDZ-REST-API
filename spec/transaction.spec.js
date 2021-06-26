@@ -305,15 +305,15 @@ describe('Transaction route test', () => {
                     });
           });
 
-          it('returns 404 when using an non exesting id of transaction 5', (done) => {
+          it('returns 404 when using an non exesting id of transaction 50', (done) => {
                request
-                    .get('/1/5')
+                    .get('/1/50')
                     .set(header)
                     .expect(404)
                     .expect('Content-Type', 'application/json; charset=utf-8')
                     .end((err, res) => {
                          if (err) done(err);
-                         expect(res.body.message).toBe("Locataire transaction with ID: 5 does not exist")
+                         expect(res.body.message).toBe("Locataire transaction with ID: 50 does not exist")
                          done();
                     });
           });
