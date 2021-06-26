@@ -99,6 +99,13 @@ const createVehicule = async (req, res) => {
 				message: 'Vehicule already exists!',
 			});
 		} else {
+			const borne = await Borne.findOne({ where: { idBorne: req.body.idBorne } })
+			// update borne params 
+			const update = await Borne.update(
+				{ nbPlaces: borne.nbPlaces-1},
+				{ where: { idBorne: req.body.idBorne } }
+			  )
+
 			let data;
 			data = await Vehicule.create(vehicule).then((data) => {
 				res.send(data);
@@ -199,9 +206,39 @@ const updateVehicule = async (req, res) => {
 				numChassis: req.params.id
 			  }
 			});
+			let idAnienneBorne= vehicule.idBorne
 			if (vehicule) {    // Check if record exists in db
 			  let updatedVehicule = await vehicule.update(req.body)
 			  if (updatedVehicule) {
+				  if(req.body.etat=="supprime"){
+						const borne = await Borne.findOne({ where: { idBorne: req.body.idBorne } })
+						// Incrémenter le nombre de places libres dans la borne 
+						const update = await Borne.update(
+							{ nbPlaces: borne.nbPlaces+1},
+							{ where: { idBorne: req.body.idBorne } }
+						)
+				  }
+				  // Si on affecte le véhicule à une nouvelle borne
+				  if(idAnienneBorne != req.body.idBorne) {
+					  // Incrémneter le nombre de places libres dans l'ancinne borne
+					    console.log("ID Ancienne borne")
+						console.log(idAnienneBorne)
+					  const ancienneBorne = await Borne.findOne({ where: { idBorne: idAnienneBorne} })
+						let updateAncienneBorne = await Borne.update(
+							{ nbPlaces: ancienneBorne.nbPlaces+1},
+							{ where: { idBorne: idAnienneBorne} }
+						)
+
+						// Décremneter le nombre de places libres dans la nouvelle borne 
+						console.log("ID Nouvelle borne ")
+						console.log(req.body.idBorne)
+						const nouvelleBorne = await Borne.findOne({ where: { idBorne: req.body.idBorne } })
+						let updateNouvelleBorne = await Borne.update(
+							{ nbPlaces: nouvelleBorne.nbPlaces-1},
+							{ where: { idBorne: req.body.idBorne } }
+						)
+
+				  }
 				res.status(200).send({
 				  data: updatedVehicule,
 				  message: 'Vehicule was updated successfully.',
@@ -617,7 +654,7 @@ const bornes= [];
 					}
 			}
 			console.log(bornes);
-			res.send(bornes);s
+			res.send(bornes);
 		} else {
 		  res.status(404).send({
 			error: 'there is no vehiucle that matches your filter on the database',
