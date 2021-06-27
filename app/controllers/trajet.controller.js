@@ -63,17 +63,6 @@ const createDebutTrajet = async(req, res) => {
                 message: err.message || "Some error occurred while creating the Trajet"
             });
         });
-    /*try {
-        let data;
-        data = await Trajet.create(trajet)
-        res.send(data.idTrajet)
-
-    } catch (err) {
-        res.status(500).send({
-            error: err.message || "Some error occurred while creating the Trajet."
-        });
-    }*/
-
 };
 
 const updateFinTrajet = async(req, res) => {

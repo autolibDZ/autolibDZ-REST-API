@@ -1,5 +1,5 @@
-/*const Request = require('supertest');
-request = Request('https://autolib-dz.herokuapp.com/api/locataire');
+const Request = require('supertest');
+request = Request('localhost:4000/api/locataire');
 
 //Test unitaire pour la creation d'un locataire
 describe('POST : Creation de locataire', () => {

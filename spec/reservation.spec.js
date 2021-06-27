@@ -1,20 +1,68 @@
 const Request = require('supertest');
-request = Request('http://localhost:4000/api');
+request = Request('localhost:4000/api/reservation');
 
-/*describe('add reservation', function() {
+describe('POST : Verifier code pin', () => {
+    //Creation reussite
+    it('returns 200 OK when using a valid input', (done) => {
+        request
+            .post('/verifyPin')
+            .send({
+                idVehicule: 123456,
+                codePin: 4760
+            })
+            .expect(200)
+            .expect('Content-Type', 'application/json; charset=utf-8')
+            .end((err, res) => {
+                if (err) done(err);
+                expect(res.body.success).toBe(true);
+                done();
+            });
+    });
+    it('returns 400 error when using invalid code pin', (done) => {
+        request
+            .post('/verifyPin')
+            .send({
+                idVehicule: 123456,
+                codePin: 47770
+            })
+            .expect(400)
+            .expect('Content-Type', 'application/json; charset=utf-8')
+            .end((err, res) => {
+                if (err) done(err);
+                expect(res.body.message === "Code pin incorrect").toBe(true);
+                done();
+            });
+    });
+    it('returns 400 error when inexistant resrvation', (done) => {
+        request
+            .post('/verifyPin')
+            .send({
+                idVehicule: 1234546,
+                codePin: 4760
+            })
+            .expect(400)
+            .expect('Content-Type', 'application/json; charset=utf-8')
+            .end((err, res) => {
+                if (err) done(err);
+                expect(res.body.message === "Pas de réservation disponible !").toBe(true);
+                done();
+            });
+    });
+});
+/*
+describe('add reservation', function() {
     describe('post/', function() {
         it('add one reservation', function(done) {
             request.post({
                     url: 'http://localhost:4000/api/reservation',
                     form: {
-                      etat: "En cours",
-                               idLocataire: 3,
-                              idBorneDepart: 4,
-                                idBorneDestination: 4,
-                               codePin:"$2a$10$c0DBBbVy6fe8uyX/lbmlQ4Owq8mz8lZp0eRbtXXzlBlNVNyF0K8pWm",
-                                tempsEstime: 3000,
-                              distanceEstime: 60,
-                            prixEstime: 1200
+                        etat: "En cours",
+                        idLocataire: 3,
+                        idBorneDepart: 4,
+                        idBorneDestination: 4,
+                        tempsEstime: 3000,
+                        distanceEstime: 60,
+                        prixEstime: 1200
                     },
                 },
                 function(error, response, body) {
@@ -90,7 +138,7 @@ describe('POST : Verifier code pin', () => {
     });
 */
 
-  /*  describe('Reservation route test', () => {
+/*  describe('Reservation route test', () => {
         describe('findReservationById', () => {
 
             it('returns 200 OK when using an exesting id 9', (done) => {
@@ -194,7 +242,7 @@ describe('POST : Verifier code pin', () => {
                 });
         });*/
 
-describe('Testing GET on /api/reservation endpoint', () => {
+/*describe('Testing GET on /api/reservation endpoint', () => {
     it('should return the list of all Reservations stored in the database, at least one Reservation', (done) => {
         request
             .get('/reservation')
@@ -221,15 +269,15 @@ describe('findById', () => {
             .end((err, res) => {
                 if (err) done(err);
 
-                expect(function (res) {
-                    res.body.etat= "Active",
-                        res.body.idLocataire= 3,
-                        res.body.idBorneDepart= 4,
-                        res.body.idBorneDestination= 4,
-                        res.body.codePin= "$2a$10$c0D3bVy6fe8uyX/lbmlQ4Owq8mz8lZp0eRbtXXzlBlNVNyF0K8pWm",
-                        res.body.tempsEstime= 3000,
-                        res.body.distanceEstime= 60,
-                        res.body.prixEstime= 1200
+                expect(function(res) {
+                    res.body.etat = "Active",
+                        res.body.idLocataire = 3,
+                        res.body.idBorneDepart = 4,
+                        res.body.idBorneDestination = 4,
+                        res.body.codePin = "$2a$10$c0D3bVy6fe8uyX/lbmlQ4Owq8mz8lZp0eRbtXXzlBlNVNyF0K8pWm",
+                        res.body.tempsEstime = 3000,
+                        res.body.distanceEstime = 60,
+                        res.body.prixEstime = 1200
 
                 })
 
@@ -327,7 +375,7 @@ idReservation:500,
     });
 });
  */
-describe('Get list of all reservation', () => {
+/*describe('Get list of all reservation', () => {
 
     it('returns 200 OK when getting all trajet', (done) => {
         request
@@ -336,16 +384,15 @@ describe('Get list of all reservation', () => {
             .expect(200)
             .expect('Content-Type', 'application/json; charset=utf-8')
 
-            .end((err, res) => {
+        .end((err, res) => {
 
-                if (err) done(err);
+            if (err) done(err);
 
-                expect(res.body);
-                expect(res.body.length).toEqual(22);
-                done();
-            });
+            expect(res.body);
+            expect(res.body.length).toEqual(22);
+            done();
+        });
 
     });
 
-});
-
+});*/

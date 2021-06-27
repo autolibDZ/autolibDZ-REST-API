@@ -107,15 +107,15 @@ const updateReservationById = async(req, res) => {
         });
 };
 
-const deleteReservationById = async (req, res) => {
+const deleteReservationById = async(req, res) => {
     const id = req.params.id;
 
     console.log(id);
 
     Reservation.destroy({
 
-        where: { idReservation: id },
-    })
+            where: { idReservation: id },
+        })
         .then((num) => {
 
             where: { idReservation: id }
@@ -195,14 +195,13 @@ const verifyCodePin = async(req, res) => {
     const reservation = await Reservation.findOne({ where: { idVehicule: req.body.idVehicule, etat: "En cours" } })
     if (reservation != null) {
         const pinCorrect = await bcrypt.compare(req.body.codePin.toString(), reservation.codePin)
-        console.log(req.body.codePin)
         if (pinCorrect) {
             Reservation.update({ etat: "Active" }, { where: { idVehicule: req.body.idVehicule, etat: "En cours" } })
-            const bornDepart = await Borne.findOne({ where: { idBorne: reservation.idBorneDepart } })
-            const bornDestination = await Borne.findOne({ where: { idBorne: reservation.idBorneDestination } })
-            const locataire = await Locataire.findOne({ where: { idLocataire: reservation.idLocataire } })
+                /*const bornDepart = await Borne.findOne({ where: { idBorne: reservation.idBorneDepart } })
+                const bornDestination = await Borne.findOne({ where: { idBorne: reservation.idBorneDestination } })
+                const locataire = await Locataire.findOne({ where: { idLocataire: reservation.idLocataire } })*/
 
-            res.status(200).send({ success: true, reservation: reservation, bornDepart: bornDepart, bornDestination: bornDestination, locataire: locataire })
+            res.status(200).send({ success: true, reservation: reservation /*, bornDepart: bornDepart, bornDestination: bornDestination, locataire: locataire */ })
         } else {
             res.status(400).send({ success: false, message: "Code pin incorrect" })
         }
@@ -280,58 +279,68 @@ const getHistoriqueReservationsAllLocataire = async(req, res) => {
 
 const getHistoriqueReservationsLocataire = async(req, res) => {
 
-    const reservations = await Reservation.findAll({ where: { idLocataire: req.params.id} })
+    const reservations = await Reservation.findAll({ where: { idLocataire: req.params.id } })
 
     let historiqueReser = []
 
 
     if (reservations != null) {
-        for(const reservation of reservations) {
-if (reservation.etat!="Active"){
-            let reservationFinale = {
-                idReservation: 0, etat: "", nomBorneDepart: "", numChassisVehicule: 0,
-                numImmatriculationVehicule: 0, modeleVehicule: "", marqueVehicule: "", nomBorneDestination: "",secureUrl:"",
-                dateReservation: null, dure: null, distance: null
-            }
+        for (const reservation of reservations) {
+            if (reservation.etat != "Active") {
+                let reservationFinale = {
+                    idReservation: 0,
+                    etat: "",
+                    nomBorneDepart: "",
+                    numChassisVehicule: 0,
+                    numImmatriculationVehicule: 0,
+                    modeleVehicule: "",
+                    marqueVehicule: "",
+                    nomBorneDestination: "",
+                    secureUrl: "",
+                    dateReservation: null,
+                    dure: null,
+                    distance: null
+                }
 
-            reservationFinale.idReservation = reservation.idReservation
+                reservationFinale.idReservation = reservation.idReservation
 
-            reservationFinale.etat = reservation.etat
+                reservationFinale.etat = reservation.etat
 
-            //Recuperation nom borne de départ
-            const borneDepart = await Borne.findOne({where: {idBorne: reservation.idBorneDepart}})
-            reservationFinale.nomBorneDepart = borneDepart.nomBorne
-            //Recuperation nom borne de destination
-            const borneDesti = await Borne.findOne({where: {idBorne: reservation.idBorneDestination}})
-            reservationFinale.nomBorneDestination = borneDesti.nomBorne
-            //Recuperation des infos du véhicules
-            const vehiculeInfo = await Vehicule.findOne({where: {numChassis: reservation.idVehicule}})
-            if (vehiculeInfo != null) {
-                reservationFinale.numChassisVehicule = vehiculeInfo.numChassis
-                reservationFinale.numImmatriculationVehicule = vehiculeInfo.numImmatriculation
-                reservationFinale.modeleVehicule = vehiculeInfo.modele
-                reservationFinale.marqueVehicule = vehiculeInfo.marque
-                reservationFinale.secureUrl= vehiculeInfo.secureUrl
-
-            }
-            if (reservation.etat == "Terminée") {
-                const trajetInfo = await Trajet.findOne({where: {idReservation: reservation.idReservation}})
-                if (trajetInfo != null) {
-                    reservationFinale.dateReservation = trajetInfo.dateDebut
-                    reservationFinale.dure = trajetInfo.tempsEstime
-                    reservationFinale.distance = trajetInfo.kmParcourue
+                //Recuperation nom borne de départ
+                const borneDepart = await Borne.findOne({ where: { idBorne: reservation.idBorneDepart } })
+                reservationFinale.nomBorneDepart = borneDepart.nomBorne
+                    //Recuperation nom borne de destination
+                const borneDesti = await Borne.findOne({ where: { idBorne: reservation.idBorneDestination } })
+                reservationFinale.nomBorneDestination = borneDesti.nomBorne
+                    //Recuperation des infos du véhicules
+                const vehiculeInfo = await Vehicule.findOne({ where: { numChassis: reservation.idVehicule } })
+                if (vehiculeInfo != null) {
+                    reservationFinale.numChassisVehicule = vehiculeInfo.numChassis
+                    reservationFinale.numImmatriculationVehicule = vehiculeInfo.numImmatriculation
+                    reservationFinale.modeleVehicule = vehiculeInfo.modele
+                    reservationFinale.marqueVehicule = vehiculeInfo.marque
+                    reservationFinale.secureUrl = vehiculeInfo.secureUrl
 
                 }
+                if (reservation.etat == "Terminée") {
+                    const trajetInfo = await Trajet.findOne({ where: { idReservation: reservation.idReservation } })
+                    if (trajetInfo != null) {
+                        reservationFinale.dateReservation = trajetInfo.dateDebut
+                        reservationFinale.dure = trajetInfo.tempsEstime
+                        reservationFinale.distance = trajetInfo.kmParcourue
+
+                    }
+                }
+                historiqueReser.push(reservationFinale)
+
+
             }
-            historiqueReser.push(reservationFinale)
-
-
-        }   }
+        }
 
         res.status(200).send(historiqueReser)
 
     } else {
-        res.status(404).send({ message :"This user has no reservation "})
+        res.status(404).send({ message: "This user has no reservation " })
     }
     console.log(historiqueReser)
 
