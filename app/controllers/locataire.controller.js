@@ -1,6 +1,7 @@
 const { Sequelize } = require('../models');
 const db = require('../models');
 const Locataire = db.locataire;
+const Abonnement = db.abonnement;
 const validator = require('validator');
 var bcrypt = require('bcryptjs');
 var CLIENT_ID =
@@ -126,6 +127,13 @@ const createLocataire = async (req, res) => {
 						message: 'Une erreur  lors de la création de locataire',
 					});
 				});
+			 const loc = await Locataire.findOne({ where: { email: locataire.email } })
+           		 const abonnement = {
+               			 balance: 0,
+                		idLocataire: loc.idLocataire
+           		 }
+
+            		let data = await Abonnement.create(abonnement)
 		}
 	}
 };
@@ -177,6 +185,13 @@ const createLocataireGmail = async (req, res) => {
 						message: 'Une erreur  lors de la création de locataire',
 					});
 				});
+			 const loc = await Locataire.findOne({ where: { email: locataire.email } })
+           		 const abonnement = {
+               			 balance: 0,
+                		idLocataire: loc.idLocataire
+           		 }
+
+            		let data = await Abonnement.create(abonnement)
 		}
 	}
 	verify().catch(console.error);
