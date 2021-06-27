@@ -237,7 +237,7 @@ const updateEmail = async (req, res) => {
 			.then((num) => {
 				if (num == 1) {
 					res.status(200).send({
-						message: 'Locataire a été crée avec succes',
+						message: 'Email a été mis à jour avec succes',
 					});
 				} else {
 					res.status(400).send({
@@ -278,7 +278,7 @@ const updatePassword = async (req, res) => {
 			.then((num) => {
 				if (num == 1) {
 					res.status(200).send({
-						message: 'Locataire a été mis à jour avec succes',
+						message: 'Mot de passe a été mis à jour avec succes',
 					});
 				} else {
 					res.status(400).send({
