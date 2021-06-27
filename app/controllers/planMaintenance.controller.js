@@ -2,13 +2,7 @@ const db = require('../models');
 const PlanMaintenance = db.planMaintenance;
 const { Op } = require('sequelize');
 
-/**
- * This functions verifies if an action exists in plan de maintenance of a guven numVhassis car
- *
- * @param {Int} numChassis
- * @param {String} action
- * @returns
- */
+
 const verifyIfActionExists = async (numChassis, action) => {
 	let exists = false;
 
@@ -28,16 +22,7 @@ const verifyIfActionExists = async (numChassis, action) => {
 	else return false;
 };
 
-/**
- * This function is fired on a POST request to /api/plan-maintenance endopoint
- * It allows to insert a plan for a particular car
- * Each plan has two required attributes (date & action)
- *
- * @param {*} req The client request
- * @param {*} res The server response
- * @param {*} next Is used to move on to the next middleware if necessary
- * @returns
- */
+
 const addPlanMaintenance = async (req, res, next) => {
 	try {
 		let addedRows = 0;
@@ -89,16 +74,7 @@ const addPlanMaintenance = async (req, res, next) => {
 	}
 };
 
-/**
- * This function is fired on a DELETE request to /api/plan-maintenance endopoint
- * It allows to delete a plan for a particular car
- * Each plan has two required attributes (date & action)
- *
- * @param {*} req The client request
- * @param {*} res The server response
- * @param {*} next Is used to move on to the next middleware if necessary
- * @returns
- */
+
 
 const deletePlanMaintenance = async (req, res, next) => {
 	try {
@@ -131,13 +107,7 @@ const deletePlanMaintenance = async (req, res, next) => {
 		});
 	}
 };
-/**
- * This function allows to get plan de maintenance for a given car numChassis
- *
- * @param {*} req The client request
- * @param {*} res The server response
- * @param {*} next Used if ecessary to move on into the next middleare
- */
+
 const getPlanMaintenance = async (req, res, next) => {
 	try {
 		if (parseInt(req.params.numChassis, 10)) {

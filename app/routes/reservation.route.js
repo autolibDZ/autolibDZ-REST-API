@@ -6,6 +6,8 @@ reservationRouter.post('/', reservationController.createReservation);
 
 reservationRouter.get('/', reservationController.listAllReservations);
 
+reservationRouter.get('/lesRetards',reservationController.getReservationsAvecRetard);
+
 reservationRouter.get('/:id', reservationController.findReservationById);
 reservationRouter.put('/:id', reservationController.updateReservationById);
 reservationRouter.delete('/:id', reservationController.deleteReservationById);

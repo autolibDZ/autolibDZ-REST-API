@@ -214,34 +214,59 @@ describe('POST : Verifier code pin', () => {
         });
 
     });
-
+*/
+/*vvvvvvv
     describe('Get list of all Reservations in a given user of id 3', () => {
         it('Should returns 200 OK when getting all reservations', (done) => {
             request
-                .get('/locataires/3')
+                .get('/reservation/locataires/3')
                 .set('Accept', 'application/json')
                 .expect(200)
                 .expect('Content-Type', /json/)
+                .set("authorization", " Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQyLCJyb2xlIjoibG9jYXRhaXJlIiwiaWF0IjoxNjIzNjI2NzAxfQ.NkxwWh01dFTCl3LbzXZTJgJq0VRvPetp_jJqOlmHhs4")
+
                 .end((err, res) => {
                     if (err) done(err);
                     expect(res.body.length).not.toEqual(0);
                     done();
                 });
         });
-
-        it('Should returns 404 when using an non exesting idLocataire=0 ', (done) => {
+        it('returns 403 invalid_access_token when token is invalid', (done) => {
             request
-                .get('/locataires/0')
+                .get('/reservation/locataires/3')
+                .set('Accept', 'application/json')
+                .expect(403)
+                .expect('Content-Type', /json/)
+                .set("authorization", " aaaa")
+                .end((err, res) => {
+                    if (err) done(err);
+                    expect(res.body.message).toBe("Access Forbidden,invalide token")
+                    done();
+                });
+        });
+
+
+        it('Should returns 404 when using an non exesting idLocataire ', (done) => {
+            request
+                .get('/reservation/locataires/-1')
                 .set('Accept', 'application/json')
                 .expect(404)
                 .expect('Content-Type', /json/)
+                .set("authorization", " Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQyLCJyb2xlIjoibG9jYXRhaXJlIiwiaWF0IjoxNjIzNjI2NzAxfQ.NkxwWh01dFTCl3LbzXZTJgJq0VRvPetp_jJqOlmHhs4")
+
                 .end((err, res) => {
                     if (err) done(err);
                     expect(res.body.error == 'No locataires with id: 0')
                     done();
                 });
+<<<<<<< HEAD
         });*/
 
+=======
+        });
+    });
+*/
+>>>>>>> 7ef41155cec28f75f4eb9dd460ee62e4f98b8aeb
 /*describe('Testing GET on /api/reservation endpoint', () => {
     it('should return the list of all Reservations stored in the database, at least one Reservation', (done) => {
         request
@@ -258,8 +283,10 @@ describe('POST : Verifier code pin', () => {
                 }
             });
     });
-});
+});*/
+/* vvvvvvvvvvvvvvvvvv
 describe('findById', () => {
+
 
     it('returns 200 OK when using an exesting id 9', (done) => {
         request
@@ -269,6 +296,7 @@ describe('findById', () => {
             .end((err, res) => {
                 if (err) done(err);
 
+<<<<<<< HEAD
                 expect(function(res) {
                     res.body.etat = "Active",
                         res.body.idLocataire = 3,
@@ -278,6 +306,18 @@ describe('findById', () => {
                         res.body.tempsEstime = 3000,
                         res.body.distanceEstime = 60,
                         res.body.prixEstime = 1200
+=======
+                expect(function (res) {
+                    res.body.etat= "Active",
+                        res.body.idLocataire= 3,
+                        res.body.idVehicule= 1837919,
+                        res.body.idBorneDepart= 4,
+                        res.body.idBorneDestination= 4,
+                        res.body.codePin= "$2a$10$c0D3bVy6fe8uyX/lbmlQ4Owq8mz8lZp0eRbtXXzlBlNVNyF0K8pWm",
+                        res.body.tempsEstime= 3000,
+                        res.body.distanceEstime= 60,
+                        res.body.prixEstime= 1200
+>>>>>>> 7ef41155cec28f75f4eb9dd460ee62e4f98b8aeb
 
                 })
 
@@ -303,15 +343,18 @@ describe('findById', () => {
             });
 
     });
-});
-/*describe('createrReservation api', () => {
+});*/
+
+/*vvvvvvv
+describe('createrReservation api', () => {
     it('returns 200 OK when reservation doesn"t exist in db', (done) => {
         request
             .post('/reservation/')
             .send({
-idReservation:500,
+
                 etat: "En cours",
                 idLocataire: 3,
+                idVehicule: 1837919,
                 idBorneDepart: 4,
                 idBorneDestination: 4,
                 codePin:"$2a$10$c0DBBbVy6fe8uyX/lbmlQ4Owq8mz8lZp0eRbtXXzlBlNVNyF0K8pWm",
@@ -321,6 +364,8 @@ idReservation:500,
 
             })
             .set('Accept', 'application/json')
+            .set("authorization", " Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQyLCJyb2xlIjoibG9jYXRhaXJlIiwiaWF0IjoxNjIzNjI2NzAxfQ.NkxwWh01dFTCl3LbzXZTJgJq0VRvPetp_jJqOlmHhs4")
+
             .expect(200)
             .end((err, res) => {
                 if (err) done(err);
@@ -330,33 +375,76 @@ idReservation:500,
                 done();
             });
     });
-
-    it('returns 400 When trajet exists', (done) => {
+    it('returns 403 invalid_access_token when token is invalid', (done) => {
         request
-            .post('/reservation')
+            .post('/reservation/')
             .send({
-                idTrajet: 900,
+
+                etat: "En cours",
+                idLocataire: 3,
+                idVehicule: 1837919,
+                idBorneDepart: 4,
+                idBorneDestination: 4,
+                codePin:"$2a$10$c0DBBbVy6fe8uyX/lbmlQ4Owq8mz8lZp0eRbtXXzlBlNVNyF0K8pWm",
+                tempsEstime: 3000,
+                distanceEstime: 60,
+                prixEstime: 1200
 
             })
-            .expect(400)
-            .expect('Content-Type','application/json; charset=utf-8')
+            .set('Accept', 'application/json')
+            .set("authorization", "aaaa")
+
+            .expect(403)
             .end((err, res) => {
-                console.log(res.body.err);
                 if (err) done(err);
-                expect(res.body);
+
+                expect(res.body.message).toBe("Access Forbidden,invalide token")
+
                 done();
             });
     });
 
-    it('returns 500 server error when sending an empty parameter', (done) => {
+    it('returns 403 authorization_required when user is Unauthorized', (done) => {
         request
-
-            .post('/trajet')
+            .post('/reservation/')
             .send({
-                idReservation:null,
+
                 etat: "En cours",
                 idLocataire: 3,
+                idVehicule: 1837919,
                 idBorneDepart: 4,
+                idBorneDestination: 4,
+                codePin:"$2a$10$c0DBBbVy6fe8uyX/lbmlQ4Owq8mz8lZp0eRbtXXzlBlNVNyF0K8pWm",
+                tempsEstime: 3000,
+                distanceEstime: 60,
+                prixEstime: 1200
+
+            })
+            .set('Accept', 'application/json')
+            .set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjYyOTY3OX0.3oO8qBjv6jwQsQTIp6TaK8pvfKG9be8bn1btdHtKb00")
+
+            .expect(403)
+            .end((err, res) => {
+                if (err) done(err);
+
+                expect(res.body.message).toBe("Access Forbidden,you can't do this operation")
+
+                done();
+            });
+    });
+
+
+
+    it('returns 400 server error when sending an empty parameter', (done) => {
+        request
+
+            .post('/reservation')
+            .send({
+
+                etat: "Active",
+                idLocataire: 3,
+                idVehicule:  1837919,
+
                 idBorneDestination: 4,
                 codePin:"$2a$10$c0DBBbVy6fe8uyX/lbmlQ4Owq8mz8lZp0eRbtXXzlBlNVNyF0K8pWm",
                 tempsEstime: 3000,
@@ -364,7 +452,9 @@ idReservation:500,
                 prixEstime: 1200
             })
             .set('Accept', 'application/json')
-            .expect(500)
+            .set("authorization", " Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQyLCJyb2xlIjoibG9jYXRhaXJlIiwiaWF0IjoxNjIzNjI2NzAxfQ.NkxwWh01dFTCl3LbzXZTJgJq0VRvPetp_jJqOlmHhs4")
+
+            .expect(400)
             .end((err, res) => {
                 if (err) done(err);
 
@@ -373,9 +463,19 @@ idReservation:500,
                 done();
             });
     });
+<<<<<<< HEAD
 });
  */
 /*describe('Get list of all reservation', () => {
+=======
+
+
+});*/
+/*
+vvvvvvvvvvvvvvvv
+
+describe('Get list of all reservation', () => {
+>>>>>>> 7ef41155cec28f75f4eb9dd460ee62e4f98b8aeb
 
     it('returns 200 OK when getting all trajet', (done) => {
         request
@@ -388,6 +488,7 @@ idReservation:500,
 
             if (err) done(err);
 
+<<<<<<< HEAD
             expect(res.body);
             expect(res.body.length).toEqual(22);
             done();
@@ -396,3 +497,48 @@ idReservation:500,
     });
 
 });*/
+=======
+                expect(res.body);
+                expect(res.body.length).toEqual(45);
+                done();
+            });
+
+    });
+
+});
+*/
+
+describe('Testing Update Reservation', () => {
+   it('return 200 OK and the actual updated borne with id= 54', (done) => {
+        request
+            .put('/reservation/54')
+            .send({
+                etat: "En cours",
+                idVehicule: 456749,
+                idLocataire: 3,
+                idBorneDepart: 4,
+                idBorneDestination: 9,
+                codePin: "$2a$10$zywJaMb4jbEuPVCvQwQ41OpvKXtKj0lStSdvu.ZkhKez7zVYORAxu",
+                tempsEstime:10,
+                distanceEstime: 10,
+                prixEstime: 10
+
+            })
+            .set('Accept', 'application/json')
+            .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQyLCJyb2xlIjoibG9jYXRhaXJlIiwiaWF0IjoxNjIzMzY1MzAzfQ.YXhFgN8j07HlhX8XAg8eAkeXAJqiXmaubgfUtGRHMNA')
+            .expect('Content-Type', /json/)
+            .expect(200)
+            .end((err, res) => {
+                if (err) {
+                    done.fail(err);
+                } else {
+                    let updatedReserevation = res.body;
+                    expect(updatedReserevation.message).toEqual('Reservation was updated successfully.');
+
+                    done();
+                }
+            });
+    });
+
+});
+>>>>>>> 7ef41155cec28f75f4eb9dd460ee62e4f98b8aeb

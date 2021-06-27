@@ -1,5 +1,7 @@
 const db = require('../models');
 var bcrypt = require('bcryptjs');
+var jwt = require("jsonwebtoken");
+
 const Reservation = db.reservation;
 const Borne = db.borne;
 const Locataire = db.locataire;
@@ -8,9 +10,59 @@ const Trajet = db.trajet;
 
 
 
+/**
+ * Create and save a new reservation in database
+ * @param {*} req The request
+ * @param {*} res The response
+ * @returns {object} The reservation that created
+ */
 
 
 const createReservation = async(req, res) => {
+    // verify access
+   const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(' ')[1]
+
+
+    if (token == null) {
+
+      res.status(403).send({
+        message: "Access Forbidden,invalide token",
+      });
+      return;
+    }
+
+    try {
+
+      const user = jwt.verify(token, process.env.JWT_SECRET);
+
+      if (user != undefined) {
+
+        const role = user.role
+
+
+
+        if (role != "locataire") {
+
+          res.status(403).send({
+            message: "Access Forbidden,you can't do this operation",
+          });
+
+          return;
+        }
+      }
+
+    } catch (err) {
+
+      res.status(403).send({
+        message: "Access Forbidden,invalide token",
+      });
+
+      return;
+
+    }
+
+
 
     if (!req.body.etat || !req.body.idVehicule || !req.body.idLocataire || !req.body.idBorneDepart || !req.body.idBorneDestination) {
         res.status(400).send({
@@ -18,6 +70,7 @@ const createReservation = async(req, res) => {
         });
         return;
     }
+
     var pin = Math.floor(Math.random() * 9000) + 1000;
     var salt = bcrypt.genSaltSync(10);
     var hash = bcrypt.hashSync(pin.toString(), salt);
@@ -40,7 +93,30 @@ const createReservation = async(req, res) => {
         res.status(200).send({
             codePin: pin,
             id: data.idReservation
+
         })
+
+        const bornes = await Borne.findAll({ where: { idBorne: req.body.idBorneDepart} })
+
+
+
+        if (bornes != null) {
+            for (const born of bornes) {
+                let nb=born.nbVehicules
+                nb= nb-1
+
+                Borne.update(
+                    { nbVehicules: nb },
+                    {
+                        returning: true,
+                        where: {
+                            idBorne: req.body.idBorneDepart
+                        },
+
+                    } )
+
+            }
+        }
 
     } catch (err) {
         res.status(500).send({
@@ -50,8 +126,48 @@ const createReservation = async(req, res) => {
 
 };
 
-
+/**
+ *Returns all the reservations in the database
+ * @param {*} req The request
+ * @param {*} res The response
+ * @returns {*} A list of reservations
+ */
 const listAllReservations = (req, res) => {
+    const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(' ')[1]
+
+
+    if (token == null) {
+        res.status(403).send({
+            message: "Access Forbidden,invalide token",
+        });
+        return;
+    }
+
+    try {
+
+        const user = jwt.verify(token, process.env.JWT_SECRET);
+
+        if (user != undefined) {
+
+            const role = user.role
+            if (role != "administrateur") {
+
+                res.status(403).send({
+                    message: "Access Forbidden,you can't do this operation",
+                });
+
+                return;}
+        }
+    } catch (err) {
+        res.status(403).send({
+            message: "Access Forbidden,invalide token",
+        });
+
+        return;
+
+    }
+
     var condition = 1 === 1
 
     Reservation.findAll({ where: condition })
@@ -64,8 +180,55 @@ const listAllReservations = (req, res) => {
             });
         });
 };
-
+/**
+ *Returns a specific reservation
+ * @param {*} req The request
+ * @param {*} res The response
+ * @returns {*} One reservation
+ */
 const findReservationById = async(req, res) => {
+   const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(' ')[1]
+
+
+    if (token == null) {
+
+        res.status(403).send({
+            message: "Access Forbidden,invalide token",
+        });
+        return;
+    }
+
+    try {
+
+        const user = jwt.verify(token, process.env.JWT_SECRET);
+
+        if (user != undefined) {
+
+            const role = user.role
+
+
+
+            if (role != "locataire"   && role != "administrateur") {
+
+                res.status(403).send({
+                    message: "Access Forbidden,you can't do this operation",
+                });
+
+                return;
+            }
+        }
+
+    } catch (err) {
+
+        res.status(403).send({
+            message: "Access Forbidden,invalide token",
+        });
+
+        return;
+
+    }
+
     try {
         const reservation = await Reservation.findAll({
             where: {
@@ -82,10 +245,57 @@ const findReservationById = async(req, res) => {
     }
 };
 
-
+/**
+ *Updates a specific reservation
+ * @param {*} req The request
+ * @param {*} res The response
+ * @returns {*} a message
+ */
 const updateReservationById = async(req, res) => {
-    const id = req.params.id;
+    const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(' ')[1]
 
+
+    if (token == null) {
+
+        res.status(403).send({
+            message: "Access Forbidden,invalide token",
+        });
+        return;
+    }
+
+    try {
+
+        const user = jwt.verify(token, process.env.JWT_SECRET);
+
+        if (user != undefined) {
+
+            const role = user.role
+
+
+
+            if (role != "locataire"   && role != "administrateur") {
+
+                res.status(403).send({
+                    message: "Access Forbidden,you can't do this operation",
+                });
+
+                return;
+            }
+        }
+
+    } catch (err) {
+
+        res.status(403).send({
+            message: "Access Forbidden,invalide token",
+        });
+
+        return;
+
+    }
+    const id = req.params.id;
+    const reservations = await Reservation.findOne({ where: { idReservation: id} })
+    const bornes = await Borne.findAll({ where: { idBorne: req.body.idBorneDepart} })
     Reservation.update(req.body, {
             where: { idReservation: id }
         })
@@ -94,6 +304,26 @@ const updateReservationById = async(req, res) => {
                 res.send({
                     message: "Reservation was updated successfully."
                 });
+             if (reservations.etat ="Annulée")
+             {
+                 if (bornes != null) {
+                     for (const born of bornes) {
+                         let nb=born.nbVehicules
+                         nb= nb+1
+
+                         Borne.update(
+                             { nbVehicules: nb },
+                             {
+                                 returning: true,
+                                 where: {
+                                     idBorne: req.body.idBorneDepart
+                                 },
+
+                             } )
+
+                     }
+                 }
+             }
             } else {
                 res.send({
                     message: `Cannot update Reservation with id=${id}. Maybe Reservation was not found or req.body is empty!`
@@ -138,7 +368,54 @@ const deleteReservationById = async(req, res) => {
             });
         });
 };
+/**
+ *Returns the  reservations of a specific user
+ * @param {*} req The request
+ * @param {*} res The response
+ * @returns {*} A list of reservations
+ */
 const selectReservationOfAGivenUser = async(req, res) => {
+    const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(' ')[1]
+
+
+    if (token == null) {
+
+        res.status(403).send({
+            message: "Access Forbidden,invalide token",
+        });
+        return;
+    }
+
+    try {
+
+        const user = jwt.verify(token, process.env.JWT_SECRET);
+
+        if (user != undefined) {
+
+            const role = user.role
+
+
+
+            if (role != "locataire"   && role != "administrateur") {
+
+                res.status(403).send({
+                    message: "Access Forbidden,you can't do this operation",
+                });
+
+                return;
+            }
+        }
+
+    } catch (err) {
+
+        res.status(403).send({
+            message: "Access Forbidden,invalide token",
+        });
+
+        return;
+
+    }
     try {
         const reservations = await Reservation.findAll({
             where: {
@@ -164,6 +441,12 @@ const selectReservationOfAGivenUser = async(req, res) => {
         });
     }
 };
+/**
+ *Returns all the annuled reservations
+ * @param {*} req The request
+ * @param {*} res The response
+ * @returns {*} A list of reservations
+ */
 const getReservationAnnulee = async(req, res) => {
     try {
         const annulee = await Reservation.findAll({
@@ -210,8 +493,54 @@ const verifyCodePin = async(req, res) => {
     }
 }
 
-
+/**
+ *Returns the reservation history of a specific user
+ * @param {*} req The request
+ * @param {*} res The response
+ * @returns {*} A list of reservations
+ */
 const getHistoriqueReservationsAllLocataire = async(req, res) => {
+    const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(' ')[1]
+
+
+    if (token == null) {
+
+        res.status(403).send({
+            message: "Access Forbidden,invalide token",
+        });
+        return;
+    }
+
+    try {
+
+        const user = jwt.verify(token, process.env.JWT_SECRET);
+
+        if (user != undefined) {
+
+            const role = user.role
+
+
+
+            if (role != "locataire") {
+
+                res.status(403).send({
+                    message: "Access Forbidden,you can't do this operation",
+                });
+
+                return;
+            }
+        }
+
+    } catch (err) {
+
+        res.status(403).send({
+            message: "Access Forbidden,invalide token",
+        });
+
+        return;
+
+    }
 
     const reservations = await Reservation.findAll({ where: { idLocataire: req.params.id } })
 
@@ -278,6 +607,49 @@ const getHistoriqueReservationsAllLocataire = async(req, res) => {
 }
 
 const getHistoriqueReservationsLocataire = async(req, res) => {
+    const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(' ')[1]
+
+
+    if (token == null) {
+
+        res.status(403).send({
+            message: "Access Forbidden,invalide token",
+        });
+        return;
+    }
+
+    try {
+
+        const user = jwt.verify(token, process.env.JWT_SECRET);
+
+        if (user != undefined) {
+
+            const role = user.role
+
+
+
+            if (role != "locataire") {
+
+                res.status(403).send({
+                    message: "Access Forbidden,you can't do this operation",
+                });
+
+                return;
+            }
+        }
+
+    } catch (err) {
+
+        res.status(403).send({
+            message: "Access Forbidden,invalide token",
+        });
+
+        return;
+
+    }
+
+
 
     const reservations = await Reservation.findAll({ where: { idLocataire: req.params.id } })
 
@@ -346,16 +718,75 @@ const getHistoriqueReservationsLocataire = async(req, res) => {
 
 }
 
+// Retourne une la liste des reservations avec retard de remise
+const getReservationsAvecRetard = async (req,res) => {
+    const etatReservation = 'En cours'
+    try {
+        Reservation.belongsTo(Locataire,{foreignKey:'idLocataire'})
+        Reservation.belongsTo(Vehicule,{foreignKey:'idVehicule'})
+        Trajet.belongsTo(Reservation,{foreignKey:'idReservation'})
+        const retards = await Trajet.findAll({
+            include: [
+                {
+                    model:Reservation,
+                    include:[
+                        {
+                            model:Locataire,
+                            attributes:['idLocataire','nom','prenom']
+                        },
+                        {
+                            model: Vehicule,
+                            attributes:['numChassis','marque','modele']
+                        }
+                    ],
+                    attributes:['idReservation'],
+                    where:{
+                        etat:etatReservation
+                    }
+                },
+            ],
+            attributes: ['dateFin'],
+            where:{
+                dateFin:{
+                    [sequelize.Op.lt]: sequelize.fn('NOW'),
+                }
+            },
+            order: [['idReservation','ASC']]
+        })
+        if(retards.length!=0){
+            res.send(retards)
+        }
+        else{
+            res.status(404).send({
+                error: 'not_found',
+                message: 'No content',
+                status: 404,
+            });
+        }
+    } 
+    catch (err) {
+        res.status(500).send({
+            error: err.message || 'Some error occured while getting retards'
+        });
+    }
+}
 
 export default {
-    createReservation,
-    listAllReservations,
-    findReservationById,
+    createReservation,//locataire
+    listAllReservations,//admin
+    findReservationById,//admin+Locataire
     deleteReservationById,
-    updateReservationById,
+    updateReservationById,//admin+locataire
     verifyCodePin,
-    selectReservationOfAGivenUser,
+    selectReservationOfAGivenUser,//admin+locataire
     getReservationAnnulee,
+<<<<<<< HEAD
     getHistoriqueReservationsLocataire,
     getHistoriqueReservationsAllLocataire,
 }
+=======
+    getHistoriqueReservationsLocataire,//locataire
+    getHistoriqueReservationsAllLocataire,//locataire
+    getReservationsAvecRetard,
+}
+>>>>>>> 7ef41155cec28f75f4eb9dd460ee62e4f98b8aeb

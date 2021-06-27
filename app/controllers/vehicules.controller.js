@@ -20,7 +20,7 @@ let sequelize = require("sequelize");
 // Create and Save a new Vehicule
 
 const createVehicule = async (req, res) => {
-/*
+
 	// verify access
 	const authHeader = req.headers['authorization']
 	console.log(authHeader);
@@ -56,7 +56,7 @@ const createVehicule = async (req, res) => {
   
 	  return;
   
-	}*/ 
+	}
 	// Validate request
 	if (!req.body.numChassis || !req.body.numImmatriculation || !req.body.modele || !req.body.marque || !req.body.couleur
 		|| !req.body.etat || !req.body.idAgentMaintenance || !req.body.idBorne ) {
@@ -99,6 +99,13 @@ const createVehicule = async (req, res) => {
 				message: 'Vehicule already exists!',
 			});
 		} else {
+			const borne = await Borne.findOne({ where: { idBorne: req.body.idBorne } })
+			// update borne params 
+			const update = await Borne.update(
+				{ nbPlaces: borne.nbPlaces-1},
+				{ where: { idBorne: req.body.idBorne } }
+			  )
+
 			let data;
 			data = await Vehicule.create(vehicule).then((data) => {
 				res.send(data);
@@ -149,7 +156,7 @@ const deleteVehicule = async (req, res) => {
  */
 //Update vehicule with numChassis = id
 const updateVehicule = async (req, res) => {
-/*
+
 	// verify access
 	const authHeader = req.headers['authorization']
 	const token = authHeader && authHeader.split(' ')[1]
@@ -191,7 +198,7 @@ const updateVehicule = async (req, res) => {
   
 	  return;
   
-	} */ 
+	} 
 	try {
 		if (parseInt(req.params.id, 10)) {
 			const vehicule = await Vehicule.findOne({
@@ -199,9 +206,39 @@ const updateVehicule = async (req, res) => {
 				numChassis: req.params.id
 			  }
 			});
+			let idAnienneBorne= vehicule.idBorne
 			if (vehicule) {    // Check if record exists in db
 			  let updatedVehicule = await vehicule.update(req.body)
 			  if (updatedVehicule) {
+				  if(req.body.etat=="supprime"){
+						const borne = await Borne.findOne({ where: { idBorne: req.body.idBorne } })
+						// Incrémenter le nombre de places libres dans la borne 
+						const update = await Borne.update(
+							{ nbPlaces: borne.nbPlaces+1},
+							{ where: { idBorne: req.body.idBorne } }
+						)
+				  }
+				  // Si on affecte le véhicule à une nouvelle borne
+				  if(idAnienneBorne != req.body.idBorne) {
+					  // Incrémneter le nombre de places libres dans l'ancinne borne
+					    console.log("ID Ancienne borne")
+						console.log(idAnienneBorne)
+					  const ancienneBorne = await Borne.findOne({ where: { idBorne: idAnienneBorne} })
+						let updateAncienneBorne = await Borne.update(
+							{ nbPlaces: ancienneBorne.nbPlaces+1},
+							{ where: { idBorne: idAnienneBorne} }
+						)
+
+						// Décremneter le nombre de places libres dans la nouvelle borne 
+						console.log("ID Nouvelle borne ")
+						console.log(req.body.idBorne)
+						const nouvelleBorne = await Borne.findOne({ where: { idBorne: req.body.idBorne } })
+						let updateNouvelleBorne = await Borne.update(
+							{ nbPlaces: nouvelleBorne.nbPlaces-1},
+							{ where: { idBorne: req.body.idBorne } }
+						)
+
+				  }
 				res.status(200).send({
 				  data: updatedVehicule,
 				  message: 'Vehicule was updated successfully.',
@@ -235,7 +272,7 @@ const updateVehicule = async (req, res) => {
  */
 
 const getAllVehicule = async (req, res) => {
-/*
+
 	// verify access
 	const authHeader = req.headers['authorization']
 	const token = authHeader && authHeader.split(' ')[1]
@@ -277,7 +314,7 @@ const getAllVehicule = async (req, res) => {
   
 	  return;
   
-	}*/ 
+	}
 	Vehicule.findAll({
 		where: {
 			etat: {
@@ -383,7 +420,7 @@ const getVehiculeDetails = async (req, res, next) => {
  * @param {*} res The response
  */
 const getVehiculeReservations = async (req, res, next) => {
-/* 
+ 
 	// verify access
 	const authHeader = req.headers['authorization']
 	const token = authHeader && authHeader.split(' ')[1]
@@ -425,7 +462,7 @@ const getVehiculeReservations = async (req, res, next) => {
   
 	  return;
   
-	} */ 
+	} 
 	const historytable= []; 
 	try {
 		if (parseInt(req.params.id, 10)) {
@@ -532,7 +569,7 @@ const getVehiculeReservations = async (req, res, next) => {
 
 const getBornesofVehicule = async (req , res )=> {
 
-	/* 
+	
 	// verify access
 	const authHeader = req.headers['authorization']
 	const token = authHeader && authHeader.split(' ')[1]
@@ -574,7 +611,7 @@ const getBornesofVehicule = async (req , res )=> {
   
 	  return;
   
-	} */ 
+	} 
 
 const bornes= []; 
 	if (!req.body.marque && !req.body.modele) {
@@ -617,7 +654,7 @@ const bornes= [];
 					}
 			}
 			console.log(bornes);
-			res.send(bornes);s
+			res.send(bornes);
 		} else {
 		  res.status(404).send({
 			error: 'there is no vehiucle that matches your filter on the database',

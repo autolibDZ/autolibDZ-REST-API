@@ -3,6 +3,18 @@ const Trajet = db.trajet;
 var sequelize = require("sequelize");
 
 const createTrajet = async(req, res) => {
+    /*const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(' ')[1]
+
+
+
+    if (token == null) {
+
+        res.status(403).send({
+            message: "Access Forbidden,invalide token",
+        });
+        return;
+    }
 
     if (!req.body.dateDebut || !req.body.dateFin || !req.body.tempsEstime || !req.body.kmParcourue || !req.body.prixAPayer || !req.body.idReservation) {
         res.status(400).send({
@@ -20,19 +32,67 @@ const createTrajet = async(req, res) => {
         idReservation: req.body.idReservation,
     };
 
+
     try {
 
-        let data;
-        data = await Trajet.create(trajet)
-        res.send(data)
+        const user = jwt.verify(token, process.env.JWT_SECRET);
+
+        if (user != undefined) {
+
+            const role = user.role
+
+
+
+            if (role != "administrateur") {
+
+                res.status(403).send({
+                    message: "Access Forbidden,you can't do this operation",
+                });
+
+                return;
+            }
+        }
 
     } catch (err) {
-        res.status(500).send({
-            error: err.message || "Some error occurred while creating the Trajet."
-        });
-    }
 
-};
+        res.status(403).send({
+            message: "Access Forbidden,invalide token",
+        });
+
+        return;
+
+    }
+*/
+
+        if (!req.body.dateDebut  || !req.body.tempsEstime  || !req.body.idReservation) {
+            res.status(400).send({
+                message: "Content can not be empty!"
+            });
+            return;
+        }
+        const trajet = {
+
+            dateDebut: req.body.dateDebut,
+            dateFin: req.body.dateFin,
+            tempsEstime: req.body.tempsEstime,
+            kmParcourue: req.body.kmParcourue,
+            prixAPayer: req.body.prixAPayer,
+            idReservation: req.body.idReservation,
+        };
+
+        try {
+
+            let data;
+            data = await Trajet.create(trajet)
+            res.send(data)
+
+        } catch (err) {
+            res.status(500).send({
+                error: err.message || "Some error occurred while creating the Trajet."
+            });
+        }
+
+    };
 
 const createDebutTrajet = async(req, res) => {
 
@@ -95,7 +155,7 @@ const updateFinTrajet = async(req, res) => {
 
 
 
-const listAllTrajets = (req, res) => {
+    const listAllTrajets = (req, res) => {
     var condition = 1 === 1
 
     Trajet.findAll({ where: condition })
