@@ -104,197 +104,6 @@
     
 
     
-    <h4 class="name" id="addPlanMaintenance"><span class="type-signature">(async) </span>addPlanMaintenance<span class="signature">(req, res, next)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>This function is fired on a POST request to /api/plan-maintenance endopoint
-It allows to insert a plan for a particular car
-Each plan has two required attributes (date &amp; action)</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>req</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">*</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The client request</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>res</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">*</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The server response</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>next</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">*</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Is used to move on to the next middleware if necessary</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="planMaintenance.controller.js.html">planMaintenance.controller.js</a>, <a href="planMaintenance.controller.js.html#line41">line 41</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
     <h4 class="name" id="createAdmin"><span class="type-signature">(async) </span>createAdmin<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
     
 
@@ -995,7 +804,7 @@ Each plan has two required attributes (date &amp; action)</p>
 
             
 
-            <td class="description last"><p>la requete</p></td>
+            <td class="description last"><p>la requete, on doit mettre dans body :- photo(pour photo du permis) -selfie(pour selfie du locataire) et idLocataire</p></td>
         </tr>
 
     
@@ -1379,7 +1188,7 @@ Each plan has two required attributes (date &amp; action)</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="reclamation.controller.js.html">reclamation.controller.js</a>, <a href="reclamation.controller.js.html#line12">line 12</a>
+        <a href="reclamation.controller.js.html">reclamation.controller.js</a>, <a href="reclamation.controller.js.html#line13">line 13</a>
     </li></ul></dd>
     
 
@@ -1415,7 +1224,7 @@ Each plan has two required attributes (date &amp; action)</p>
     
 
     
-    <h4 class="name" id="createTransaction"><span class="type-signature">(async) </span>createTransaction<span class="signature">(req, res)</span><span class="type-signature"> &rarr; {object}</span></h4>
+    <h4 class="name" id="createReservation"><span class="type-signature">(async) </span>createReservation<span class="signature">(req, res)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
 
     
@@ -1423,7 +1232,7 @@ Each plan has two required attributes (date &amp; action)</p>
 
 
 <div class="description">
-    <p>Create and save a new transaction in database</p>
+    <p>Create and save a new reservation in database</p>
 </div>
 
 
@@ -1539,7 +1348,7 @@ Each plan has two required attributes (date &amp; action)</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="transaction.controller.js.html">transaction.controller.js</a>, <a href="transaction.controller.js.html#line14">line 14</a>
+        <a href="reservation.controller.js.html">reservation.controller.js</a>, <a href="reservation.controller.js.html#line21">line 21</a>
     </li></ul></dd>
     
 
@@ -1568,7 +1377,7 @@ Each plan has two required attributes (date &amp; action)</p>
 
         
 <div class="param-desc">
-    <p>The transaction that created</p>
+    <p>The reservation that created</p>
 </div>
 
 
@@ -1721,7 +1530,7 @@ Each plan has two required attributes (date &amp; action)</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="transaction.controller.js.html">transaction.controller.js</a>, <a href="transaction.controller.js.html#line14">line 14</a>
+        <a href="transaction.controller.js.html">transaction.controller.js</a>, <a href="transaction.controller.js.html#line15">line 15</a>
     </li></ul></dd>
     
 
@@ -3023,7 +2832,7 @@ Each plan has two required attributes (date &amp; action)</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bornes.controller.js.html">bornes.controller.js</a>, <a href="bornes.controller.js.html#line805">line 805</a>
+        <a href="bornes.controller.js.html">bornes.controller.js</a>, <a href="bornes.controller.js.html#line803">line 803</a>
     </li></ul></dd>
     
 
@@ -3343,7 +3152,7 @@ Each plan has two required attributes (date &amp; action)</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="identite.controller.js.html">identite.controller.js</a>, <a href="identite.controller.js.html#line87">line 87</a>
+        <a href="identite.controller.js.html">identite.controller.js</a>, <a href="identite.controller.js.html#line101">line 101</a>
     </li></ul></dd>
     
 
@@ -3539,197 +3348,6 @@ Each plan has two required attributes (date &amp; action)</p>
     
 
     
-    <h4 class="name" id="deletePlanMaintenance"><span class="type-signature">(async) </span>deletePlanMaintenance<span class="signature">(req, res, next)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>This function is fired on a DELETE request to /api/plan-maintenance endopoint
-It allows to delete a plan for a particular car
-Each plan has two required attributes (date &amp; action)</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>req</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">*</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The client request</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>res</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">*</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The server response</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>next</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">*</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Is used to move on to the next middleware if necessary</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="planMaintenance.controller.js.html">planMaintenance.controller.js</a>, <a href="planMaintenance.controller.js.html#line103">line 103</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
     <h4 class="name" id="deleteReclamation"><span class="type-signature">(async) </span>deleteReclamation<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
     
 
@@ -3854,7 +3472,7 @@ Each plan has two required attributes (date &amp; action)</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="reclamation.controller.js.html">reclamation.controller.js</a>, <a href="reclamation.controller.js.html#line273">line 273</a>
+        <a href="reclamation.controller.js.html">reclamation.controller.js</a>, <a href="reclamation.controller.js.html#line274">line 274</a>
     </li></ul></dd>
     
 
@@ -4014,7 +3632,7 @@ Each plan has two required attributes (date &amp; action)</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="vehicules.controller.js.html">vehicules.controller.js</a>, <a href="vehicules.controller.js.html#line121">line 121</a>
+        <a href="vehicules.controller.js.html">vehicules.controller.js</a>, <a href="vehicules.controller.js.html#line128">line 128</a>
     </li></ul></dd>
     
 
@@ -4174,7 +3792,7 @@ Each plan has two required attributes (date &amp; action)</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="transaction.controller.js.html">transaction.controller.js</a>, <a href="transaction.controller.js.html#line273">line 273</a>
+        <a href="transaction.controller.js.html">transaction.controller.js</a>, <a href="transaction.controller.js.html#line291">line 291</a>
     </li></ul></dd>
     
 
@@ -4232,7 +3850,7 @@ Each plan has two required attributes (date &amp; action)</p>
     
 
     
-    <h4 class="name" id="filterTransaction"><span class="type-signature">(async) </span>filterTransaction<span class="signature">(req, res)</span><span class="type-signature"> &rarr; {object}</span></h4>
+    <h4 class="name" id="findReservationById"><span class="type-signature">(async) </span>findReservationById<span class="signature">(req, res)</span><span class="type-signature"> &rarr; {*}</span></h4>
     
 
     
@@ -4240,7 +3858,7 @@ Each plan has two required attributes (date &amp; action)</p>
 
 
 <div class="description">
-    <p>Filter user transactions</p>
+    <p>Returns a specific reservation</p>
 </div>
 
 
@@ -4356,7 +3974,7 @@ Each plan has two required attributes (date &amp; action)</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="transaction.controller.js.html">transaction.controller.js</a>, <a href="transaction.controller.js.html#line273">line 273</a>
+        <a href="reservation.controller.js.html">reservation.controller.js</a>, <a href="reservation.controller.js.html#line189">line 189</a>
     </li></ul></dd>
     
 
@@ -4385,7 +4003,7 @@ Each plan has two required attributes (date &amp; action)</p>
 
         
 <div class="param-desc">
-    <p>A list of filtered transactions</p>
+    <p>One reservation</p>
 </div>
 
 
@@ -4396,7 +4014,7 @@ Each plan has two required attributes (date &amp; action)</p>
     </dt>
     <dd>
         
-<span class="param-type">object</span>
+<span class="param-type">*</span>
 
 
     </dd>
@@ -5501,7 +5119,7 @@ ou sans condition, dans ce cas retourne tout les Dirigeants</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="identite.controller.js.html">identite.controller.js</a>, <a href="identite.controller.js.html#line264">line 264</a>
+        <a href="identite.controller.js.html">identite.controller.js</a>, <a href="identite.controller.js.html#line278">line 278</a>
     </li></ul></dd>
     
 
@@ -5822,7 +5440,7 @@ ou sans condition, dans ce cas retourne tout les Operateurs</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="reclamation.controller.js.html">reclamation.controller.js</a>, <a href="reclamation.controller.js.html#line193">line 193</a>
+        <a href="reclamation.controller.js.html">reclamation.controller.js</a>, <a href="reclamation.controller.js.html#line194">line 194</a>
     </li></ul></dd>
     
 
@@ -5982,7 +5600,7 @@ ou sans condition, dans ce cas retourne tout les Operateurs</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="vehicules.controller.js.html">vehicules.controller.js</a>, <a href="vehicules.controller.js.html#line232">line 232</a>
+        <a href="vehicules.controller.js.html">vehicules.controller.js</a>, <a href="vehicules.controller.js.html#line274">line 274</a>
     </li></ul></dd>
     
 
@@ -6666,6 +6284,188 @@ nbPlacesOp : &gt; , &lt; = the default is &gt;</p></td>
     
 
     
+    <h4 class="name" id="getHistoriqueReservationsAllLocataire"><span class="type-signature">(async) </span>getHistoriqueReservationsAllLocataire<span class="signature">(req, res)</span><span class="type-signature"> &rarr; {*}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Returns the reservation history of a specific user</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The request</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The response</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="reservation.controller.js.html">reservation.controller.js</a>, <a href="reservation.controller.js.html#line503">line 503</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>A list of reservations</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">*</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id="getLocataireOfIdentity"><span class="type-signature">(async) </span>getLocataireOfIdentity<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
     
 
@@ -6790,7 +6590,7 @@ nbPlacesOp : &gt; , &lt; = the default is &gt;</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="identite.controller.js.html">identite.controller.js</a>, <a href="identite.controller.js.html#line211">line 211</a>
+        <a href="identite.controller.js.html">identite.controller.js</a>, <a href="identite.controller.js.html#line225">line 225</a>
     </li></ul></dd>
     
 
@@ -6950,7 +6750,7 @@ nbPlacesOp : &gt; , &lt; = the default is &gt;</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="identite.controller.js.html">identite.controller.js</a>, <a href="identite.controller.js.html#line243">line 243</a>
+        <a href="identite.controller.js.html">identite.controller.js</a>, <a href="identite.controller.js.html#line257">line 257</a>
     </li></ul></dd>
     
 
@@ -7270,190 +7070,7 @@ nbPlacesOp : &gt; , &lt; = the default is &gt;</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="identite.controller.js.html">identite.controller.js</a>, <a href="identite.controller.js.html#line181">line 181</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="getPlanMaintenance"><span class="type-signature">(async) </span>getPlanMaintenance<span class="signature">(req, res, next)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>This function allows to get plan de maintenance for a given car numChassis</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>req</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">*</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The client request</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>res</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">*</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The server response</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>next</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">*</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Used if ecessary to move on into the next middleare</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="planMaintenance.controller.js.html">planMaintenance.controller.js</a>, <a href="planMaintenance.controller.js.html#line141">line 141</a>
+        <a href="identite.controller.js.html">identite.controller.js</a>, <a href="identite.controller.js.html#line195">line 195</a>
     </li></ul></dd>
     
 
@@ -7613,7 +7230,7 @@ nbPlacesOp : &gt; , &lt; = the default is &gt;</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="reclamation.controller.js.html">reclamation.controller.js</a>, <a href="reclamation.controller.js.html#line106">line 106</a>
+        <a href="reclamation.controller.js.html">reclamation.controller.js</a>, <a href="reclamation.controller.js.html#line107">line 107</a>
     </li></ul></dd>
     
 
@@ -7649,7 +7266,7 @@ nbPlacesOp : &gt; , &lt; = the default is &gt;</p></td>
     
 
     
-    <h4 class="name" id="getTransaction"><span class="type-signature">(async) </span>getTransaction<span class="signature">(req, res)</span><span class="type-signature"> &rarr; {object}</span></h4>
+    <h4 class="name" id="getReservationAnnulee"><span class="type-signature">(async) </span>getReservationAnnulee<span class="signature">(req, res)</span><span class="type-signature"> &rarr; {*}</span></h4>
     
 
     
@@ -7657,7 +7274,7 @@ nbPlacesOp : &gt; , &lt; = the default is &gt;</p></td>
 
 
 <div class="description">
-    <p>Visualize transaction details</p>
+    <p>Returns all the annuled reservations</p>
 </div>
 
 
@@ -7773,7 +7390,7 @@ nbPlacesOp : &gt; , &lt; = the default is &gt;</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="transaction.controller.js.html">transaction.controller.js</a>, <a href="transaction.controller.js.html#line196">line 196</a>
+        <a href="reservation.controller.js.html">reservation.controller.js</a>, <a href="reservation.controller.js.html#line450">line 450</a>
     </li></ul></dd>
     
 
@@ -7802,7 +7419,7 @@ nbPlacesOp : &gt; , &lt; = the default is &gt;</p></td>
 
         
 <div class="param-desc">
-    <p>Transaction</p>
+    <p>A list of reservations</p>
 </div>
 
 
@@ -7813,7 +7430,7 @@ nbPlacesOp : &gt; , &lt; = the default is &gt;</p></td>
     </dt>
     <dd>
         
-<span class="param-type">object</span>
+<span class="param-type">*</span>
 
 
     </dd>
@@ -7955,7 +7572,7 @@ nbPlacesOp : &gt; , &lt; = the default is &gt;</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="transaction.controller.js.html">transaction.controller.js</a>, <a href="transaction.controller.js.html#line196">line 196</a>
+        <a href="transaction.controller.js.html">transaction.controller.js</a>, <a href="transaction.controller.js.html#line214">line 214</a>
     </li></ul></dd>
     
 
@@ -8137,189 +7754,7 @@ nbPlacesOp : &gt; , &lt; = the default is &gt;</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="transaction.controller.js.html">transaction.controller.js</a>, <a href="transaction.controller.js.html#line124">line 124</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    <p>A list of transactions</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">*</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="getUserTransactions"><span class="type-signature">(async) </span>getUserTransactions<span class="signature">(req, res)</span><span class="type-signature"> &rarr; {*}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>Returns the transaction history of a specific user</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>req</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">*</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The request</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>res</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">*</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The response</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="transaction.controller.js.html">transaction.controller.js</a>, <a href="transaction.controller.js.html#line124">line 124</a>
+        <a href="transaction.controller.js.html">transaction.controller.js</a>, <a href="transaction.controller.js.html#line142">line 142</a>
     </li></ul></dd>
     
 
@@ -8708,7 +8143,7 @@ return 200 status with the actual car oin json if it exists</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="vehicules.controller.js.html">vehicules.controller.js</a>, <a href="vehicules.controller.js.html#line303">line 303</a>
+        <a href="vehicules.controller.js.html">vehicules.controller.js</a>, <a href="vehicules.controller.js.html#line345">line 345</a>
     </li></ul></dd>
     
 
@@ -8868,7 +8303,7 @@ return 200 status with the actual car oin json if it exists</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="vehicules.controller.js.html">vehicules.controller.js</a>, <a href="vehicules.controller.js.html#line380">line 380</a>
+        <a href="vehicules.controller.js.html">vehicules.controller.js</a>, <a href="vehicules.controller.js.html#line422">line 422</a>
     </li></ul></dd>
     
 
@@ -9030,7 +8465,7 @@ return 200 status with all the concerned cars in form of json</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="vehicules.controller.js.html">vehicules.controller.js</a>, <a href="vehicules.controller.js.html#line629">line 629</a>
+        <a href="vehicules.controller.js.html">vehicules.controller.js</a>, <a href="vehicules.controller.js.html#line777">line 777</a>
     </li></ul></dd>
     
 
@@ -9192,7 +8627,7 @@ returns 200 status with all the concerned cars in form of json</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="vehicules.controller.js.html">vehicules.controller.js</a>, <a href="vehicules.controller.js.html#line665">line 665</a>
+        <a href="vehicules.controller.js.html">vehicules.controller.js</a>, <a href="vehicules.controller.js.html#line813">line 813</a>
     </li></ul></dd>
     
 
@@ -9396,7 +8831,7 @@ returns 200 status with all the concerned cars in form of json</p>
 
 
 <div class="description">
-    <p>Invalider une identité</p>
+    <p>Invalider une identité en rendant le champ valide à 0</p>
 </div>
 
 
@@ -9512,7 +8947,7 @@ returns 200 status with all the concerned cars in form of json</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="identite.controller.js.html">identite.controller.js</a>, <a href="identite.controller.js.html#line149">line 149</a>
+        <a href="identite.controller.js.html">identite.controller.js</a>, <a href="identite.controller.js.html#line163">line 163</a>
     </li></ul></dd>
     
 
@@ -9537,6 +8972,188 @@ returns 200 status with all the concerned cars in form of json</p>
 
 
 
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="listAllReservations"><span class="type-signature"></span>listAllReservations<span class="signature">(req, res)</span><span class="type-signature"> &rarr; {*}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Returns all the reservations in the database</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The request</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The response</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="reservation.controller.js.html">reservation.controller.js</a>, <a href="reservation.controller.js.html#line135">line 135</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>A list of reservations</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">*</span>
+
+
+    </dd>
+</dl>
+
+    
 
 
 
@@ -9672,7 +9289,7 @@ returns 200 status with all the concerned cars in form of json</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="identite.controller.js.html">identite.controller.js</a>, <a href="identite.controller.js.html#line305">line 305</a>
+        <a href="identite.controller.js.html">identite.controller.js</a>, <a href="identite.controller.js.html#line319">line 319</a>
     </li></ul></dd>
     
 
@@ -9708,7 +9325,7 @@ returns 200 status with all the concerned cars in form of json</p>
     
 
     
-    <h4 class="name" id="selectIdentitiesOfAGivenOperateur"><span class="type-signature">(async) </span>selectIdentitiesOfAGivenOperateur<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="selectReservationOfAGivenUser"><span class="type-signature">(async) </span>selectReservationOfAGivenUser<span class="signature">(req, res)</span><span class="type-signature"> &rarr; {*}</span></h4>
     
 
     
@@ -9716,7 +9333,7 @@ returns 200 status with all the concerned cars in form of json</p>
 
 
 <div class="description">
-    <p>GET All Identities for a certain operator</p>
+    <p>Returns the  reservations of a specific user</p>
 </div>
 
 
@@ -9768,7 +9385,7 @@ returns 200 status with all the concerned cars in form of json</p>
 
             
 
-            <td class="description last"><p>la requete</p></td>
+            <td class="description last"><p>The request</p></td>
         </tr>
 
     
@@ -9791,7 +9408,7 @@ returns 200 status with all the concerned cars in form of json</p>
 
             
 
-            <td class="description last"><p>la reponse</p></td>
+            <td class="description last"><p>The response</p></td>
         </tr>
 
     
@@ -9832,7 +9449,7 @@ returns 200 status with all the concerned cars in form of json</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="identite.controller.js.html">identite.controller.js</a>, <a href="identite.controller.js.html#line282">line 282</a>
+        <a href="reservation.controller.js.html">reservation.controller.js</a>, <a href="reservation.controller.js.html#line377">line 377</a>
     </li></ul></dd>
     
 
@@ -9857,6 +9474,28 @@ returns 200 status with all the concerned cars in form of json</p>
 
 
 
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>A list of reservations</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">*</span>
+
+
+    </dd>
+</dl>
+
+    
 
 
 
@@ -9995,7 +9634,7 @@ returns an object {Updated rows, UpdatedVehicule} contained numer of rows affect
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="vehicules.controller.js.html">vehicules.controller.js</a>, <a href="vehicules.controller.js.html#line567">line 567</a>
+        <a href="vehicules.controller.js.html">vehicules.controller.js</a>, <a href="vehicules.controller.js.html#line715">line 715</a>
     </li></ul></dd>
     
 
@@ -10475,7 +10114,7 @@ returns an object {Updated rows, UpdatedVehicule} contained numer of rows affect
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bornes.controller.js.html">bornes.controller.js</a>, <a href="bornes.controller.js.html#line724">line 724</a>
+        <a href="bornes.controller.js.html">bornes.controller.js</a>, <a href="bornes.controller.js.html#line722">line 722</a>
     </li></ul></dd>
     
 
@@ -10831,6 +10470,188 @@ returns an object {Updated rows, UpdatedVehicule} contained numer of rows affect
     
 
     
+    <h4 class="name" id="updateReservationById"><span class="type-signature">(async) </span>updateReservationById<span class="signature">(req, res)</span><span class="type-signature"> &rarr; {*}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Updates a specific reservation</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The request</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The response</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="reservation.controller.js.html">reservation.controller.js</a>, <a href="reservation.controller.js.html#line254">line 254</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>a message</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">*</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id="updateVehicule"><span class="type-signature">(async) </span>updateVehicule<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
     
 
@@ -10955,7 +10776,7 @@ returns an object {Updated rows, UpdatedVehicule} contained numer of rows affect
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="vehicules.controller.js.html">vehicules.controller.js</a>, <a href="vehicules.controller.js.html#line151">line 151</a>
+        <a href="vehicules.controller.js.html">vehicules.controller.js</a>, <a href="vehicules.controller.js.html#line158">line 158</a>
     </li></ul></dd>
     
 
@@ -10999,7 +10820,7 @@ returns an object {Updated rows, UpdatedVehicule} contained numer of rows affect
 
 
 <div class="description">
-    <p>valider une identité</p>
+    <p>valider une identité en rendant le champ valide à 1</p>
 </div>
 
 
@@ -11115,7 +10936,7 @@ returns an object {Updated rows, UpdatedVehicule} contained numer of rows affect
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="identite.controller.js.html">identite.controller.js</a>, <a href="identite.controller.js.html#line117">line 117</a>
+        <a href="identite.controller.js.html">identite.controller.js</a>, <a href="identite.controller.js.html#line131">line 131</a>
     </li></ul></dd>
     
 
@@ -11140,172 +10961,6 @@ returns an object {Updated rows, UpdatedVehicule} contained numer of rows affect
 
 
 
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="verifyIfActionExists"><span class="type-signature">(async) </span>verifyIfActionExists<span class="signature">(numChassis, action)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>This functions verifies if an action exists in plan de maintenance of a guven numVhassis car</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>numChassis</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Int</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>action</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="planMaintenance.controller.js.html">planMaintenance.controller.js</a>, <a href="planMaintenance.controller.js.html#line12">line 12</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-
-
-    
 
 
 
@@ -11327,13 +10982,13 @@ returns an object {Updated rows, UpdatedVehicule} contained numer of rows affect
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addPlanMaintenance">addPlanMaintenance</a></li><li><a href="global.html#createAdmin">createAdmin</a></li><li><a href="global.html#createAgent">createAgent</a></li><li><a href="global.html#createBorne">createBorne</a></li><li><a href="global.html#createDirigeant">createDirigeant</a></li><li><a href="global.html#createIdentite">createIdentite</a></li><li><a href="global.html#createOperateur">createOperateur</a></li><li><a href="global.html#createReclamation">createReclamation</a></li><li><a href="global.html#createTransaction">createTransaction</a></li><li><a href="global.html#createVehicule">createVehicule</a></li><li><a href="global.html#deleteAdmin">deleteAdmin</a></li><li><a href="global.html#deleteAgent">deleteAgent</a></li><li><a href="global.html#deleteAllAdmins">deleteAllAdmins</a></li><li><a href="global.html#deleteAllAgents">deleteAllAgents</a></li><li><a href="global.html#deleteAllDirigeants">deleteAllDirigeants</a></li><li><a href="global.html#deleteAllOperateurs">deleteAllOperateurs</a></li><li><a href="global.html#deleteBorne">deleteBorne</a></li><li><a href="global.html#deleteDirigeant">deleteDirigeant</a></li><li><a href="global.html#deleteIdentite">deleteIdentite</a></li><li><a href="global.html#deleteOperateur">deleteOperateur</a></li><li><a href="global.html#deletePlanMaintenance">deletePlanMaintenance</a></li><li><a href="global.html#deleteReclamation">deleteReclamation</a></li><li><a href="global.html#deleteVehicule">deleteVehicule</a></li><li><a href="global.html#filterTransaction">filterTransaction</a></li><li><a href="global.html#getAdmin">getAdmin</a></li><li><a href="global.html#getAgent">getAgent</a></li><li><a href="global.html#getAllAdmins">getAllAdmins</a></li><li><a href="global.html#getAllAgents">getAllAgents</a></li><li><a href="global.html#getAllBornes">getAllBornes</a></li><li><a href="global.html#getAllDirigeants">getAllDirigeants</a></li><li><a href="global.html#getAllIdentite">getAllIdentite</a></li><li><a href="global.html#getAllOperateurs">getAllOperateurs</a></li><li><a href="global.html#getAllReclamations">getAllReclamations</a></li><li><a href="global.html#getAllVehicule">getAllVehicule</a></li><li><a href="global.html#getBorne">getBorne</a></li><li><a href="global.html#getCommune">getCommune</a></li><li><a href="global.html#getDirigeant">getDirigeant</a></li><li><a href="global.html#getFilteredBornes">getFilteredBornes</a></li><li><a href="global.html#getLocataireOfIdentity">getLocataireOfIdentity</a></li><li><a href="global.html#getOneIdentite">getOneIdentite</a></li><li><a href="global.html#getOperateur">getOperateur</a></li><li><a href="global.html#getOperatorOfIdentity">getOperatorOfIdentity</a></li><li><a href="global.html#getPlanMaintenance">getPlanMaintenance</a></li><li><a href="global.html#getReclamationDetails">getReclamationDetails</a></li><li><a href="global.html#getTransaction">getTransaction</a></li><li><a href="global.html#getUserTransactions">getUserTransactions</a></li><li><a href="global.html#getVehiclesInABorne">getVehiclesInABorne</a></li><li><a href="global.html#getVehiculeDetails">getVehiculeDetails</a></li><li><a href="global.html#getVehiculeReservations">getVehiculeReservations</a></li><li><a href="global.html#getVehiculesEnServiceOfAGivenAgent">getVehiculesEnServiceOfAGivenAgent</a></li><li><a href="global.html#getVehiculesHorsServiceOfAGivenAgent">getVehiculesHorsServiceOfAGivenAgent</a></li><li><a href="global.html#getWilaya">getWilaya</a></li><li><a href="global.html#invalider">invalider</a></li><li><a href="global.html#selectIdentitieOfAGivenLocataire">selectIdentitieOfAGivenLocataire</a></li><li><a href="global.html#selectIdentitiesOfAGivenOperateur">selectIdentitiesOfAGivenOperateur</a></li><li><a href="global.html#setEtatVehicule">setEtatVehicule</a></li><li><a href="global.html#updateAdmin">updateAdmin</a></li><li><a href="global.html#updateAgent">updateAgent</a></li><li><a href="global.html#updateBorne">updateBorne</a></li><li><a href="global.html#updateDirigeant">updateDirigeant</a></li><li><a href="global.html#updateOperateur">updateOperateur</a></li><li><a href="global.html#updateVehicule">updateVehicule</a></li><li><a href="global.html#valider">valider</a></li><li><a href="global.html#verifyIfActionExists">verifyIfActionExists</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#createAdmin">createAdmin</a></li><li><a href="global.html#createAgent">createAgent</a></li><li><a href="global.html#createBorne">createBorne</a></li><li><a href="global.html#createDirigeant">createDirigeant</a></li><li><a href="global.html#createIdentite">createIdentite</a></li><li><a href="global.html#createOperateur">createOperateur</a></li><li><a href="global.html#createReclamation">createReclamation</a></li><li><a href="global.html#createReservation">createReservation</a></li><li><a href="global.html#createTransaction">createTransaction</a></li><li><a href="global.html#createVehicule">createVehicule</a></li><li><a href="global.html#deleteAdmin">deleteAdmin</a></li><li><a href="global.html#deleteAgent">deleteAgent</a></li><li><a href="global.html#deleteAllAdmins">deleteAllAdmins</a></li><li><a href="global.html#deleteAllAgents">deleteAllAgents</a></li><li><a href="global.html#deleteAllDirigeants">deleteAllDirigeants</a></li><li><a href="global.html#deleteAllOperateurs">deleteAllOperateurs</a></li><li><a href="global.html#deleteBorne">deleteBorne</a></li><li><a href="global.html#deleteDirigeant">deleteDirigeant</a></li><li><a href="global.html#deleteIdentite">deleteIdentite</a></li><li><a href="global.html#deleteOperateur">deleteOperateur</a></li><li><a href="global.html#deleteReclamation">deleteReclamation</a></li><li><a href="global.html#deleteVehicule">deleteVehicule</a></li><li><a href="global.html#filterTransaction">filterTransaction</a></li><li><a href="global.html#findReservationById">findReservationById</a></li><li><a href="global.html#getAdmin">getAdmin</a></li><li><a href="global.html#getAgent">getAgent</a></li><li><a href="global.html#getAllAdmins">getAllAdmins</a></li><li><a href="global.html#getAllAgents">getAllAgents</a></li><li><a href="global.html#getAllBornes">getAllBornes</a></li><li><a href="global.html#getAllDirigeants">getAllDirigeants</a></li><li><a href="global.html#getAllIdentite">getAllIdentite</a></li><li><a href="global.html#getAllOperateurs">getAllOperateurs</a></li><li><a href="global.html#getAllReclamations">getAllReclamations</a></li><li><a href="global.html#getAllVehicule">getAllVehicule</a></li><li><a href="global.html#getBorne">getBorne</a></li><li><a href="global.html#getCommune">getCommune</a></li><li><a href="global.html#getDirigeant">getDirigeant</a></li><li><a href="global.html#getFilteredBornes">getFilteredBornes</a></li><li><a href="global.html#getHistoriqueReservationsAllLocataire">getHistoriqueReservationsAllLocataire</a></li><li><a href="global.html#getLocataireOfIdentity">getLocataireOfIdentity</a></li><li><a href="global.html#getOneIdentite">getOneIdentite</a></li><li><a href="global.html#getOperateur">getOperateur</a></li><li><a href="global.html#getOperatorOfIdentity">getOperatorOfIdentity</a></li><li><a href="global.html#getReclamationDetails">getReclamationDetails</a></li><li><a href="global.html#getReservationAnnulee">getReservationAnnulee</a></li><li><a href="global.html#getTransaction">getTransaction</a></li><li><a href="global.html#getUserTransactions">getUserTransactions</a></li><li><a href="global.html#getVehiclesInABorne">getVehiclesInABorne</a></li><li><a href="global.html#getVehiculeDetails">getVehiculeDetails</a></li><li><a href="global.html#getVehiculeReservations">getVehiculeReservations</a></li><li><a href="global.html#getVehiculesEnServiceOfAGivenAgent">getVehiculesEnServiceOfAGivenAgent</a></li><li><a href="global.html#getVehiculesHorsServiceOfAGivenAgent">getVehiculesHorsServiceOfAGivenAgent</a></li><li><a href="global.html#getWilaya">getWilaya</a></li><li><a href="global.html#invalider">invalider</a></li><li><a href="global.html#listAllReservations">listAllReservations</a></li><li><a href="global.html#selectIdentitieOfAGivenLocataire">selectIdentitieOfAGivenLocataire</a></li><li><a href="global.html#selectReservationOfAGivenUser">selectReservationOfAGivenUser</a></li><li><a href="global.html#setEtatVehicule">setEtatVehicule</a></li><li><a href="global.html#updateAdmin">updateAdmin</a></li><li><a href="global.html#updateAgent">updateAgent</a></li><li><a href="global.html#updateBorne">updateBorne</a></li><li><a href="global.html#updateDirigeant">updateDirigeant</a></li><li><a href="global.html#updateOperateur">updateOperateur</a></li><li><a href="global.html#updateReservationById">updateReservationById</a></li><li><a href="global.html#updateVehicule">updateVehicule</a></li><li><a href="global.html#valider">valider</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Sat Jun 05 2021 14:55:02 GMT+0100 (heure normale d’Europe centrale)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Sun Jun 27 2021 23:12:28 GMT+0200 (heure d’été d’Europe centrale)
 </footer>
 
 <script> prettyPrint(); </script>

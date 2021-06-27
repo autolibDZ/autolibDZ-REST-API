@@ -3,15 +3,15 @@ import identiteController from "../controllers/identite.controller";
 var identiteRouter = require("express").Router();
     
 identiteRouter.post("/", identiteController.createIdentite);
-identiteRouter.delete("/:numeroPermis",identiteController.deleteIdentite); 
-identiteRouter.get("/:numeroPermis",identiteController.getOneIdentite); 
+identiteRouter.delete("/:id",identiteController.deleteIdentite); 
+identiteRouter.get("/:id",identiteController.getOneIdentite); 
 identiteRouter.get("/",identiteController.getAllIdentite);
 
 //Get information of the operator validating the identity
 identiteRouter.get("/:numeroPermis/operateur",identiteController.getOperatorOfIdentity)
 
 //Get information of the locataire
-identiteRouter.get("/:numeroPermis/locataire",identiteController.getLocataireOfIdentity)
+//identiteRouter.get("/:numeroPermis/locataire",identiteController.getLocataireOfIdentity)
 
 //Validate identity
 identiteRouter.put("/:numeroPermis/valider",identiteController.valider)
@@ -20,7 +20,7 @@ identiteRouter.put("/:numeroPermis/valider",identiteController.valider)
 identiteRouter.put("/:numeroPermis/invalider",identiteController.invalider)
 
 // GET All Identities for a certain operator
-identiteRouter.get('/operateur/:id',identiteController.selectIdentitiesOfAGivenOperateur);
+//identiteRouter.get('/operateur/:id',identiteController.selectIdentitiesOfAGivenOperateur);
 
 // GET All Identities for a certain locataire
 identiteRouter.get('/locataire/:id',identiteController.selectIdentitieOfAGivenLocataire);

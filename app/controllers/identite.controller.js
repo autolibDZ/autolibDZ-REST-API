@@ -16,32 +16,28 @@ cloudinary.config({
 
 /**
  * Creer une identité
- * @param {*} req la requete
+ * @param {*} req la requete, on doit mettre dans body :- photo(pour photo du permis) -selfie(pour selfie du locataire) et idLocataire
  * @param {*} res la reponse
  */
 const createIdentite = async (req, res) => {
-    // Validate request
-    if (!req.body.numeroPermis) {
-      res.status(400).send({
-        message: "Content can not be empty!"
-      });
-      return;
-    }
     // Create an identite
     const identite = {
-        numeroPermis: req.body.numeroPermis,
+        //numeroPermis: req.body.numeroPermis,
         photo: req.body.photo,
         valide: req.body.valide,
         idLocataire: req.body.idLocataire,
-        idOperateur: req.body.idOperateur,
+        //idOperateur: req.body.idOperateur,
         idCloudinary: '',
-        secureUrl:''
+        secureUrl:'',
+        idCloudinaryPhotoSelfie: '',
+        secureUrlPhotoSelfie:''
+
     };
 
     // Ajout d'une identité à la base de données
-    if(identite.idLocataire==undefined || identite.idOperateur==undefined){
+    if(identite.idLocataire==undefined /* || identite.idOperateur==undefined*/){
       res.status(500).send({
-          message:"Les champs idLocataire et idOperateur sont requis!"             
+          message:"Le champ idLocataire est requis!"             
       });
       return;
     }
@@ -103,11 +99,11 @@ const createIdentite = async (req, res) => {
  * @param {*} res la reponse
  */
   const deleteIdentite = async (req, res) => {
-      const numeroPermis = req.params.numeroPermis;
+      const id = req.params.id;
      
 
       Identite.destroy({
-        where: { numeroPermis: numeroPermis }
+        where: { id: id }
       })
         .then(num => {
           if (num == 1) {
@@ -116,7 +112,7 @@ const createIdentite = async (req, res) => {
             });
           } else {
             res.send({
-              message: `Cannot delete Identity with licence driver=${numeroPermis}. Maybe identity was not found!`
+              message: `Cannot delete Identity with licence driver=${id}. Maybe identity was not found!`
             });
           }
         })
@@ -128,7 +124,7 @@ const createIdentite = async (req, res) => {
     };
 
 /**
- * valider une identité
+ * valider une identité en rendant le champ valide à 1
  * @param {*} req la requete
  * @param {*} res la reponse
  */
@@ -160,7 +156,7 @@ const createIdentite = async (req, res) => {
       });
   };
 /**
- * Invalider une identité
+ * Invalider une identité en rendant le champ valide à 0
  * @param {*} req la requete
  * @param {*} res la reponse
  */
@@ -225,11 +221,11 @@ const getOperatorOfIdentity = async (req, res) =>{
  * @param {*} req la requete
  * @param {*} res la reponse
  */
-
+/*
 const getLocataireOfIdentity = async (req, res) =>{
   //Récupérer le numéro de permis validé
-  const numeroPermis = req.params.numeroPermis;
-  Identite.findByPk(numeroPermis)
+  const id = req.params.id;
+  Identite.findByPk(id)
   .then(data => {
     const idLocataire = data.dataValues.idLocataire;
     Locataire.findByPk(idLocataire)
@@ -238,17 +234,17 @@ const getLocataireOfIdentity = async (req, res) =>{
     })
     .catch(err => {
       res.status(500).send({
-        message: "Erreur lors de la récupération de l'Operateur ayant validé le permis =" + numeroPermis
+        message: "Erreur lors de la récupération du locataire pour le permis=" + id
       });
     });
   })
   .catch(err => {
     res.status(500).send({
-      message: "Erreur lors de la récupération de l'Operateur ayant validé le permis =" + numeroPermis
+      message: "Erreur lors de la récupération de l'Operateur ayant validé le permis =" + id
     });
   });
 }
-
+*/
 
 
 
@@ -259,15 +255,15 @@ const getLocataireOfIdentity = async (req, res) =>{
  * @param {*} res la reponse
  */
 const getOneIdentite= async (req, res) => {
-  const numeroPermis = req.params.numeroPermis;
+  const id = req.params.id;
   
-  Identite.findByPk(numeroPermis)
+  Identite.findByPk(id)
   .then(data => {
     res.status(200).send(data);
   })
   .catch(err => {
     res.status(500).send({
-      message: "Error retrieving Identity with numeroPermis=" + numeroPermis
+      message: "Error retrieving Identity with id=" + id
     });
   });
 };
@@ -292,28 +288,6 @@ const getAllIdentite = async (req,res)=> {
   });
 }
 
-/**
- * GET All Identities for a certain operator
- * @param {*} req la requete
- * @param {*} res la reponse
- */
-const selectIdentitiesOfAGivenOperateur = async (req, res) => {
-	try {
-		const identities = await Identite.findAll({
-			where: {
-				idOperateur: +req.params.id,
-			},
-		});
-		res.status(200).send(identities);
-	} catch (err) {
-		res.status(500).send({
-			error:
-				err.message ||
-				'Some error occured while retreiving identities operator id: ' +
-					req.params.id,
-		});
-	}
-};
 
 /**
  * GET All Identity for a certain locataire
@@ -340,13 +314,13 @@ const selectIdentitiesOfAGivenOperateur = async (req, res) => {
 
 
 export default {
-    selectIdentitiesOfAGivenOperateur,
+    //selectIdentitiesOfAGivenOperateur,
     createIdentite, 
     deleteIdentite,
     getAllIdentite,
     getOneIdentite,
     getOperatorOfIdentity,
-    getLocataireOfIdentity,
+    //getLocataireOfIdentity,
     valider,
     invalider,
     selectIdentitieOfAGivenLocataire

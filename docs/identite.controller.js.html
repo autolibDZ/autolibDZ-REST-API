@@ -44,32 +44,28 @@ cloudinary.config({
 
 /**
  * Creer une identité
- * @param {*} req la requete
+ * @param {*} req la requete, on doit mettre dans body :- photo(pour photo du permis) -selfie(pour selfie du locataire) et idLocataire
  * @param {*} res la reponse
  */
 const createIdentite = async (req, res) => {
-    // Validate request
-    if (!req.body.numeroPermis) {
-      res.status(400).send({
-        message: "Content can not be empty!"
-      });
-      return;
-    }
     // Create an identite
     const identite = {
-        numeroPermis: req.body.numeroPermis,
+        //numeroPermis: req.body.numeroPermis,
         photo: req.body.photo,
         valide: req.body.valide,
         idLocataire: req.body.idLocataire,
-        idOperateur: req.body.idOperateur,
+        //idOperateur: req.body.idOperateur,
         idCloudinary: '',
-        secureUrl:''
+        secureUrl:'',
+        idCloudinaryPhotoSelfie: '',
+        secureUrlPhotoSelfie:''
+
     };
 
     // Ajout d'une identité à la base de données
-    if(identite.idLocataire==undefined || identite.idOperateur==undefined){
+    if(identite.idLocataire==undefined /* || identite.idOperateur==undefined*/){
       res.status(500).send({
-          message:"Les champs idLocataire et idOperateur sont requis!"             
+          message:"Le champ idLocataire est requis!"             
       });
       return;
     }
@@ -93,6 +89,24 @@ const createIdentite = async (req, res) => {
             });
             return;
             }
+
+            if (req.body.selfie) {
+              const image = req.body.photo;
+              try {
+                ress = await cloudinary.uploader.upload(req.body.photo).then((result) => {
+                  identite.idCloudinaryPhotoSelfie = result.public_id;
+                  identite.secureUrlPhotoSelfie = result.secure_url;
+                  console.log(result)
+              });
+              } catch (error) {
+                  console.log(error);
+                }
+              }else{
+                res.status(500).send({
+                  message:"Vous devez entrez une image de votre visage dans la borne!"             
+              });
+              return;
+              }
         data = await Identite.create(identite)
        .then(data => {
         res.status(200).send(data);
@@ -113,11 +127,11 @@ const createIdentite = async (req, res) => {
  * @param {*} res la reponse
  */
   const deleteIdentite = async (req, res) => {
-      const numeroPermis = req.params.numeroPermis;
+      const id = req.params.id;
      
 
       Identite.destroy({
-        where: { numeroPermis: numeroPermis }
+        where: { id: id }
       })
         .then(num => {
           if (num == 1) {
@@ -126,7 +140,7 @@ const createIdentite = async (req, res) => {
             });
           } else {
             res.send({
-              message: `Cannot delete Identity with licence driver=${numeroPermis}. Maybe identity was not found!`
+              message: `Cannot delete Identity with licence driver=${id}. Maybe identity was not found!`
             });
           }
         })
@@ -138,7 +152,7 @@ const createIdentite = async (req, res) => {
     };
 
 /**
- * valider une identité
+ * valider une identité en rendant le champ valide à 1
  * @param {*} req la requete
  * @param {*} res la reponse
  */
@@ -170,7 +184,7 @@ const createIdentite = async (req, res) => {
       });
   };
 /**
- * Invalider une identité
+ * Invalider une identité en rendant le champ valide à 0
  * @param {*} req la requete
  * @param {*} res la reponse
  */
@@ -307,7 +321,7 @@ const getAllIdentite = async (req,res)=> {
  * @param {*} req la requete
  * @param {*} res la reponse
  */
-const selectIdentitiesOfAGivenOperateur = async (req, res) => {
+/*const selectIdentitiesOfAGivenOperateur = async (req, res) => {
 	try {
 		const identities = await Identite.findAll({
 			where: {
@@ -324,7 +338,7 @@ const selectIdentitiesOfAGivenOperateur = async (req, res) => {
 		});
 	}
 };
-
+*/
 /**
  * GET All Identity for a certain locataire
  * @param {*} req la requete
@@ -350,7 +364,7 @@ const selectIdentitiesOfAGivenOperateur = async (req, res) => {
 
 
 export default {
-    selectIdentitiesOfAGivenOperateur,
+    //selectIdentitiesOfAGivenOperateur,
     createIdentite, 
     deleteIdentite,
     getAllIdentite,
@@ -371,13 +385,13 @@ export default {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addPlanMaintenance">addPlanMaintenance</a></li><li><a href="global.html#createAdmin">createAdmin</a></li><li><a href="global.html#createAgent">createAgent</a></li><li><a href="global.html#createBorne">createBorne</a></li><li><a href="global.html#createDirigeant">createDirigeant</a></li><li><a href="global.html#createIdentite">createIdentite</a></li><li><a href="global.html#createOperateur">createOperateur</a></li><li><a href="global.html#createReclamation">createReclamation</a></li><li><a href="global.html#createTransaction">createTransaction</a></li><li><a href="global.html#createVehicule">createVehicule</a></li><li><a href="global.html#deleteAdmin">deleteAdmin</a></li><li><a href="global.html#deleteAgent">deleteAgent</a></li><li><a href="global.html#deleteAllAdmins">deleteAllAdmins</a></li><li><a href="global.html#deleteAllAgents">deleteAllAgents</a></li><li><a href="global.html#deleteAllDirigeants">deleteAllDirigeants</a></li><li><a href="global.html#deleteAllOperateurs">deleteAllOperateurs</a></li><li><a href="global.html#deleteBorne">deleteBorne</a></li><li><a href="global.html#deleteDirigeant">deleteDirigeant</a></li><li><a href="global.html#deleteIdentite">deleteIdentite</a></li><li><a href="global.html#deleteOperateur">deleteOperateur</a></li><li><a href="global.html#deletePlanMaintenance">deletePlanMaintenance</a></li><li><a href="global.html#deleteReclamation">deleteReclamation</a></li><li><a href="global.html#deleteVehicule">deleteVehicule</a></li><li><a href="global.html#filterTransaction">filterTransaction</a></li><li><a href="global.html#getAdmin">getAdmin</a></li><li><a href="global.html#getAgent">getAgent</a></li><li><a href="global.html#getAllAdmins">getAllAdmins</a></li><li><a href="global.html#getAllAgents">getAllAgents</a></li><li><a href="global.html#getAllBornes">getAllBornes</a></li><li><a href="global.html#getAllDirigeants">getAllDirigeants</a></li><li><a href="global.html#getAllIdentite">getAllIdentite</a></li><li><a href="global.html#getAllOperateurs">getAllOperateurs</a></li><li><a href="global.html#getAllReclamations">getAllReclamations</a></li><li><a href="global.html#getAllVehicule">getAllVehicule</a></li><li><a href="global.html#getBorne">getBorne</a></li><li><a href="global.html#getCommune">getCommune</a></li><li><a href="global.html#getDirigeant">getDirigeant</a></li><li><a href="global.html#getFilteredBornes">getFilteredBornes</a></li><li><a href="global.html#getLocataireOfIdentity">getLocataireOfIdentity</a></li><li><a href="global.html#getOneIdentite">getOneIdentite</a></li><li><a href="global.html#getOperateur">getOperateur</a></li><li><a href="global.html#getOperatorOfIdentity">getOperatorOfIdentity</a></li><li><a href="global.html#getPlanMaintenance">getPlanMaintenance</a></li><li><a href="global.html#getReclamationDetails">getReclamationDetails</a></li><li><a href="global.html#getTransaction">getTransaction</a></li><li><a href="global.html#getUserTransactions">getUserTransactions</a></li><li><a href="global.html#getVehiclesInABorne">getVehiclesInABorne</a></li><li><a href="global.html#getVehiculeDetails">getVehiculeDetails</a></li><li><a href="global.html#getVehiculeReservations">getVehiculeReservations</a></li><li><a href="global.html#getVehiculesEnServiceOfAGivenAgent">getVehiculesEnServiceOfAGivenAgent</a></li><li><a href="global.html#getVehiculesHorsServiceOfAGivenAgent">getVehiculesHorsServiceOfAGivenAgent</a></li><li><a href="global.html#getWilaya">getWilaya</a></li><li><a href="global.html#invalider">invalider</a></li><li><a href="global.html#selectIdentitieOfAGivenLocataire">selectIdentitieOfAGivenLocataire</a></li><li><a href="global.html#selectIdentitiesOfAGivenOperateur">selectIdentitiesOfAGivenOperateur</a></li><li><a href="global.html#setEtatVehicule">setEtatVehicule</a></li><li><a href="global.html#updateAdmin">updateAdmin</a></li><li><a href="global.html#updateAgent">updateAgent</a></li><li><a href="global.html#updateBorne">updateBorne</a></li><li><a href="global.html#updateDirigeant">updateDirigeant</a></li><li><a href="global.html#updateOperateur">updateOperateur</a></li><li><a href="global.html#updateVehicule">updateVehicule</a></li><li><a href="global.html#valider">valider</a></li><li><a href="global.html#verifyIfActionExists">verifyIfActionExists</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#createAdmin">createAdmin</a></li><li><a href="global.html#createAgent">createAgent</a></li><li><a href="global.html#createBorne">createBorne</a></li><li><a href="global.html#createDirigeant">createDirigeant</a></li><li><a href="global.html#createIdentite">createIdentite</a></li><li><a href="global.html#createOperateur">createOperateur</a></li><li><a href="global.html#createReclamation">createReclamation</a></li><li><a href="global.html#createReservation">createReservation</a></li><li><a href="global.html#createTransaction">createTransaction</a></li><li><a href="global.html#createVehicule">createVehicule</a></li><li><a href="global.html#deleteAdmin">deleteAdmin</a></li><li><a href="global.html#deleteAgent">deleteAgent</a></li><li><a href="global.html#deleteAllAdmins">deleteAllAdmins</a></li><li><a href="global.html#deleteAllAgents">deleteAllAgents</a></li><li><a href="global.html#deleteAllDirigeants">deleteAllDirigeants</a></li><li><a href="global.html#deleteAllOperateurs">deleteAllOperateurs</a></li><li><a href="global.html#deleteBorne">deleteBorne</a></li><li><a href="global.html#deleteDirigeant">deleteDirigeant</a></li><li><a href="global.html#deleteIdentite">deleteIdentite</a></li><li><a href="global.html#deleteOperateur">deleteOperateur</a></li><li><a href="global.html#deleteReclamation">deleteReclamation</a></li><li><a href="global.html#deleteVehicule">deleteVehicule</a></li><li><a href="global.html#filterTransaction">filterTransaction</a></li><li><a href="global.html#findReservationById">findReservationById</a></li><li><a href="global.html#getAdmin">getAdmin</a></li><li><a href="global.html#getAgent">getAgent</a></li><li><a href="global.html#getAllAdmins">getAllAdmins</a></li><li><a href="global.html#getAllAgents">getAllAgents</a></li><li><a href="global.html#getAllBornes">getAllBornes</a></li><li><a href="global.html#getAllDirigeants">getAllDirigeants</a></li><li><a href="global.html#getAllIdentite">getAllIdentite</a></li><li><a href="global.html#getAllOperateurs">getAllOperateurs</a></li><li><a href="global.html#getAllReclamations">getAllReclamations</a></li><li><a href="global.html#getAllVehicule">getAllVehicule</a></li><li><a href="global.html#getBorne">getBorne</a></li><li><a href="global.html#getCommune">getCommune</a></li><li><a href="global.html#getDirigeant">getDirigeant</a></li><li><a href="global.html#getFilteredBornes">getFilteredBornes</a></li><li><a href="global.html#getHistoriqueReservationsAllLocataire">getHistoriqueReservationsAllLocataire</a></li><li><a href="global.html#getLocataireOfIdentity">getLocataireOfIdentity</a></li><li><a href="global.html#getOneIdentite">getOneIdentite</a></li><li><a href="global.html#getOperateur">getOperateur</a></li><li><a href="global.html#getOperatorOfIdentity">getOperatorOfIdentity</a></li><li><a href="global.html#getReclamationDetails">getReclamationDetails</a></li><li><a href="global.html#getReservationAnnulee">getReservationAnnulee</a></li><li><a href="global.html#getTransaction">getTransaction</a></li><li><a href="global.html#getUserTransactions">getUserTransactions</a></li><li><a href="global.html#getVehiclesInABorne">getVehiclesInABorne</a></li><li><a href="global.html#getVehiculeDetails">getVehiculeDetails</a></li><li><a href="global.html#getVehiculeReservations">getVehiculeReservations</a></li><li><a href="global.html#getVehiculesEnServiceOfAGivenAgent">getVehiculesEnServiceOfAGivenAgent</a></li><li><a href="global.html#getVehiculesHorsServiceOfAGivenAgent">getVehiculesHorsServiceOfAGivenAgent</a></li><li><a href="global.html#getWilaya">getWilaya</a></li><li><a href="global.html#invalider">invalider</a></li><li><a href="global.html#listAllReservations">listAllReservations</a></li><li><a href="global.html#selectIdentitieOfAGivenLocataire">selectIdentitieOfAGivenLocataire</a></li><li><a href="global.html#selectReservationOfAGivenUser">selectReservationOfAGivenUser</a></li><li><a href="global.html#setEtatVehicule">setEtatVehicule</a></li><li><a href="global.html#updateAdmin">updateAdmin</a></li><li><a href="global.html#updateAgent">updateAgent</a></li><li><a href="global.html#updateBorne">updateBorne</a></li><li><a href="global.html#updateDirigeant">updateDirigeant</a></li><li><a href="global.html#updateOperateur">updateOperateur</a></li><li><a href="global.html#updateReservationById">updateReservationById</a></li><li><a href="global.html#updateVehicule">updateVehicule</a></li><li><a href="global.html#valider">valider</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Sat Jun 05 2021 14:55:02 GMT+0100 (heure normale d’Europe centrale)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Sun Jun 27 2021 23:12:28 GMT+0200 (heure d’été d’Europe centrale)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -13,7 +13,7 @@ const { Op } = require("sequelize");
 const createBorne = async (req, res) => {
 
   // verify access
-  /*const authHeader = req.headers['authorization']
+  const authHeader = req.headers['authorization']
   const token = authHeader && authHeader.split(' ')[1]
 
 
@@ -53,7 +53,7 @@ const createBorne = async (req, res) => {
 
     return;
 
-  }*/
+  }
 
 
   // Create a Borne
@@ -160,7 +160,7 @@ const createBorne = async (req, res) => {
 
 const getFilteredBornes = async (req, res) => {
   // verify access
-  /* const authHeader = req.headers['authorization']
+   const authHeader = req.headers['authorization']
    const token = authHeader && authHeader.split(' ')[1]
  
  
@@ -208,7 +208,7 @@ const getFilteredBornes = async (req, res) => {
       message: "body can not be empty!",
     });
     return;
-  }*/
+  }
 
   const ops = ['min', 'max']
 
@@ -288,7 +288,7 @@ const getFilteredBornes = async (req, res) => {
 
 const getBorne = async (req, res) => {
 
-  /*const authHeader = req.headers['authorization']
+   const authHeader = req.headers['authorization']
    const token = authHeader && authHeader.split(' ')[1]
  
    console.log("la val du token " + token);
@@ -326,7 +326,7 @@ const getBorne = async (req, res) => {
  
      return;
  
-   }*/
+   }
 
 
   // Validate request
@@ -388,7 +388,7 @@ const getAllBornes = async (req, res) => {
   try {
 
     //Verify access
-    /*const authHeader = req.headers['authorization']
+    const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
 
 
@@ -428,7 +428,7 @@ const getAllBornes = async (req, res) => {
 
       return;
 
-    }*/
+    }
 
 
     const data = await Borne.findAll({
@@ -476,7 +476,7 @@ const getWilaya = async (req, res) => {
   try {
 
     // Verify access
-   /*   const authHeader = req.headers['authorization']
+      const authHeader = req.headers['authorization']
       const token = authHeader && authHeader.split(' ')[1]
   
   
@@ -515,7 +515,7 @@ const getWilaya = async (req, res) => {
   
         return;
   
-      }*/
+      }
 
 
     const data = await Borne.findAll({ attributes: [[Borne.sequelize.fn('DISTINCT', Borne.sequelize.col('wilaya')), 'wilaya']], where: { etat: 1 } });
@@ -554,7 +554,7 @@ const getWilaya = async (req, res) => {
 const getCommune = async (req, res) => {
   try {
 
-    /*  const authHeader = req.headers['authorization']
+      const authHeader = req.headers['authorization']
       const token = authHeader && authHeader.split(' ')[1]
   
   
@@ -592,7 +592,7 @@ const getCommune = async (req, res) => {
   
         return;
   
-      }*/
+      }
 
 
     let wilaya = req.params.wilaya
@@ -658,7 +658,7 @@ const getCommune = async (req, res) => {
 const getVehiclesInABorne = async (req, res) => {
 
   // Verify access
-  /*const authHeader = req.headers['authorization']
+  const authHeader = req.headers['authorization']
   const token = authHeader && authHeader.split(' ')[1]
 
 
@@ -696,9 +696,7 @@ const getVehiclesInABorne = async (req, res) => {
 
     return;
 
-  }*/
-
-
+  }
   try {
     const vehicules = await Vehicule.findAll({
       where: {
@@ -728,7 +726,7 @@ const getVehiclesInABorne = async (req, res) => {
 
 const updateBorne = async (req, res) => {
 
-  /*const authHeader = req.headers['authorization']
+  const authHeader = req.headers['authorization']
   const token = authHeader && authHeader.split(' ')[1]
 
 
@@ -768,7 +766,7 @@ const updateBorne = async (req, res) => {
 
     return;
 
-  }*/
+  }
 
   try {
     const borne = await Borne.findOne({
@@ -811,7 +809,7 @@ const deleteBorne = async (req, res) => {
 
   // verify access
 
- /*  const authHeader = req.headers['authorization']
+   const authHeader = req.headers['authorization']
    const token = authHeader && authHeader.split(' ')[1]
  
  
@@ -851,7 +849,7 @@ const deleteBorne = async (req, res) => {
      });
  
      return;
-   }*/
+   }
 
   try {
     const data = await Borne.update(

@@ -1,6 +1,7 @@
 const { Sequelize } = require('../models');
 const db = require('../models');
 const Locataire = db.locataire;
+const Abonnement = db.abonnement;
 const validator = require('validator');
 var bcrypt = require('bcryptjs');
 var CLIENT_ID =
@@ -126,6 +127,13 @@ const createLocataire = async (req, res) => {
 						message: 'Une erreur  lors de la création de locataire',
 					});
 				});
+			 const loc = await Locataire.findOne({ where: { email: locataire.email } })
+           		 const abonnement = {
+               			 balance: 0,
+                		idLocataire: loc.idLocataire
+           		 }
+
+            		let data = await Abonnement.create(abonnement)
 		}
 	}
 };
@@ -177,6 +185,13 @@ const createLocataireGmail = async (req, res) => {
 						message: 'Une erreur  lors de la création de locataire',
 					});
 				});
+			 const loc = await Locataire.findOne({ where: { email: locataire.email } })
+           		 const abonnement = {
+               			 balance: 0,
+                		idLocataire: loc.idLocataire
+           		 }
+
+            		let data = await Abonnement.create(abonnement)
 		}
 	}
 	verify().catch(console.error);
@@ -237,7 +252,7 @@ const updateEmail = async (req, res) => {
 			.then((num) => {
 				if (num == 1) {
 					res.status(200).send({
-						message: 'Locataire a été crée avec succes',
+						message: 'Email a été mis à jour avec succes',
 					});
 				} else {
 					res.status(400).send({
@@ -278,7 +293,7 @@ const updatePassword = async (req, res) => {
 			.then((num) => {
 				if (num == 1) {
 					res.status(200).send({
-						message: 'Locataire a été mis à jour avec succes',
+						message: 'Mot de passe a été mis à jour avec succes',
 					});
 				} else {
 					res.status(400).send({
