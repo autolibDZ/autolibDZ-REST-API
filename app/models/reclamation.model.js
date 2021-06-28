@@ -9,8 +9,8 @@ module.exports = function(sequelize, Sequelize) {
             type: Sequelize.STRING(50),
             allowNull: false
         },
-        emailLocataire: {
-            type: Sequelize.STRING(50),
+        idLocataire: {
+            type: Sequelize.INTEGER,
             allowNull:false
         },
         type: {
