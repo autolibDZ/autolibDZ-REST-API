@@ -763,6 +763,22 @@ const getReservationsAvecRetard = async(req, res) => {
     }
 }
 
+const quitterVehicule = async(req, res) => {
+
+    Reservation.update({ etat: "Terminée" }, { where: { idReservation: req.body.idReservation } })
+        .then(() => {
+            res.send({
+                message: 'Reservation terminée !',
+            })
+        })
+        .catch((err) => {
+            res.status(500).send({
+                message: 'Erreur'
+            });
+
+        })
+}
+
 export default {
     createReservation, //locataire
     listAllReservations, //admin
@@ -776,4 +792,5 @@ export default {
     getHistoriqueReservationsLocataire, //locataire
     getHistoriqueReservationsAllLocataire, //locataire
     getReservationsAvecRetard,
+    quitterVehicule
 }
