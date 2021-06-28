@@ -12,6 +12,7 @@ const mailgun = require('mailgun-js');
 const DOMAIN = 'sandboxe0404f8c28904674a2f02a65fc8bafca.mailgun.org';
 const api_key = 'a1b416a5e0552819df1578e8cd5272ff-fa6e84b7-67a3ab78';
 const mg = mailgun({ apiKey: api_key, domain: DOMAIN });
+var jwt = require("jsonwebtoken");
 
 //Activate account
 const validateAccount = (req, res) => {
@@ -199,6 +200,42 @@ const createLocataireGmail = async (req, res) => {
 
 //Retourner tout les locataires
 const findAll = (req, res) => {
+		// verify access
+		const authHeader = req.headers['authorization']
+		console.log(authHeader);
+		const token = authHeader && authHeader.split(' ')[1]
+		console.log(token);
+	  
+		if (token == null) {
+		  res.status(403).send({
+			message: "Access Forbidden,invalide token",
+		  });
+		  return;
+		}
+	  
+		try {
+		  const user = jwt.verify(token, process.env.JWT_SECRET);
+		  if (user != undefined) {
+			const role = user.role
+			// Only admin can create Vehicule
+	  
+			if (role != "administrateur") {
+			  res.status(403).send({
+				message: "Access Forbidden,you can't do this operation",
+			  });
+	  
+			  return;
+			}
+		  }
+	  
+		} catch (err) {
+		  res.status(403).send({
+			message: "Access Forbidden,invalide token",
+		  });
+	  
+		  return;
+	  
+		}
 	Locataire.findAll({ where: {isDeleted:false} })
 		.then((data) => {
 			res.status(200).send(data);
@@ -212,6 +249,42 @@ const findAll = (req, res) => {
 };
 
 const findOne = async (req, res) => {
+		// verify access
+		const authHeader = req.headers['authorization']
+		console.log(authHeader);
+		const token = authHeader && authHeader.split(' ')[1]
+		console.log(token);
+	  
+		if (token == null) {
+		  res.status(403).send({
+			message: "Access Forbidden,invalide token",
+		  });
+		  return;
+		}
+	  
+		try {
+		  const user = jwt.verify(token, process.env.JWT_SECRET);
+		  if (user != undefined) {
+			const role = user.role
+			// Only admin can create Vehicule
+	  
+			if (role != "administrateur") {
+			  res.status(403).send({
+				message: "Access Forbidden,you can't do this operation",
+			  });
+	  
+			  return;
+			}
+		  }
+	  
+		} catch (err) {
+		  res.status(403).send({
+			message: "Access Forbidden,invalide token",
+		  });
+	  
+		  return;
+	  
+		}
 	Locataire.findOne({ where: { idLocataire: req.params.id, isDeleted: false } })
 		.then((data) => {
 			if (!data) res.status(404).send({ message: 'Locataire non existant' });
@@ -227,6 +300,42 @@ const findOne = async (req, res) => {
 // Update a Locataire by the id in the request
 
 const updateEmail = async (req, res) => {
+		// verify access
+		const authHeader = req.headers['authorization']
+		console.log(authHeader);
+		const token = authHeader && authHeader.split(' ')[1]
+		console.log(token);
+	  
+		if (token == null) {
+		  res.status(403).send({
+			message: "Access Forbidden,invalide token",
+		  });
+		  return;
+		}
+	  
+		try {
+		  const user = jwt.verify(token, process.env.JWT_SECRET);
+		  if (user != undefined) {
+			const role = user.role
+			// Only admin can create Vehicule
+	  
+			if (role != "locataire") {
+			  res.status(403).send({
+				message: "Access Forbidden,you can't do this operation",
+			  });
+	  
+			  return;
+			}
+		  }
+	  
+		} catch (err) {
+		  res.status(403).send({
+			message: "Access Forbidden,invalide token",
+		  });
+	  
+		  return;
+	  
+		}
 	const id = req.params.id;
 	
 	//Pour tester l'existance de l'email
@@ -270,6 +379,42 @@ const updateEmail = async (req, res) => {
 // Update a Locataire by the id in the request
 
 const updatePassword = async (req, res) => {
+		// verify access
+		const authHeader = req.headers['authorization']
+		console.log(authHeader);
+		const token = authHeader && authHeader.split(' ')[1]
+		console.log(token);
+	  
+		if (token == null) {
+		  res.status(403).send({
+			message: "Access Forbidden,invalide token",
+		  });
+		  return;
+		}
+	  
+		try {
+		  const user = jwt.verify(token, process.env.JWT_SECRET);
+		  if (user != undefined) {
+			const role = user.role
+			// Only admin can create Vehicule
+	  
+			if (role != "locataire") {
+			  res.status(403).send({
+				message: "Access Forbidden,you can't do this operation",
+			  });
+	  
+			  return;
+			}
+		  }
+	  
+		} catch (err) {
+		  res.status(403).send({
+			message: "Access Forbidden,invalide token",
+		  });
+	  
+		  return;
+	  
+		}
 	const id = req.params.id;
 	
 	const locataire = await Locataire.findOne({
@@ -343,6 +488,42 @@ const deleteLocataire = (req, res) => {
 
 // Block or Unblock a locataire
 const block = (req, res) => {
+		// verify access
+		const authHeader = req.headers['authorization']
+		console.log(authHeader);
+		const token = authHeader && authHeader.split(' ')[1]
+		console.log(token);
+	  
+		if (token == null) {
+		  res.status(403).send({
+			message: "Access Forbidden,invalide token",
+		  });
+		  return;
+		}
+	  
+		try {
+		  const user = jwt.verify(token, process.env.JWT_SECRET);
+		  if (user != undefined) {
+			const role = user.role
+			// Only admin can create Vehicule
+	  
+			if (role != "administrateur") {
+			  res.status(403).send({
+				message: "Access Forbidden,you can't do this operation",
+			  });
+	  
+			  return;
+			}
+		  }
+	  
+		} catch (err) {
+		  res.status(403).send({
+			message: "Access Forbidden,invalide token",
+		  });
+	  
+		  return;
+	  
+		}
 	const id = req.params.id;
 	Locataire.update(
 		{
