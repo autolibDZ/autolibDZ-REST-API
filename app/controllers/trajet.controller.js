@@ -116,7 +116,7 @@ const createDebutTrajet = async(req, res) => {
         dateDebut: req.body.dateDebut,
         dateFin: null,
         tempsEstime: req.body.reservation.tempsEstime,
-        kmParcourue: 0,
+        kmParcourue: req.body.reservation.kmParcourue,
         prixAPayer: req.body.reservation.prixEstime,
         idReservation: req.body.reservation.idReservation,
     };
@@ -152,10 +152,8 @@ const updateFinTrajet = async(req, res) => {
                 idVehicule: req.body.idVehicule
             }
         })
-
         await Trajet.update({
             dateFin: req.body.dateFin,
-            kmParcourue: req.body.kmParcourue,
             tempsEstime: req.body.reservation.tempsEstime,
             prixAPayer: (req.body.prixEstime + (req.body.temps * 30 / 60))
         }, {

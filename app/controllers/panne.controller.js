@@ -12,11 +12,12 @@ const Vehicule = db.vehicules;
 const getAllPannes = async(req, res) => {
     Panne.belongsTo(Vehicule, { foreignKey: 'idVehicule' })
     const panne = await Panne.findAll({
+            raw: true,
             include: [{
                 model: Vehicule,
-                attributes: ['numImmatriculation', 'modele', 'marque']
+                attributes: []
             }],
-            attributes: ['description', 'latitude', 'longitude', 'etat']
+            attributes: ['description', 'etat', 'vehicule.numImmatriculation', 'vehicule.modele', 'vehicule.marque']
         }).then(panne => {
             res.send(panne);
         })
