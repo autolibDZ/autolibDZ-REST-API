@@ -3,7 +3,7 @@ import reclamationController from '../controllers/reclamation.controller.js';
 var reclamationRouter = require('express').Router();
 
 // POST to create a claim
-reclamationRouter.post('/', reclamationController.createReclamation);
+reclamationRouter.post('/:idLocataire', reclamationController.createReclamation);
 
 // DELETE to delete a claim with  a specific ID 
 reclamationRouter.delete('/:id', reclamationController.deleteReclamation);

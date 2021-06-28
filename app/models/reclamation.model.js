@@ -10,7 +10,7 @@ module.exports = function(sequelize, Sequelize) {
             allowNull: false
         },
         idLocataire: {
-            type: Sequelize.INTEGER,
+            type: Sequelize.STRING(50),
             allowNull:false
         },
         type: {
