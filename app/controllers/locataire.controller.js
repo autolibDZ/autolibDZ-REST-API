@@ -91,9 +91,9 @@ const createLocataire = async (req, res) => {
 		mg.messages().send(data, function (error, body) {
 			if (error) {
 				find = true;
-				res.status(400).send({
+				/*res.status(400).send({
 					message: "Email n'existe pas",
-				});
+				});*/
 			}
 		});
 		/////
