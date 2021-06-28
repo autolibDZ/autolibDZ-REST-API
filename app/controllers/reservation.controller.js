@@ -666,7 +666,7 @@ const getHistoriqueReservationsAllLocataire = async(req, res) => {
 }
 
 const getHistoriqueReservationsLocataire = async(req, res) => {
-    const authHeader = req.headers['authorization']
+ /*   const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
 
 
@@ -709,7 +709,7 @@ const getHistoriqueReservationsLocataire = async(req, res) => {
     }
 
 
-
+*/
     const reservations = await Reservation.findAll({ where: { idLocataire: req.params.id} })
 
     let historiqueReser = []
@@ -721,7 +721,7 @@ if (reservation.etat!="Active"){
             let reservationFinale = {
                 idReservation: 0, etat: "", nomBorneDepart: "", numChassisVehicule: 0,
                 numImmatriculationVehicule: 0, modeleVehicule: "", marqueVehicule: "", nomBorneDestination: "",
-                dateReservation: null, dure: null, distance: null
+                dateReservation: null, dure: null, distance: null,prix:null
             }
 
             reservationFinale.idReservation = reservation.idReservation
@@ -748,6 +748,7 @@ if (reservation.etat!="Active"){
                     reservationFinale.dateReservation = trajetInfo.dateDebut
                     reservationFinale.dure = trajetInfo.tempsEstime
                     reservationFinale.distance = trajetInfo.kmParcourue
+                    reservationFinale.prix = trajetInfo.prixAPayer
 
                 }
             }
