@@ -22,46 +22,46 @@ const createReservation = async(req, res) => {
     // verify access
     //Quand le locataire est connecter on lui genere un session (jwt)
     //On lit la valeur de l'authorization header qui est sous le format Bearer + Token
-   const authHeader = req.headers['authorization']
+    const authHeader = req.headers['authorization']
     //On recupere le token
     const token = authHeader && authHeader.split(' ')[1]
 
 
     if (token == null) {
 
-      res.status(403).send({
-        message: "Access Forbidden,invalide token",
-      });
-      return;
+        res.status(403).send({
+            message: "Access Forbidden,invalide token",
+        });
+        return;
     }
 
     try {
 // La verification de l'identité
-      const user = jwt.verify(token, process.env.JWT_SECRET);
+        const user = jwt.verify(token, process.env.JWT_SECRET);
 
-      if (user != undefined) {
+        if (user != undefined) {
 //on recupere le role du user
-        const role = user.role
+            const role = user.role
 
 
 
-        if (role != "locataire") {
+            if (role != "locataire") {
 
-          res.status(403).send({
-            message: "Access Forbidden,you can't do this operation",
-          });
+                res.status(403).send({
+                    message: "Access Forbidden,you can't do this operation",
+                });
 
-          return;
+                return;
+            }
         }
-      }
 
     } catch (err) {
 
-      res.status(403).send({
-        message: "Access Forbidden,invalide token",
-      });
+        res.status(403).send({
+            message: "Access Forbidden,invalide token",
+        });
 
-      return;
+        return;
 
     }
 
@@ -195,7 +195,7 @@ const listAllReservations = (req, res) => {
  * @returns {*} One reservation
  */
 const findReservationById = async(req, res) => {
-   const authHeader = req.headers['authorization']
+    const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
 
 
@@ -310,34 +310,34 @@ const updateReservationById = async(req, res) => {
     const bornes = await Borne.findAll({ where: { idBorne: req.body.idBorneDepart} })
     //On modifie la valeur de la reservatioon
     Reservation.update(req.body, {
-            where: { idReservation: id }
-        })
+        where: { idReservation: id }
+    })
         .then(num => {
             if (num == 1) {
                 res.send({
                     message: "Reservation was updated successfully."
                 });
                 //Si la reservation est annulée on doit modifie la valeur de nbVehicules dans la borne
-             if (reservations.etat ="Annulée")
-             {
-                 if (bornes != null) {
-                     for (const born of bornes) {
-                         let nb=born.nbVehicules
-                         nb= nb+1
+                if (reservations.etat ="Annulée")
+                {
+                    if (bornes != null) {
+                        for (const born of bornes) {
+                            let nb=born.nbVehicules
+                            nb= nb+1
 
-                         Borne.update(
-                             { nbVehicules: nb },
-                             {
-                                 returning: true,
-                                 where: {
-                                     idBorne: req.body.idBorneDepart
-                                 },
+                            Borne.update(
+                                { nbVehicules: nb },
+                                {
+                                    returning: true,
+                                    where: {
+                                        idBorne: req.body.idBorneDepart
+                                    },
 
-                             } )
+                                } )
 
-                     }
-                 }
-             }
+                        }
+                    }
+                }
             } else {
                 res.send({
                     message: `Cannot update Reservation with id=${id}. Maybe Reservation was not found or req.body is empty!`
@@ -588,10 +588,10 @@ const getHistoriqueReservationsAllLocataire = async(req, res) => {
             //Recuperation nom borne de départ
             const borneDepart = await Borne.findOne({ where: { idBorne: reservation.idBorneDepart } })
             reservationFinale.nomBorneDepart = borneDepart.nomBorne
-                //Recuperation nom borne de destination
+            //Recuperation nom borne de destination
             const borneDesti = await Borne.findOne({ where: { idBorne: reservation.idBorneDestination } })
             reservationFinale.nomBorneDestination = borneDesti.nomBorne
-                //Recuperation des infos du véhicules
+            //Recuperation des infos du véhicules
             const vehiculeInfo = await Vehicule.findOne({ where: { numChassis: reservation.idVehicule } })
             if (vehiculeInfo != null) {
                 reservationFinale.numChassisVehicule = vehiculeInfo.numChassis
@@ -626,7 +626,7 @@ const getHistoriqueReservationsAllLocataire = async(req, res) => {
 }
 
 const getHistoriqueReservationsLocataire = async(req, res) => {
-   const authHeader = req.headers['authorization']
+    const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
 
 
@@ -676,50 +676,50 @@ const getHistoriqueReservationsLocataire = async(req, res) => {
 
     if (reservations != null) {
         for(const reservation of reservations) {
-if (reservation.etat!="Active"){
-            let reservationFinale = {
-                idReservation: 0, etat: "", nomBorneDepart: "", numChassisVehicule: 0,
+            if (reservation.etat!="Active"){
+                let reservationFinale = {
+                    idReservation: 0, etat: "", nomBorneDepart: "", numChassisVehicule: 0,
 
-                numImmatriculationVehicule: 0, modeleVehicule: "", marqueVehicule: "", nomBorneDestination: "",
-                dateReservation: null, dure: null, distance: null,prix:null
+                    numImmatriculationVehicule: 0, modeleVehicule: "", marqueVehicule: "", nomBorneDestination: "",
+                    dateReservation: null, dure: null, distance: null,prix:null
 
-
-            }
-
-            reservationFinale.idReservation = reservation.idReservation
-
-            reservationFinale.etat = reservation.etat
-
-            //Recuperation nom borne de départ
-            const borneDepart = await Borne.findOne({where: {idBorne: reservation.idBorneDepart}})
-            reservationFinale.nomBorneDepart = borneDepart.nomBorne
-            //Recuperation nom borne de destination
-            const borneDesti = await Borne.findOne({where: {idBorne: reservation.idBorneDestination}})
-            reservationFinale.nomBorneDestination = borneDesti.nomBorne
-            //Recuperation des infos du véhicules
-            const vehiculeInfo = await Vehicule.findOne({where: {numChassis: reservation.idVehicule}})
-            if (vehiculeInfo != null) {
-                reservationFinale.numChassisVehicule = vehiculeInfo.numChassis
-                reservationFinale.numImmatriculationVehicule = vehiculeInfo.numImmatriculation
-                reservationFinale.modeleVehicule = vehiculeInfo.modele
-                reservationFinale.marqueVehicule = vehiculeInfo.marque
-                reservationFinale.secureUrl= vehiculeInfo.secureUrl
-
-            }
-            if (reservation.etat == "Terminée") {
-                const trajetInfo = await Trajet.findOne({where: {idReservation: reservation.idReservation}})
-                if (trajetInfo != null) {
-                    reservationFinale.dateReservation = trajetInfo.dateDebut
-                    reservationFinale.dure = trajetInfo.tempsEstime
-                    reservationFinale.distance = trajetInfo.kmParcourue
-                    reservationFinale.prix = trajetInfo.prixAPayer
 
                 }
-            }
-            historiqueReser.push(reservationFinale)
+
+                reservationFinale.idReservation = reservation.idReservation
+
+                reservationFinale.etat = reservation.etat
+
+                //Recuperation nom borne de départ
+                const borneDepart = await Borne.findOne({where: {idBorne: reservation.idBorneDepart}})
+                reservationFinale.nomBorneDepart = borneDepart.nomBorne
+                //Recuperation nom borne de destination
+                const borneDesti = await Borne.findOne({where: {idBorne: reservation.idBorneDestination}})
+                reservationFinale.nomBorneDestination = borneDesti.nomBorne
+                //Recuperation des infos du véhicules
+                const vehiculeInfo = await Vehicule.findOne({where: {numChassis: reservation.idVehicule}})
+                if (vehiculeInfo != null) {
+                    reservationFinale.numChassisVehicule = vehiculeInfo.numChassis
+                    reservationFinale.numImmatriculationVehicule = vehiculeInfo.numImmatriculation
+                    reservationFinale.modeleVehicule = vehiculeInfo.modele
+                    reservationFinale.marqueVehicule = vehiculeInfo.marque
+                    reservationFinale.secureUrl= vehiculeInfo.secureUrl
+
+                }
+                if (reservation.etat == "Terminée") {
+                    const trajetInfo = await Trajet.findOne({where: {idReservation: reservation.idReservation}})
+                    if (trajetInfo != null) {
+                        reservationFinale.dateReservation = trajetInfo.dateDebut
+                        reservationFinale.dure = trajetInfo.tempsEstime
+                        reservationFinale.distance = trajetInfo.kmParcourue
+                        reservationFinale.prix = trajetInfo.prixAPayer
+
+                    }
+                }
+                historiqueReser.push(reservationFinale)
 
 
-        }   }
+            }   }
 
         res.status(200).send(historiqueReser)
 
@@ -775,7 +775,7 @@ const getReservationsAvecRetard = async (req,res) => {
                 status: 404,
             });
         }
-    } 
+    }
     catch (err) {
         res.status(500).send({
             error: err.message || 'Some error occured while getting retards'

@@ -2,51 +2,51 @@ const Request = require('supertest');
 request = Request('http://localhost:4000/api');
 
 
-    describe('Get list of all Reservations in a given user of id 1', () => {
-        it('Should returns 200 OK when getting all reservations', (done) => {
-            request
-                .get('/reservation/locataires/1')
-                .set('Accept', 'application/json')
-                .expect(200)
-                .expect('Content-Type', /json/)
-                .set("authorization", " Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQyLCJyb2xlIjoibG9jYXRhaXJlIiwiaWF0IjoxNjIzNjI2NzAxfQ.NkxwWh01dFTCl3LbzXZTJgJq0VRvPetp_jJqOlmHhs4")
+describe('Get list of all Reservations in a given user of id 1', () => {
+    it('Should returns 200 OK when getting all reservations', (done) => {
+        request
+            .get('/reservation/locataires/1')
+            .set('Accept', 'application/json')
+            .expect(200)
+            .expect('Content-Type', /json/)
+            .set("authorization", " Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQyLCJyb2xlIjoibG9jYXRhaXJlIiwiaWF0IjoxNjIzNjI2NzAxfQ.NkxwWh01dFTCl3LbzXZTJgJq0VRvPetp_jJqOlmHhs4")
 
-                .end((err, res) => {
-                    if (err) done(err);
-                    expect(res.body.length).not.toEqual(0);
-                    done();
-                });
-        });
-        it('returns 403 invalid_access_token when token is invalid', (done) => {
-            request
-                .get('/reservation/locataires/1')
-                .set('Accept', 'application/json')
-                .expect(403)
-                .expect('Content-Type', /json/)
-                .set("authorization", " aaaa")
-                .end((err, res) => {
-                    if (err) done(err);
-                    expect(res.body.message).toBe("Access Forbidden,invalide token")
-                    done();
-                });
-        });
-
-
-        it('Should returns 404 when using an non exesting idLocataire ', (done) => {
-            request
-                .get('/reservation/locataires/-1')
-                .set('Accept', 'application/json')
-                .expect(404)
-                .expect('Content-Type', /json/)
-                .set("authorization", " Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQyLCJyb2xlIjoibG9jYXRhaXJlIiwiaWF0IjoxNjIzNjI2NzAxfQ.NkxwWh01dFTCl3LbzXZTJgJq0VRvPetp_jJqOlmHhs4")
-
-                .end((err, res) => {
-                    if (err) done(err);
-                    expect(res.body.error == 'No locataires with id: 0')
-                    done();
-                });
-        });
+            .end((err, res) => {
+                if (err) done(err);
+                expect(res.body.length).not.toEqual(0);
+                done();
+            });
     });
+    it('returns 403 invalid_access_token when token is invalid', (done) => {
+        request
+            .get('/reservation/locataires/1')
+            .set('Accept', 'application/json')
+            .expect(403)
+            .expect('Content-Type', /json/)
+            .set("authorization", " aaaa")
+            .end((err, res) => {
+                if (err) done(err);
+                expect(res.body.message).toBe("Access Forbidden,invalide token")
+                done();
+            });
+    });
+
+
+    it('Should returns 404 when using an non exesting idLocataire ', (done) => {
+        request
+            .get('/reservation/locataires/-1')
+            .set('Accept', 'application/json')
+            .expect(404)
+            .expect('Content-Type', /json/)
+            .set("authorization", " Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQyLCJyb2xlIjoibG9jYXRhaXJlIiwiaWF0IjoxNjIzNjI2NzAxfQ.NkxwWh01dFTCl3LbzXZTJgJq0VRvPetp_jJqOlmHhs4")
+
+            .end((err, res) => {
+                if (err) done(err);
+                expect(res.body.error == 'No locataires with id: 0')
+                done();
+            });
+    });
+});
 
 
 
@@ -65,7 +65,7 @@ describe('findById', () => {
 
                 expect(function (res) {
 
-                   res.body.etat= "En cours",
+                    res.body.etat= "En cours",
                         res.body.idLocataire= 1,
                         res.body.idVehicule= 1,
                         res.body.idBorneDepart= 1,
@@ -249,7 +249,7 @@ describe('Get list of all reservation', () => {
 
 
 describe('Testing Update Reservation', () => {
-   it('return 200 OK and the actual updated borne with id= 12', (done) => {
+    it('return 200 OK and the actual updated borne with id= 12', (done) => {
         request
             .put('/reservation/12')
             .send({
