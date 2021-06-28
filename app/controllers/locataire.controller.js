@@ -247,7 +247,7 @@ const findAll = (req, res) => {
 
 const findOne = async(req, res) => {
     // verify access
-   /* const authHeader = req.headers['authorization']
+   const authHeader = req.headers['authorization']
     console.log(authHeader);
     const token = authHeader && authHeader.split(' ')[1]
     console.log(token);
@@ -281,7 +281,7 @@ const findOne = async(req, res) => {
 
         return;
 
-    }*/
+    }
     Locataire.findOne({ where: { idLocataire: req.params.id, isDeleted: false } })
         .then((data) => {
             if (!data) res.status(404).send({ message: 'Locataire non existant' });
