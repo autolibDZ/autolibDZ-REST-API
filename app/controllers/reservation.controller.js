@@ -1,6 +1,7 @@
 const db = require('../models');
 var bcrypt = require('bcryptjs');
 var jwt = require("jsonwebtoken");
+let sequelize = require("sequelize");
 
 const Reservation = db.reservation;
 const Borne = db.borne;
@@ -711,6 +712,42 @@ if (reservation.etat!="Active"){
 
 // Retourne une la liste des reservations avec retard de remise
 const getReservationsAvecRetard = async (req,res) => {
+
+    // verify access
+	const authHeader = req.headers['authorization']
+	const token = authHeader && authHeader.split(' ')[1]
+  
+	if (token == null) {
+	  res.status(403).send({
+		message: "Access Forbidden,invalide token",
+	  });
+	  return;
+	}
+  
+	try {
+	  const user = jwt.verify(token, process.env.JWT_SECRET);
+	  if (user != undefined) {
+		const role = user.role
+		// Only admin can create Vehicule
+  
+		if (role != "administrateur") {
+		  res.status(403).send({
+			message: "Access Forbidden,you can't do this operation",
+		  });
+  
+		  return;
+		}
+	  }
+  
+	} catch (err) {
+	  res.status(403).send({
+		message: "Access Forbidden,invalide token",
+	  });
+  
+	  return;
+  
+	}
+
     const etatReservation = 'En cours'
     try {
         Reservation.belongsTo(Locataire,{foreignKey:'idLocataire'})

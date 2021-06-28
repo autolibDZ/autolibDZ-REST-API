@@ -399,6 +399,42 @@ const createAbonnement = async (req, res) => {
 
 // For a specific year, return how much Abonnements there were for each month
 const countAbonnementsByMonth = async (req, res) => {
+
+	// verify access
+	const authHeader = req.headers['authorization']
+	const token = authHeader && authHeader.split(' ')[1]
+  
+	if (token == null) {
+	  res.status(403).send({
+		message: "Access Forbidden,invalide token",
+	  });
+	  return;
+	}
+  
+	try {
+	  const user = jwt.verify(token, process.env.JWT_SECRET);
+	  if (user != undefined) {
+		const role = user.role
+		// Only admin can create Vehicule
+  
+		if (role != "administrateur") {
+		  res.status(403).send({
+			message: "Access Forbidden,you can't do this operation",
+		  });
+  
+		  return;
+		}
+	  }
+  
+	} catch (err) {
+	  res.status(403).send({
+		message: "Access Forbidden,invalide token",
+	  });
+  
+	  return;
+  
+	}
+
 	// Validate request
 	if (!req.params.year) {
 		res.status(400).send({
@@ -436,7 +472,41 @@ const countAbonnementsByMonth = async (req, res) => {
 
 const getYears = async (req, res) => {
 
-
+	// verify access
+	const authHeader = req.headers['authorization']
+	const token = authHeader && authHeader.split(' ')[1]
+  
+	if (token == null) {
+	  res.status(403).send({
+		message: "Access Forbidden,invalide token",
+	  });
+	  return;
+	}
+  
+	try {
+	  const user = jwt.verify(token, process.env.JWT_SECRET);
+	  if (user != undefined) {
+		const role = user.role
+		// Only admin can create Vehicule
+  
+		if (role != "administrateur") {
+		  res.status(403).send({
+			message: "Access Forbidden,you can't do this operation",
+		  });
+  
+		  return;
+		}
+	  }
+  
+	} catch (err) {
+	  res.status(403).send({
+		message: "Access Forbidden,invalide token",
+	  });
+  
+	  return;
+  
+	}
+	
 	try {
 		const years = await Abonnement.findAll({
 			attributes: [
