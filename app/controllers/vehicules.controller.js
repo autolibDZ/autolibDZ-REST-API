@@ -206,8 +206,8 @@ const updateVehicule = async (req, res) => {
 				numChassis: req.params.id
 			  }
 			});
-			let idAnienneBorne= vehicule.idBorne
 			if (vehicule) {    // Check if record exists in db
+			  let idAnienneBorne= vehicule.idBorne
 			  let updatedVehicule = await vehicule.update(req.body)
 			  if (updatedVehicule) {
 				  if(req.body.etat=="supprime"){
