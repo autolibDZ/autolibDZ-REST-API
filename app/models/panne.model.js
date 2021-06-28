@@ -1,4 +1,4 @@
-module.exports = function (sequelize, Sequelize) {
+module.exports = function(sequelize, Sequelize) {
 
     const Panne = sequelize.define("panne", {
         idPanne: {
@@ -12,7 +12,7 @@ module.exports = function (sequelize, Sequelize) {
         latitude: {
             type: Sequelize.FLOAT
         },
-        longtitude: {
+        longitude: {
             type: Sequelize.FLOAT
         },
         idVehicule: {

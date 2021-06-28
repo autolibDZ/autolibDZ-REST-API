@@ -1,7 +1,11 @@
+import { where } from 'sequelize';
+import vehiculeModel from '../models/vehicule.model';
+
 const db = require('../models');
 var bcrypt = require('bcryptjs');
 var jwt = require("jsonwebtoken");
 const Trajet = db.trajet;
+const Vehicule = db.vehicule
 var sequelize = require("sequelize");
 
 const createTrajet = async(req, res) => {
@@ -66,35 +70,35 @@ const createTrajet = async(req, res) => {
     }
 */
 
-        if (!req.body.dateDebut  || !req.body.tempsEstime  || !req.body.idReservation) {
-            res.status(400).send({
-                message: "Content can not be empty!"
-            });
-            return;
-        }
-        const trajet = {
+    if (!req.body.dateDebut || !req.body.tempsEstime || !req.body.idReservation) {
+        res.status(400).send({
+            message: "Content can not be empty!"
+        });
+        return;
+    }
+    const trajet = {
 
-            dateDebut: req.body.dateDebut,
-            dateFin: req.body.dateFin,
-            tempsEstime: req.body.tempsEstime,
-            kmParcourue: req.body.kmParcourue,
-            prixAPayer: req.body.prixAPayer,
-            idReservation: req.body.idReservation,
-        };
-
-        try {
-
-            let data;
-            data = await Trajet.create(trajet)
-            res.send(data)
-
-        } catch (err) {
-            res.status(500).send({
-                error: err.message || "Some error occurred while creating the Trajet."
-            });
-        }
-
+        dateDebut: req.body.dateDebut,
+        dateFin: req.body.dateFin,
+        tempsEstime: req.body.tempsEstime,
+        kmParcourue: req.body.kmParcourue,
+        prixAPayer: req.body.prixAPayer,
+        idReservation: req.body.idReservation,
     };
+
+    try {
+
+        let data;
+        data = await Trajet.create(trajet)
+        res.send(data)
+
+    } catch (err) {
+        res.status(500).send({
+            error: err.message || "Some error occurred while creating the Trajet."
+        });
+    }
+
+};
 
 const createDebutTrajet = async(req, res) => {
 
@@ -125,17 +129,6 @@ const createDebutTrajet = async(req, res) => {
                 message: err.message || "Some error occurred while creating the Trajet"
             });
         });
-    /*try {
-        let data;
-        data = await Trajet.create(trajet)
-        res.send(data.idTrajet)
-
-    } catch (err) {
-        res.status(500).send({
-            error: err.message || "Some error occurred while creating the Trajet."
-        });
-    }*/
-
 };
 
 const updateFinTrajet = async(req, res) => {
@@ -147,6 +140,15 @@ const updateFinTrajet = async(req, res) => {
         return;
     }
     try {
+        await Vehicule.update({
+            latitude: req.body.latitude,
+            longitude: req.body.longitude
+        }, {
+            where: {
+                idVehicule: req.body.idVehicule
+            }
+        })
+
         await Trajet.update({
             dateFin: req.body.dateFin,
             kmParcourue: req.body.kmParcourue,
@@ -168,7 +170,7 @@ const updateFinTrajet = async(req, res) => {
 
 
 
-    const listAllTrajets = (req, res) => {
+const listAllTrajets = (req, res) => {
     var condition = 1 === 1
 
     Trajet.findAll({ where: condition })
