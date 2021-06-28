@@ -156,6 +156,7 @@ const updateFinTrajet = async(req, res) => {
         await Trajet.update({
             dateFin: req.body.dateFin,
             kmParcourue: req.body.kmParcourue,
+            tempsEstime: req.body.reservation.tempsEstime,
             prixAPayer: (req.body.prixEstime + (req.body.temps * 30 / 60))
         }, {
             where: {
@@ -171,6 +172,23 @@ const updateFinTrajet = async(req, res) => {
     }
 
 };
+
+const getTrajetByResrvation = async(req, res) => {
+    try {
+        const trajet = await Trajet.findOne({
+            where: {
+                idReservation: req.body.idReservation,
+            },
+        });
+        res.status(200).send(trajet);
+    } catch (err) {
+        res.status(500).send({
+            error: err.message ||
+                'Some error occured while retreiving the trajet'
+
+        });
+    }
+}
 
 
 
@@ -401,5 +419,6 @@ export default {
     updateTrajetById,
     countTrajetsByMonth,
     updateFinTrajet,
-    createDebutTrajet
+    createDebutTrajet,
+    getTrajetByResrvation
 }
