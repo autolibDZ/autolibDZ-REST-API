@@ -1,6 +1,7 @@
 const db = require("../models");
 const Reclamation = db.reclamation;
 var jwt = require("jsonwebtoken");
+let sequelize = require("sequelize");
 
 /**
  * Create and save a new claim in database
@@ -335,9 +336,84 @@ const deleteReclamation = async (req, res) => {
 			});
 		});
 };
+
+const countBugsByMonth = async(req, res) => {
+
+  // Validate request
+  if (!req.params.year) {
+      res.status(400).send({
+          message: "params 'year' can not be empty!",
+      });
+      return;
+  }
+
+  try {
+      let year = req.params.year;
+      const reclamations_par_mois = await Reclamation.findAll({
+          attributes: [
+              [sequelize.fn('date_part', 'month', sequelize.col('date')), 'month'],
+              [sequelize.fn('COUNT', sequelize.col('idReclamation')), 'countReclamations'],
+          ],
+          where: {
+            [sequelize.Op.and]:[
+              sequelize.where(sequelize.fn('date_part', 'year', sequelize.col('date')), year),
+              { type: "bug" }
+            ]
+          },
+          group: [sequelize.fn('date_part', 'month', sequelize.col('date'))],
+          order: [sequelize.fn('date_part', 'month', sequelize.col('date'))],
+      });
+      if (reclamations_par_mois.length != 0) {
+          res.send(reclamations_par_mois);
+      } else {
+          res.status(404).send({
+              error: 'not_found',
+              message: 'No content',
+              status: 404,
+          });
+      }
+  } catch (err) {
+      res.status(500).send({
+          error: err.message || 'Some error occured while counting bugs'
+      });
+  }
+};
+
+const getYears = async(req, res) => {
+  //const maxYearsToGet=5
+
+  try {
+      const years = await Reclamation.findAll({
+          attributes: [
+              [sequelize.fn('date_part', 'year', sequelize.col('date')), 'year'],
+          ],
+          where:{type: "bug"},
+          //order: [[sequelize.literal('"dateDebut"'), 'DESC']],
+          group: [sequelize.fn('date_part', 'year', sequelize.col('date'))],
+          order: [sequelize.fn('date_part', 'year', sequelize.col('date'))],
+          //limit :maxYearsToGet
+      });
+      if (years.length != 0) {
+          res.send(years);
+      } else {
+          res.status(404).send({
+              error: 'not_found',
+              message: 'No content',
+              status: 404,
+          });
+      }
+  } catch (err) {
+      res.status(500).send({
+          error: err.message || 'Some error occured while getting years'
+      });
+  }
+};
+
 export default {
     createReclamation,
     getReclamationDetails,
     getAllReclamations, 
-    deleteReclamation
+    deleteReclamation,
+    countBugsByMonth,
+    getYears
 }

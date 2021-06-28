@@ -1,5 +1,6 @@
 const db = require("../models");
 const { Op } = require("sequelize");
+const sequelize = require("sequelize");
 const jwt = require('jsonwebtoken');
 const Transaction = db.transaction;
 

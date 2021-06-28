@@ -48,7 +48,7 @@ let sequelize = require("sequelize");
 // Create and Save a new Vehicule
 
 const createVehicule = async (req, res) => {
-/*
+
 	// verify access
 	const authHeader = req.headers['authorization']
 	console.log(authHeader);
@@ -84,7 +84,7 @@ const createVehicule = async (req, res) => {
   
 	  return;
   
-	} */ 
+	}
 	// Validate request
 	if (!req.body.numChassis || !req.body.numImmatriculation || !req.body.modele || !req.body.marque || !req.body.couleur
 		|| !req.body.etat || !req.body.idAgentMaintenance || !req.body.idBorne ) {
@@ -127,6 +127,13 @@ const createVehicule = async (req, res) => {
 				message: 'Vehicule already exists!',
 			});
 		} else {
+			const borne = await Borne.findOne({ where: { idBorne: req.body.idBorne } })
+			// update borne params 
+			const update = await Borne.update(
+				{ nbPlaces: borne.nbPlaces-1},
+				{ where: { idBorne: req.body.idBorne } }
+			  )
+
 			let data;
 			data = await Vehicule.create(vehicule).then((data) => {
 				res.send(data);
@@ -177,7 +184,7 @@ const deleteVehicule = async (req, res) => {
  */
 //Update vehicule with numChassis = id
 const updateVehicule = async (req, res) => {
-/*
+
 	// verify access
 	const authHeader = req.headers['authorization']
 	const token = authHeader &amp;&amp; authHeader.split(' ')[1]
@@ -219,16 +226,47 @@ const updateVehicule = async (req, res) => {
   
 	  return;
   
-	} */ 
+	} 
 	try {
+		if (parseInt(req.params.id, 10)) {
 			const vehicule = await Vehicule.findOne({
 			  where: {
 				numChassis: req.params.id
 			  }
 			});
+			let idAnienneBorne= vehicule.idBorne
 			if (vehicule) {    // Check if record exists in db
 			  let updatedVehicule = await vehicule.update(req.body)
 			  if (updatedVehicule) {
+				  if(req.body.etat=="supprime"){
+						const borne = await Borne.findOne({ where: { idBorne: req.body.idBorne } })
+						// Incrémenter le nombre de places libres dans la borne 
+						const update = await Borne.update(
+							{ nbPlaces: borne.nbPlaces+1},
+							{ where: { idBorne: req.body.idBorne } }
+						)
+				  }
+				  // Si on affecte le véhicule à une nouvelle borne
+				  if(idAnienneBorne != req.body.idBorne) {
+					  // Incrémneter le nombre de places libres dans l'ancinne borne
+					    console.log("ID Ancienne borne")
+						console.log(idAnienneBorne)
+					  const ancienneBorne = await Borne.findOne({ where: { idBorne: idAnienneBorne} })
+						let updateAncienneBorne = await Borne.update(
+							{ nbPlaces: ancienneBorne.nbPlaces+1},
+							{ where: { idBorne: idAnienneBorne} }
+						)
+
+						// Décremneter le nombre de places libres dans la nouvelle borne 
+						console.log("ID Nouvelle borne ")
+						console.log(req.body.idBorne)
+						const nouvelleBorne = await Borne.findOne({ where: { idBorne: req.body.idBorne } })
+						let updateNouvelleBorne = await Borne.update(
+							{ nbPlaces: nouvelleBorne.nbPlaces-1},
+							{ where: { idBorne: req.body.idBorne } }
+						)
+
+				  }
 				res.status(200).send({
 				  data: updatedVehicule,
 				  message: 'Vehicule was updated successfully.',
@@ -244,6 +282,10 @@ const updateVehicule = async (req, res) => {
 				message: "Vehicule not found"
 			  });
 			}
+		}
+		else{
+			err.message="ID has to be an integer";
+		}
 		  } catch (err) {
 			res.status(500).send({
 			  message: err.message || "Some error occured while updating vehicule with numChassis: " + req.params.id
@@ -258,7 +300,7 @@ const updateVehicule = async (req, res) => {
  */
 
 const getAllVehicule = async (req, res) => {
-/*
+
 	// verify access
 	const authHeader = req.headers['authorization']
 	const token = authHeader &amp;&amp; authHeader.split(' ')[1]
@@ -282,7 +324,7 @@ const getAllVehicule = async (req, res) => {
   
 		// Only admin can update Vehicule
   
-		if (role != "administrateur" &amp;&amp; role != "agent") {
+		if (role != "administrateur" &amp;&amp; role != "agent" &amp;&amp; role != "dirigeant") {
   
 		  res.status(403).send({
 			message: "Access Forbidden,you can't do this operation",
@@ -300,7 +342,7 @@ const getAllVehicule = async (req, res) => {
   
 	  return;
   
-	} */ 
+	}
 	Vehicule.findAll({
 		where: {
 			etat: {
@@ -351,7 +393,7 @@ const getVehiculeDetails = async (req, res, next) => {
   
 		// Only admin/locataire/agent can get vehiucle details
   
-		if (role != "administrateur" &amp;&amp; role != "locataire" &amp;&amp; role != "agent" ) {
+		if (role != "administrateur" &amp;&amp; role != "locataire" &amp;&amp; role != "agent" &amp;&amp; role != "dirigeant" ) {
   
 		  res.status(403).send({
 			message: "Access Forbidden,you can't do this operation",
@@ -368,7 +410,7 @@ const getVehiculeDetails = async (req, res, next) => {
 	  });
   
 	  return;
-	} */ 
+	}  */ 
 	try {
 		if (parseInt(req.params.id, 10)) {
 			console.log(req.params.id);
@@ -406,7 +448,7 @@ const getVehiculeDetails = async (req, res, next) => {
  * @param {*} res The response
  */
 const getVehiculeReservations = async (req, res, next) => {
-/* 
+ 
 	// verify access
 	const authHeader = req.headers['authorization']
 	const token = authHeader &amp;&amp; authHeader.split(' ')[1]
@@ -448,7 +490,7 @@ const getVehiculeReservations = async (req, res, next) => {
   
 	  return;
   
-	} */ 
+	} 
 	const historytable= []; 
 	try {
 		if (parseInt(req.params.id, 10)) {
@@ -552,6 +594,112 @@ const getVehiculeReservations = async (req, res, next) => {
 		});
 	}
 };
+
+const getBornesofVehicule = async (req , res )=> {
+
+	
+	// verify access
+	const authHeader = req.headers['authorization']
+	const token = authHeader &amp;&amp; authHeader.split(' ')[1]
+  
+  
+	if (token == null) {
+  
+	  res.status(403).send({
+		message: "Access Forbidden,invalide token",
+	  });
+	  return;
+	}
+  
+	try {
+  
+	  const user = jwt.verify(token, process.env.JWT_SECRET);
+  
+	  if (user != undefined) {
+  
+		const role = user.role
+  
+		// Only admin can acces reservation history
+  
+		if (role != "locataire") {
+  
+		  res.status(403).send({
+			message: "Access Forbidden,you can't do this operation",
+		  });
+  
+		  return;
+		}
+	  }
+  
+	} catch (err) {
+  
+	  res.status(403).send({
+		message: "Access Forbidden,invalide token",
+	  });
+  
+	  return;
+  
+	} 
+
+const bornes= []; 
+	if (!req.body.marque &amp;&amp; !req.body.modele) {
+		res.status(400).send({
+		  message: "Content can not be empty!",
+		});
+		return;
+	  }
+	  try { 
+		
+		const vehicules = await Vehicule.findAll({
+			where: {
+				marque: {
+					[Op.like]: req.body.marque
+				},
+				modele: {
+					[Op.like]: (req.body.modele != "") ? req.body.modele : '%'
+				},
+				etat: {
+			  		[Op.ne]: "supprime", // Tous les véhicules sauf ceux qui sont supprimés et qui n'ont pas de borne
+				},
+				idBorne: {
+					[Op.ne]: null,  // Tous les véhicules sauf ceux qui sont supprimés et qui n'ont pas de borne
+				}
+			},
+		}); 
+		if (vehicules.length != 0) {
+			for( var j=0; j&lt;vehicules.length ; j++){
+			const result = await Borne.findAll({
+						where: {
+							idBorne: vehicules[j].idBorne,
+						},
+					}); 
+			
+				var rows = JSON.parse(JSON.stringify(result[0]));
+				console.log(rows)
+				console.log(bornes.includes(rows.idBorne))
+				    if(!(bornes.includes(rows.idBorne))){
+						bornes.push(rows);
+					}
+			}
+			console.log(bornes);
+			res.send(bornes);
+		} else {
+		  res.status(404).send({
+			error: 'there is no vehiucle that matches your filter on the database',
+		  });
+		}
+	
+	  }
+	  catch (err) {
+	
+		res.status(500).send({
+	
+		  error: err.message || "Some error occurred while getting list of Borne."
+	
+		});
+	  } 
+	
+	};
 
 const selectVehicuesOfAGivenAgent = async (req, res) => {
 	try {
@@ -752,6 +900,7 @@ const countVehicles = async (req,res) =>{
 export default {
 	setEtatVehicule,
 	getVehiculeDetails,
+	getBornesofVehicule,
 	selectVehicuesOfAGivenAgent,
 	getVehiculesEnServiceOfAGivenAgent,
 	getVehiculesHorsServiceOfAGivenAgent,
@@ -773,13 +922,13 @@ export default {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addPlanMaintenance">addPlanMaintenance</a></li><li><a href="global.html#createAdmin">createAdmin</a></li><li><a href="global.html#createAgent">createAgent</a></li><li><a href="global.html#createBorne">createBorne</a></li><li><a href="global.html#createDirigeant">createDirigeant</a></li><li><a href="global.html#createIdentite">createIdentite</a></li><li><a href="global.html#createOperateur">createOperateur</a></li><li><a href="global.html#createReclamation">createReclamation</a></li><li><a href="global.html#createTransaction">createTransaction</a></li><li><a href="global.html#createVehicule">createVehicule</a></li><li><a href="global.html#deleteAdmin">deleteAdmin</a></li><li><a href="global.html#deleteAgent">deleteAgent</a></li><li><a href="global.html#deleteAllAdmins">deleteAllAdmins</a></li><li><a href="global.html#deleteAllAgents">deleteAllAgents</a></li><li><a href="global.html#deleteAllDirigeants">deleteAllDirigeants</a></li><li><a href="global.html#deleteAllOperateurs">deleteAllOperateurs</a></li><li><a href="global.html#deleteBorne">deleteBorne</a></li><li><a href="global.html#deleteDirigeant">deleteDirigeant</a></li><li><a href="global.html#deleteIdentite">deleteIdentite</a></li><li><a href="global.html#deleteOperateur">deleteOperateur</a></li><li><a href="global.html#deletePlanMaintenance">deletePlanMaintenance</a></li><li><a href="global.html#deleteReclamation">deleteReclamation</a></li><li><a href="global.html#deleteVehicule">deleteVehicule</a></li><li><a href="global.html#filterTransaction">filterTransaction</a></li><li><a href="global.html#getAdmin">getAdmin</a></li><li><a href="global.html#getAgent">getAgent</a></li><li><a href="global.html#getAllAdmins">getAllAdmins</a></li><li><a href="global.html#getAllAgents">getAllAgents</a></li><li><a href="global.html#getAllBornes">getAllBornes</a></li><li><a href="global.html#getAllDirigeants">getAllDirigeants</a></li><li><a href="global.html#getAllIdentite">getAllIdentite</a></li><li><a href="global.html#getAllOperateurs">getAllOperateurs</a></li><li><a href="global.html#getAllReclamations">getAllReclamations</a></li><li><a href="global.html#getAllVehicule">getAllVehicule</a></li><li><a href="global.html#getBorne">getBorne</a></li><li><a href="global.html#getCommune">getCommune</a></li><li><a href="global.html#getDirigeant">getDirigeant</a></li><li><a href="global.html#getFilteredBornes">getFilteredBornes</a></li><li><a href="global.html#getLocataireOfIdentity">getLocataireOfIdentity</a></li><li><a href="global.html#getOneIdentite">getOneIdentite</a></li><li><a href="global.html#getOperateur">getOperateur</a></li><li><a href="global.html#getOperatorOfIdentity">getOperatorOfIdentity</a></li><li><a href="global.html#getPlanMaintenance">getPlanMaintenance</a></li><li><a href="global.html#getReclamationDetails">getReclamationDetails</a></li><li><a href="global.html#getTransaction">getTransaction</a></li><li><a href="global.html#getUserTransactions">getUserTransactions</a></li><li><a href="global.html#getVehiclesInABorne">getVehiclesInABorne</a></li><li><a href="global.html#getVehiculeDetails">getVehiculeDetails</a></li><li><a href="global.html#getVehiculeReservations">getVehiculeReservations</a></li><li><a href="global.html#getVehiculesEnServiceOfAGivenAgent">getVehiculesEnServiceOfAGivenAgent</a></li><li><a href="global.html#getVehiculesHorsServiceOfAGivenAgent">getVehiculesHorsServiceOfAGivenAgent</a></li><li><a href="global.html#getWilaya">getWilaya</a></li><li><a href="global.html#invalider">invalider</a></li><li><a href="global.html#selectIdentitieOfAGivenLocataire">selectIdentitieOfAGivenLocataire</a></li><li><a href="global.html#selectIdentitiesOfAGivenOperateur">selectIdentitiesOfAGivenOperateur</a></li><li><a href="global.html#setEtatVehicule">setEtatVehicule</a></li><li><a href="global.html#updateAdmin">updateAdmin</a></li><li><a href="global.html#updateAgent">updateAgent</a></li><li><a href="global.html#updateBorne">updateBorne</a></li><li><a href="global.html#updateDirigeant">updateDirigeant</a></li><li><a href="global.html#updateOperateur">updateOperateur</a></li><li><a href="global.html#updateVehicule">updateVehicule</a></li><li><a href="global.html#valider">valider</a></li><li><a href="global.html#verifyIfActionExists">verifyIfActionExists</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#createAdmin">createAdmin</a></li><li><a href="global.html#createAgent">createAgent</a></li><li><a href="global.html#createBorne">createBorne</a></li><li><a href="global.html#createDirigeant">createDirigeant</a></li><li><a href="global.html#createIdentite">createIdentite</a></li><li><a href="global.html#createOperateur">createOperateur</a></li><li><a href="global.html#createReclamation">createReclamation</a></li><li><a href="global.html#createReservation">createReservation</a></li><li><a href="global.html#createTransaction">createTransaction</a></li><li><a href="global.html#createVehicule">createVehicule</a></li><li><a href="global.html#deleteAdmin">deleteAdmin</a></li><li><a href="global.html#deleteAgent">deleteAgent</a></li><li><a href="global.html#deleteAllAdmins">deleteAllAdmins</a></li><li><a href="global.html#deleteAllAgents">deleteAllAgents</a></li><li><a href="global.html#deleteAllDirigeants">deleteAllDirigeants</a></li><li><a href="global.html#deleteAllOperateurs">deleteAllOperateurs</a></li><li><a href="global.html#deleteBorne">deleteBorne</a></li><li><a href="global.html#deleteDirigeant">deleteDirigeant</a></li><li><a href="global.html#deleteIdentite">deleteIdentite</a></li><li><a href="global.html#deleteOperateur">deleteOperateur</a></li><li><a href="global.html#deleteReclamation">deleteReclamation</a></li><li><a href="global.html#deleteVehicule">deleteVehicule</a></li><li><a href="global.html#filterTransaction">filterTransaction</a></li><li><a href="global.html#findReservationById">findReservationById</a></li><li><a href="global.html#getAdmin">getAdmin</a></li><li><a href="global.html#getAgent">getAgent</a></li><li><a href="global.html#getAllAdmins">getAllAdmins</a></li><li><a href="global.html#getAllAgents">getAllAgents</a></li><li><a href="global.html#getAllBornes">getAllBornes</a></li><li><a href="global.html#getAllDirigeants">getAllDirigeants</a></li><li><a href="global.html#getAllIdentite">getAllIdentite</a></li><li><a href="global.html#getAllOperateurs">getAllOperateurs</a></li><li><a href="global.html#getAllReclamations">getAllReclamations</a></li><li><a href="global.html#getAllVehicule">getAllVehicule</a></li><li><a href="global.html#getBorne">getBorne</a></li><li><a href="global.html#getCommune">getCommune</a></li><li><a href="global.html#getDirigeant">getDirigeant</a></li><li><a href="global.html#getFilteredBornes">getFilteredBornes</a></li><li><a href="global.html#getHistoriqueReservationsAllLocataire">getHistoriqueReservationsAllLocataire</a></li><li><a href="global.html#getLocataireOfIdentity">getLocataireOfIdentity</a></li><li><a href="global.html#getOneIdentite">getOneIdentite</a></li><li><a href="global.html#getOperateur">getOperateur</a></li><li><a href="global.html#getOperatorOfIdentity">getOperatorOfIdentity</a></li><li><a href="global.html#getReclamationDetails">getReclamationDetails</a></li><li><a href="global.html#getReservationAnnulee">getReservationAnnulee</a></li><li><a href="global.html#getTransaction">getTransaction</a></li><li><a href="global.html#getUserTransactions">getUserTransactions</a></li><li><a href="global.html#getVehiclesInABorne">getVehiclesInABorne</a></li><li><a href="global.html#getVehiculeDetails">getVehiculeDetails</a></li><li><a href="global.html#getVehiculeReservations">getVehiculeReservations</a></li><li><a href="global.html#getVehiculesEnServiceOfAGivenAgent">getVehiculesEnServiceOfAGivenAgent</a></li><li><a href="global.html#getVehiculesHorsServiceOfAGivenAgent">getVehiculesHorsServiceOfAGivenAgent</a></li><li><a href="global.html#getWilaya">getWilaya</a></li><li><a href="global.html#invalider">invalider</a></li><li><a href="global.html#listAllReservations">listAllReservations</a></li><li><a href="global.html#selectIdentitieOfAGivenLocataire">selectIdentitieOfAGivenLocataire</a></li><li><a href="global.html#selectReservationOfAGivenUser">selectReservationOfAGivenUser</a></li><li><a href="global.html#setEtatVehicule">setEtatVehicule</a></li><li><a href="global.html#updateAdmin">updateAdmin</a></li><li><a href="global.html#updateAgent">updateAgent</a></li><li><a href="global.html#updateBorne">updateBorne</a></li><li><a href="global.html#updateDirigeant">updateDirigeant</a></li><li><a href="global.html#updateOperateur">updateOperateur</a></li><li><a href="global.html#updateReservationById">updateReservationById</a></li><li><a href="global.html#updateVehicule">updateVehicule</a></li><li><a href="global.html#valider">valider</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Sat Jun 05 2021 14:55:02 GMT+0100 (heure normale d’Europe centrale)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Sun Jun 27 2021 23:12:28 GMT+0200 (heure d’été d’Europe centrale)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -5,7 +5,7 @@ const passwordValidator = require('password-validator')
 var bcrypt = require("bcryptjs");
 var jwt = require("jsonwebtoken");
 const db = require("../models");
-const Panne = db.pannne;
+const Panne = db.panne;
 const Vehicule = db.vehicules;
 
 
