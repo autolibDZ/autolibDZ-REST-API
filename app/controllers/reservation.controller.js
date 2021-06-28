@@ -626,7 +626,7 @@ const getHistoriqueReservationsAllLocataire = async(req, res) => {
 }
 
 const getHistoriqueReservationsLocataire = async(req, res) => {
-    const authHeader = req.headers['authorization']
+    /*const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
 
 
@@ -668,7 +668,7 @@ const getHistoriqueReservationsLocataire = async(req, res) => {
 
     }
 
-
+*/
     const reservations = await Reservation.findAll({ where: { idLocataire: req.params.id} })
 
     let historiqueReser = []
@@ -730,59 +730,110 @@ const getHistoriqueReservationsLocataire = async(req, res) => {
 
 }
 
+
+
+
 // Retourne une la liste des reservations avec retard de remise
 const getReservationsAvecRetard = async (req,res) => {
+
+    // verify access
+    const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(' ')[1]
+
+    if (token == null) {
+        res.status(403).send({
+            message: "Access Forbidden,invalide token",
+        });
+        return;
+    }
+
+    try {
+        const user = jwt.verify(token, process.env.JWT_SECRET);
+        if (user != undefined) {
+            const role = user.role
+            // Only admin can create Vehicule
+
+            if (role != "administrateur") {
+                res.status(403).send({
+                    message: "Access Forbidden,you can't do this operation",
+                });
+
+                return;
+            }
+        }
+
+    } catch (err) {
+        res.status(403).send({
+            message: "Access Forbidden,invalide token",
+        });
+
+        return;
+
+    }
+
     const etatReservation = 'En cours'
     try {
-        Reservation.belongsTo(Locataire,{foreignKey:'idLocataire'})
-        Reservation.belongsTo(Vehicule,{foreignKey:'idVehicule'})
-        Trajet.belongsTo(Reservation,{foreignKey:'idReservation'})
+        Reservation.belongsTo(Locataire, { foreignKey: 'idLocataire' })
+        Reservation.belongsTo(Vehicule, { foreignKey: 'idVehicule' })
+        Trajet.belongsTo(Reservation, { foreignKey: 'idReservation' })
         const retards = await Trajet.findAll({
-            include: [
-                {
-                    model:Reservation,
-                    include:[
-                        {
-                            model:Locataire,
-                            attributes:['idLocataire','nom','prenom']
-                        },
-                        {
-                            model: Vehicule,
-                            attributes:['numChassis','marque','modele']
-                        }
-                    ],
-                    attributes:['idReservation'],
-                    where:{
-                        etat:etatReservation
-                    }
+            include: [{
+                model: Reservation,
+                include: [{
+                    model: Locataire,
+                    attributes: ['idLocataire', 'nom', 'prenom']
                 },
-            ],
+                    {
+                        model: Vehicule,
+                        attributes: ['numChassis', 'marque', 'modele']
+                    }
+                ],
+                attributes: ['idReservation'],
+                where: {
+                    etat: etatReservation
+                }
+            }, ],
             attributes: ['dateFin'],
-            where:{
-                dateFin:{
+            where: {
+                dateFin: {
                     [sequelize.Op.lt]: sequelize.fn('NOW'),
                 }
             },
-            order: [['idReservation','ASC']]
+            order: [
+                ['idReservation', 'ASC']
+            ]
         })
-        if(retards.length!=0){
+        if (retards.length != 0) {
             res.send(retards)
-        }
-        else{
+        } else {
             res.status(404).send({
                 error: 'not_found',
                 message: 'No content',
                 status: 404,
             });
         }
-    }
-    catch (err) {
+    } catch (err) {
         res.status(500).send({
             error: err.message || 'Some error occured while getting retards'
         });
     }
 }
 
+const quitterVehicule = async(req, res) => {
+
+    Reservation.update({ etat: "Terminée" }, { where: { idReservation: req.body.idReservation } })
+        .then(() => {
+            res.send({
+                message: 'Reservation terminée !',
+            })
+        })
+        .catch((err) => {
+            res.status(500).send({
+                message: 'Erreur'
+            });
+
+        })
+}
 export default {
     createReservation,//locataire
     listAllReservations,//admin
@@ -795,5 +846,7 @@ export default {
     getHistoriqueReservationsLocataire,//locataire
     getHistoriqueReservationsAllLocataire,//locataire
     getReservationsAvecRetard,
+    quitterVehicule
+
 }
 //npm run start-test-windows
