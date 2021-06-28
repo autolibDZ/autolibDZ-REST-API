@@ -11,6 +11,8 @@ vehiculeRouter.get('/count', vehiculeController.countVehicles);
 
 // GET Details of a given vehicule's numero chassis
 vehiculeRouter.get('/:id', vehiculeController.getVehiculeDetails);
+vehiculeRouter.get('/ordi/:id', vehiculeController.getVehiculeDetailsOrdi);
+
 
 // GET All Vehicules
 vehiculeRouter.get('/', vehiculeController.getAllVehicule);

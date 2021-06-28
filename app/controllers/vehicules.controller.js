@@ -426,7 +426,35 @@ const getVehiculeDetails = async(req, res, next) => {
         });
     }
 };
+const getVehiculeDetailsOrdi = async(req, res, next) => {
 
+    try {
+        if (parseInt(req.params.id, 10)) {
+            console.log(req.params.id);
+            const vehicule = await Vehicule.findAll({
+                where: {
+                    numChassis: +req.params.id,
+                },
+            });
+            if (vehicule.length === 0) {
+                // No content with that numChassis
+                res.status(404).send({
+                    error: 'not_found',
+                    message: `No vehicule with such numero chassis: ${+req.params.id}`,
+                    status: 404,
+                });
+            } else {
+                res.status(200).send(vehicule[0]);
+            }
+        } else {
+            err.message = "ID has to be an integer";
+        }
+    } catch (err) {
+        res.status(500).send({
+            error: err.message || 'Some error occured while retreiving vehicule,s details',
+        });
+    }
+};
 
 /**
  * Get reservation history of the Vehicule that has the specified ID in request body 
@@ -887,5 +915,6 @@ export default {
     getAllVehicule,
     getVehiculeReservations,
     countVehicles,
-    updateEtatVehicule
+    updateEtatVehicule,
+    getVehiculeDetailsOrdi
 };
