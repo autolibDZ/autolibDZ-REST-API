@@ -1,33 +1,23 @@
 module.exports = function(sequelize, Sequelize) {
     const Identite = sequelize.define("identite", {
-        numeroPermis: {
-            type: Sequelize.DOUBLE,
-            primaryKey: true,
-        },
-        /*photo: {
-            type: Sequelize.STRING(255)
-        },*/
         idLocataire: {
-            type: Sequelize.INTEGER,
-
-        },
-        idOperateur: {
-            type: Sequelize.INTEGER,
+            type: Sequelize.INTEGER
         },
         valide: {
-            type : Sequelize.INTEGER
+            type : Sequelize.INTEGER,
+            defaultValue: 0 
         },
         idCloudinary:{
-            type: Sequelize.STRING(128),
+            type: Sequelize.STRING(128)
         } , 
         secureUrl: {
-            type: Sequelize.STRING(128),
+            type: Sequelize.STRING(128)
         },
         idCloudinaryPhotoSelfie: {
-            type: Sequelize.STRING(128),
+            type: Sequelize.STRING(128)
         },
         secureUrlPhotoSelfie: {
-            type: Sequelize.STRING(128),
+            type: Sequelize.STRING(128)
         }
     }, {
         freezeTableName: true,
@@ -38,9 +28,10 @@ module.exports = function(sequelize, Sequelize) {
 
     // Déclaration des clès étrangères
     Identite.associate = (models) => {
-        Identite.belongsTo(models.Operateur, {
+       /* Identite.belongsTo(models.Operateur, {
        foreignKey: 'idOperateur',
-        });
+        });*/
+    
    Identite.belongsTo(models.Locataire, {
           foreignKey: 'idLocataire',
         });

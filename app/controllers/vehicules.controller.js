@@ -358,46 +358,47 @@ const getAllVehicule = async(req, res) => {
  */
 
 const getVehiculeDetails = async(req, res, next) => {
-    /* // verify access
-	const authHeader = req.headers['authorization']
-	const token = authHeader && authHeader.split(' ')[1]
- 
-	if (token == null) {
-  
-	  res.status(403).send({
-		message: "Access Forbidden,invalide token",
-	  });
-	  return;
-	}
-  
-	try {
-  
-	  const user = jwt.verify(token, process.env.JWT_SECRET);
-  
-	  if (user != undefined) {
-  
-		const role = user.role
-  
-		// Only admin/locataire/agent can get vehiucle details
-  
-		if (role != "administrateur" && role != "locataire" && role != "agent" && role != "dirigeant" ) {
-  
-		  res.status(403).send({
-			message: "Access Forbidden,you can't do this operation",
-		  });
-  
-		  return;
-		}
-	  }
-  
-	} catch (err) {
-  
-	  res.status(403).send({
-		message: "Access Forbidden,invalide token",
-	  });
-  
-	  return;
-	}  */
+    // verify access
+
+    const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(' ')[1]
+
+    if (token == null) {
+
+        res.status(403).send({
+            message: "Access Forbidden,invalide token",
+        });
+        return;
+    }
+
+    try {
+
+        const user = jwt.verify(token, process.env.JWT_SECRET);
+
+        if (user != undefined) {
+
+            const role = user.role
+
+            // Only admin/locataire/agent can get vehiucle details
+
+            if (role != "administrateur" && role != "locataire" && role != "agent" && role != "dirigeant") {
+
+                res.status(403).send({
+                    message: "Access Forbidden,you can't do this operation",
+                });
+
+                return;
+            }
+        }
+
+    } catch (err) {
+
+        res.status(403).send({
+            message: "Access Forbidden,invalide token",
+        });
+
+        return;
+    }
     try {
         if (parseInt(req.params.id, 10)) {
             console.log(req.params.id);

@@ -310,41 +310,41 @@ const rechargezCarteAbonnement = async (req, res) => {
 
 const createAbonnement = async (req, res) => {
 
-	const authHeader = req.headers['authorization']
-	const token = authHeader && authHeader.split(' ')[1]
+	// const authHeader = req.headers['authorization']
+	// const token = authHeader && authHeader.split(' ')[1]
 
-	if (token == null) {
+	// if (token == null) {
 
-		res.status(403).send({
-			message: "Access Forbidden,invalid token",
-		});
-		return;
-	}
+	// 	res.status(403).send({
+	// 		message: "Access Forbidden,invalid token",
+	// 	});
+	// 	return;
+	// }
 
-	try {
-		const user = jwt.verify(token, process.env.JWT_SECRET);
-		if (user != undefined) {
+	// try {
+	// 	const user = jwt.verify(token, process.env.JWT_SECRET);
+	// 	if (user != undefined) {
 
-			const role = user.role
+	// 		const role = user.role
 
-			if (role != "administrateur") { //only administrateur can do this operation
-				res.status(403).send({
-					message: "Access Forbidden,you can't do this operation",
-				});
-				return;
+	// 		if (role != "administrateur") { //only administrateur can do this operation
+	// 			res.status(403).send({
+	// 				message: "Access Forbidden,you can't do this operation",
+	// 			});
+	// 			return;
 
-			} else {
-			}
+	// 		} else {
+	// 		}
 
-		}
+	// 	}
 
-	} catch (err) {
-		console.log("---->"+err)
-		res.status(403).send({
-			message: "Access Forbidden,invalid token",
-		});
-		return;
-	}
+	// } catch (err) {
+	// 	console.log("---->"+err)
+	// 	res.status(403).send({
+	// 		message: "Access Forbidden,invalid token",
+	// 	});
+	// 	return;
+	// }
 
 	// Validate request
 
