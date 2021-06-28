@@ -265,7 +265,7 @@ const findOne = async(req, res) => {
             const role = user.role
                 // Only admin can create Vehicule
 
-            if (role != "administrateur") {
+            if (role != "administrateur" || role != "locataire") {
                 res.status(403).send({
                     message: "Access Forbidden,you can't do this operation",
                 });
