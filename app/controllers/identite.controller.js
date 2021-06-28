@@ -296,7 +296,7 @@ const getAllIdentite = async (req,res)=> {
  */
  const selectIdentitieOfAGivenLocataire = async (req, res) => {
 	try {
-		const identities = await Identite.findAll({
+		const identities = await Identite.findOne({
 			where: {
 				idLocataire: +req.params.id,
 			},
