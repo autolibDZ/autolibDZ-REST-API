@@ -7,11 +7,11 @@ const cloudinary = require('cloudinary').v2;
 require('dotenv').config();
 
 // cloudinary configuration
-cloudinary.config({
+/*cloudinary.config({
 	cloud_name: process.env.CLOUD_NAME,
 	api_key: process.env.API_KEY,
 	api_secret: process.env.API_SECRET,
-});
+});*/ 
 
 
 /**
@@ -22,15 +22,11 @@ cloudinary.config({
 const createIdentite = async (req, res) => {
     // Create an identite
     const identite = {
-        //numeroPermis: req.body.numeroPermis,
-        photo: req.body.photo,
-        valide: req.body.valide,
         idLocataire: req.body.idLocataire,
-        //idOperateur: req.body.idOperateur,
-        idCloudinary: '',
-        secureUrl:'',
-        idCloudinaryPhotoSelfie: '',
-        secureUrlPhotoSelfie:''
+        idCloudinary: req.body.idPhoto,
+        secureUrl:req.body.photo,
+        idCloudinaryPhotoSelfie: req.body.idSelfie,
+        secureUrlPhotoSelfie:req.body.selfie
 
     };
 
@@ -44,7 +40,7 @@ const createIdentite = async (req, res) => {
     else{
       try{
         // upload image to cloudinary here
-        if (req.body.photo) {
+        /*if (req.body.photo) {
             const image = req.body.photo;
             try {
               ress = await cloudinary.uploader.upload(req.body.photo).then((result) => {
@@ -62,7 +58,7 @@ const createIdentite = async (req, res) => {
             return;
             }
 
-            if (req.body.selfie) {
+           if (req.body.selfie) {
               const image = req.body.photo;
               try {
                 ress = await cloudinary.uploader.upload(req.body.photo).then((result) => {
@@ -78,7 +74,7 @@ const createIdentite = async (req, res) => {
                   message:"Vous devez entrez une image de votre visage dans la borne!"             
               });
               return;
-              }
+              }*/ 
         data = await Identite.create(identite)
        .then(data => {
         res.status(200).send(data);

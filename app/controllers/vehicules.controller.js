@@ -343,7 +343,7 @@ const getAllVehicule = async (req, res) => {
  */
 
 const getVehiculeDetails = async (req, res, next) => {
-	/* // verify access
+	 // verify access
 	const authHeader = req.headers['authorization']
 	const token = authHeader && authHeader.split(' ')[1]
  
@@ -382,7 +382,7 @@ const getVehiculeDetails = async (req, res, next) => {
 	  });
   
 	  return;
-	}  */ 
+	}  
 	try {
 		if (parseInt(req.params.id, 10)) {
 			console.log(req.params.id);
