@@ -10,7 +10,7 @@ var jwt = require("jsonwebtoken");
 // Create and Save a new Claim
 
 const createReclamation = async (req, res) => {
-    // verify access
+   /* // verify access
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
     
@@ -51,7 +51,7 @@ const createReclamation = async (req, res) => {
       return;
     
     }
-
+*/
   // Create a Claim
 
   if (!req.body.description || !req.params.idLocataire || !req.body.type) {
@@ -63,7 +63,7 @@ const createReclamation = async (req, res) => {
 
   const reclamation = {
     description: req.body.description,
-    idLocataire: req.params.id,
+    idLocataire: req.params.idLocataire,
     type: req.body.type, 
   };
 
@@ -105,7 +105,7 @@ const createReclamation = async (req, res) => {
 
 const getReclamationDetails = async (req, res) => {
 
-      // verify access
+     /* // verify access
       const authHeader = req.headers['authorization']
       const token = authHeader && authHeader.split(' ')[1]
       
@@ -145,7 +145,7 @@ const getReclamationDetails = async (req, res) => {
       
         return;
       
-      }
+      }*/ 
 
   if (!req.params.id) {
 
@@ -192,7 +192,7 @@ const getReclamationDetails = async (req, res) => {
  */
 const getAllReclamations = async (req, res) => {
 
-  // verify access
+  /* // verify access
 	const authHeader = req.headers['authorization']
 	const token = authHeader && authHeader.split(' ')[1]
   
@@ -232,7 +232,7 @@ const getAllReclamations = async (req, res) => {
   
 	  return;
   
-	}
+	}*/ 
 
   try {
 
@@ -272,7 +272,7 @@ const getAllReclamations = async (req, res) => {
 
 const deleteReclamation = async (req, res) => {
 
-        // verify access
+     /*   // verify access
       const authHeader = req.headers['authorization']
       const token = authHeader && authHeader.split(' ')[1]
       
@@ -312,7 +312,7 @@ const deleteReclamation = async (req, res) => {
       
         return;
       
-      } 
+      } */ 
 	const id = req.params.id;
 
 	Reclamation.destroy({
