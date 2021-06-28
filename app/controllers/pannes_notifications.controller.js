@@ -2,6 +2,22 @@
 const db = require('../models');
 const panne = db.panne
 const vehicules = db.vehicules
+const Pusher = require('pusher')
+
+const appId = process.env.PUSHER_APP_ID
+const key = process.env.PUSHER_KEY
+const secret = process.env.PUSHER_SECRET
+const cluster = process.env.PUSHER_CLUSTER
+
+
+const pusher = new Pusher({
+    appId,
+    key,
+    secret,
+    cluster,
+    useTLS: true
+})
+
 // admin.initializeApp({
 //     credential: admin.credential.cert(serviceAccount)
 // });
@@ -38,6 +54,12 @@ const signalerPanne = async (req, res) => {
                     return res.status(500).send({ success: false, message: err.message })
                 })
             }
+            pusher.trigger('agent-maintenance-' + req.body.idAgentMaintenance, 'panne', panneData).then(result => {
+
+            }).catch(err => {
+                return res.status(500).send({ success: false, message: err.message })
+
+            })
 
             panne.create(panneData)
                 .then(data => {
