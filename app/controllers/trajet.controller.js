@@ -2,6 +2,8 @@ import { where } from 'sequelize';
 import vehiculeModel from '../models/vehicule.model';
 
 const db = require('../models');
+var bcrypt = require('bcryptjs');
+var jwt = require("jsonwebtoken");
 const Trajet = db.trajet;
 const Vehicule = db.vehicule
 var sequelize = require("sequelize");
@@ -252,6 +254,41 @@ const deleteTrajetById = async(req, res) => {
 };
 const countTrajetsByMonth = async(req, res) => {
 
+    // verify access
+	const authHeader = req.headers['authorization']
+	const token = authHeader && authHeader.split(' ')[1]
+  
+	if (token == null) {
+	  res.status(403).send({
+		message: "Access Forbidden,invalide token",
+	  });
+	  return;
+	}
+  
+	try {
+	  const user = jwt.verify(token, process.env.JWT_SECRET);
+	  if (user != undefined) {
+		const role = user.role
+		// Only admin can create Vehicule
+  
+		if (role != "administrateur") {
+		  res.status(403).send({
+			message: "Access Forbidden,you can't do this operation",
+		  });
+  
+		  return;
+		}
+	  }
+  
+	} catch (err) {
+	  res.status(403).send({
+		message: "Access Forbidden,invalide token",
+	  });
+  
+	  return;
+  
+	}
+
     // Validate request
     if (!req.params.year) {
         res.status(400).send({
@@ -288,8 +325,43 @@ const countTrajetsByMonth = async(req, res) => {
 };
 
 const getYears = async(req, res) => {
-    //const maxYearsToGet=5
+    
+    // verify access
+	const authHeader = req.headers['authorization']
+	const token = authHeader && authHeader.split(' ')[1]
+  
+	if (token == null) {
+	  res.status(403).send({
+		message: "Access Forbidden,invalide token",
+	  });
+	  return;
+	}
+  
+	try {
+	  const user = jwt.verify(token, process.env.JWT_SECRET);
+	  if (user != undefined) {
+		const role = user.role
+		// Only admin can create Vehicule
+  
+		if (role != "administrateur") {
+		  res.status(403).send({
+			message: "Access Forbidden,you can't do this operation",
+		  });
+  
+		  return;
+		}
+	  }
+  
+	} catch (err) {
+	  res.status(403).send({
+		message: "Access Forbidden,invalide token",
+	  });
+  
+	  return;
+  
+	}
 
+    //const maxYearsToGet=5
     try {
         const years = await Trajet.findAll({
             attributes: [
