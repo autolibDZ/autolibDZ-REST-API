@@ -1,4 +1,4 @@
-module.exports = function(sequelize, Sequelize) {
+module.exports = function (sequelize, Sequelize) {
 
     const Panne = sequelize.define("panne", {
         idPanne: {
@@ -21,6 +21,10 @@ module.exports = function(sequelize, Sequelize) {
         etat: {
             type: Sequelize.BOOLEAN,
             defaultValue: true
+        },
+        idAgentMaintenance: {
+            type: Sequelize.INTEGER
+
         }
 
     }, {
