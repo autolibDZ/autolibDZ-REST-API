@@ -9,7 +9,7 @@ module.exports = function(sequelize, Sequelize) {
             type: Sequelize.STRING(50),
             allowNull: false
         },
-        emailLocataire: {
+        idLocataire: {
             type: Sequelize.STRING(50),
             allowNull:false
         },
