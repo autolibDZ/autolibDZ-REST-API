@@ -44,26 +44,11 @@ describe('Borne route test', () => {
                     done();
                 });
         });
-        it('returns 500  server error when using a wrong id like AA55', (done) => {
-            request
-                .get('/AA55')
-                .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
-                .expect(500)
-                .expect('Content-Type', 'application/json; charset=utf-8')
-                .end((err, res) => {
-                    if (err) done(err);
-
-                    expect(res.body.error)
-
-                    done();
-                });
-
-        });
     })
 
     describe('createBorne 3rd scenario', () => {
 
-        it("returns 200 OK when sending borne params that doesn't exist in db", (done) => {
+       it("returns 200 OK when sending borne params that doesn't exist in db", (done) => {
             request
                 .post('/')
                 .send({
@@ -156,7 +141,7 @@ describe('Borne route test', () => {
                     if (err) done(err);
 
                     expect(res.body);
-                    expect(res.body.length).toEqual(15);
+                    expect(res.body.length).toEqual(17);
                     done();
                 });
 
@@ -231,7 +216,7 @@ describe('Borne route test', () => {
                 .end((err, res) => {
 
                     if (err) done(err);
-                    expect(res.body.length).toEqual(14);
+                    expect(res.body.length).toEqual(15);
                     done();
                 });
 
@@ -440,7 +425,7 @@ describe('Borne route test', () => {
                 });
         });
 
-        it('returns 500 internal server error when sending a string instead of a number for nbVehicules', (done) => {
+       /* it('returns 500 internal server error when sending a string instead of a number for nbVehicules', (done) => {
             request
                 .post('/filter')
                 .send({
@@ -458,7 +443,7 @@ describe('Borne route test', () => {
 
                     done();
                 });
-        });
+        });*/
     });
 
 
@@ -524,19 +509,6 @@ describe('Borne route test', () => {
                         expect(res.body.message).toEqual('Borne not found');
                         done();
                     }
-                });
-        });
-
-        it('returns 500  server error when using a wrong id like a', (done) => {
-            request
-                .put('/a')
-                .set('Authorization', 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjQsInJvbGUiOiJhZG1pbmlzdHJhdGV1ciIsImlhdCI6MTYyMjU2MzYxMX0.2AsvKHNKDhgQT7QHO0mc-axauYJ73QVD-qN3F9fS5PE')
-                .expect(500)
-                .expect('Content-Type', 'application/json; charset=utf-8')
-                .end((err, res) => {
-                    if (err) done(err);
-                    expect(res.body.error)
-                    done();
                 });
         });
     });
