@@ -1,6 +1,7 @@
 const db = require("../models");
 const Reclamation = db.reclamation;
 var jwt = require("jsonwebtoken");
+let sequelize = require("sequelize");
 
 /**
  * Create and save a new claim in database
@@ -10,7 +11,7 @@ var jwt = require("jsonwebtoken");
 // Create and Save a new Claim
 
 const createReclamation = async (req, res) => {
-    /*  // verify access
+   /* // verify access
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
     
@@ -50,11 +51,11 @@ const createReclamation = async (req, res) => {
     
       return;
     
-    }*/ 
-
+    }
+*/
   // Create a Claim
 
-  if (!req.body.description || !req.body.emailLocataire || !req.body.type) {
+  if (!req.body.description || !req.params.idLocataire || !req.body.type) {
     res.status(400).send({
       message: "parameters can't be empty!"
     })
@@ -63,7 +64,7 @@ const createReclamation = async (req, res) => {
 
   const reclamation = {
     description: req.body.description,
-    emailLocataire: req.body.emailLocataire,
+    idLocataire: req.params.idLocataire,
     type: req.body.type, 
   };
 
@@ -104,8 +105,8 @@ const createReclamation = async (req, res) => {
 //Return claim with idReclamation = id
 
 const getReclamationDetails = async (req, res) => {
-/*
-      // verify access
+
+     /* // verify access
       const authHeader = req.headers['authorization']
       const token = authHeader && authHeader.split(' ')[1]
       
@@ -145,7 +146,7 @@ const getReclamationDetails = async (req, res) => {
       
         return;
       
-      }
+      }*/ 
 
   if (!req.params.id) {
 
@@ -156,7 +157,7 @@ const getReclamationDetails = async (req, res) => {
     });
 
     return;
-  }*/ 
+  } 
 
   try {
     const id = req.params.id;
@@ -191,8 +192,8 @@ const getReclamationDetails = async (req, res) => {
  * @param {*} res response
  */
 const getAllReclamations = async (req, res) => {
-/*
-  // verify access
+
+  /* // verify access
 	const authHeader = req.headers['authorization']
 	const token = authHeader && authHeader.split(' ')[1]
   
@@ -271,8 +272,8 @@ const getAllReclamations = async (req, res) => {
 //Delete claim with idReclamaton = id
 
 const deleteReclamation = async (req, res) => {
-/*
-        // verify access
+
+     /*   // verify access
       const authHeader = req.headers['authorization']
       const token = authHeader && authHeader.split(' ')[1]
       
@@ -335,9 +336,84 @@ const deleteReclamation = async (req, res) => {
 			});
 		});
 };
+
+const countBugsByMonth = async(req, res) => {
+
+  // Validate request
+  if (!req.params.year) {
+      res.status(400).send({
+          message: "params 'year' can not be empty!",
+      });
+      return;
+  }
+
+  try {
+      let year = req.params.year;
+      const reclamations_par_mois = await Reclamation.findAll({
+          attributes: [
+              [sequelize.fn('date_part', 'month', sequelize.col('date')), 'month'],
+              [sequelize.fn('COUNT', sequelize.col('idReclamation')), 'countReclamations'],
+          ],
+          where: {
+            [sequelize.Op.and]:[
+              sequelize.where(sequelize.fn('date_part', 'year', sequelize.col('date')), year),
+              { type: "bug" }
+            ]
+          },
+          group: [sequelize.fn('date_part', 'month', sequelize.col('date'))],
+          order: [sequelize.fn('date_part', 'month', sequelize.col('date'))],
+      });
+      if (reclamations_par_mois.length != 0) {
+          res.send(reclamations_par_mois);
+      } else {
+          res.status(404).send({
+              error: 'not_found',
+              message: 'No content',
+              status: 404,
+          });
+      }
+  } catch (err) {
+      res.status(500).send({
+          error: err.message || 'Some error occured while counting bugs'
+      });
+  }
+};
+
+const getYears = async(req, res) => {
+  //const maxYearsToGet=5
+
+  try {
+      const years = await Reclamation.findAll({
+          attributes: [
+              [sequelize.fn('date_part', 'year', sequelize.col('date')), 'year'],
+          ],
+          where:{type: "bug"},
+          //order: [[sequelize.literal('"dateDebut"'), 'DESC']],
+          group: [sequelize.fn('date_part', 'year', sequelize.col('date'))],
+          order: [sequelize.fn('date_part', 'year', sequelize.col('date'))],
+          //limit :maxYearsToGet
+      });
+      if (years.length != 0) {
+          res.send(years);
+      } else {
+          res.status(404).send({
+              error: 'not_found',
+              message: 'No content',
+              status: 404,
+          });
+      }
+  } catch (err) {
+      res.status(500).send({
+          error: err.message || 'Some error occured while getting years'
+      });
+  }
+};
+
 export default {
     createReclamation,
     getReclamationDetails,
     getAllReclamations, 
-    deleteReclamation
+    deleteReclamation,
+    countBugsByMonth,
+    getYears
 }

@@ -175,47 +175,7 @@ const listAllReservations = (req, res) => {
         return;
 
     }
-  /*  const authHeader = req.headers['authorization']
-    const token = authHeader && authHeader.split(' ')[1]
 
-
-    if (token == null) {
-
-        res.status(403).send({
-            message: "Access Forbidden,invalide token",
-        });
-        return;
-    }
-
-    try {
-
-        const user = jwt.verify(token, process.env.JWT_SECRET);
-
-        if (user != undefined) {
-
-            const role = user.role
-
-
-
-            if (role != "locataire"   && role != "administrateur") {
-
-                res.status(403).send({
-                    message: "Access Forbidden,you can't do this operation",
-                });
-
-                return;
-            }
-        }
-
-    } catch (err) {
-
-        res.status(403).send({
-            message: "Access Forbidden,invalide token",
-        });
-
-        return;
-
-    }*/
     var condition = 1 === 1
 
     Reservation.findAll({ where: condition })
@@ -720,8 +680,11 @@ const getHistoriqueReservationsLocataire = async(req, res) => {
 if (reservation.etat!="Active"){
             let reservationFinale = {
                 idReservation: 0, etat: "", nomBorneDepart: "", numChassisVehicule: 0,
+
                 numImmatriculationVehicule: 0, modeleVehicule: "", marqueVehicule: "", nomBorneDestination: "",
                 dateReservation: null, dure: null, distance: null,prix:null
+
+
             }
 
             reservationFinale.idReservation = reservation.idReservation
@@ -741,6 +704,8 @@ if (reservation.etat!="Active"){
                 reservationFinale.numImmatriculationVehicule = vehiculeInfo.numImmatriculation
                 reservationFinale.modeleVehicule = vehiculeInfo.modele
                 reservationFinale.marqueVehicule = vehiculeInfo.marque
+                reservationFinale.secureUrl= vehiculeInfo.secureUrl
+
             }
             if (reservation.etat == "Terminée") {
                 const trajetInfo = await Trajet.findOne({where: {idReservation: reservation.idReservation}})
@@ -766,6 +731,58 @@ if (reservation.etat!="Active"){
 
 }
 
+// Retourne une la liste des reservations avec retard de remise
+const getReservationsAvecRetard = async (req,res) => {
+    const etatReservation = 'En cours'
+    try {
+        Reservation.belongsTo(Locataire,{foreignKey:'idLocataire'})
+        Reservation.belongsTo(Vehicule,{foreignKey:'idVehicule'})
+        Trajet.belongsTo(Reservation,{foreignKey:'idReservation'})
+        const retards = await Trajet.findAll({
+            include: [
+                {
+                    model:Reservation,
+                    include:[
+                        {
+                            model:Locataire,
+                            attributes:['idLocataire','nom','prenom']
+                        },
+                        {
+                            model: Vehicule,
+                            attributes:['numChassis','marque','modele']
+                        }
+                    ],
+                    attributes:['idReservation'],
+                    where:{
+                        etat:etatReservation
+                    }
+                },
+            ],
+            attributes: ['dateFin'],
+            where:{
+                dateFin:{
+                    [sequelize.Op.lt]: sequelize.fn('NOW'),
+                }
+            },
+            order: [['idReservation','ASC']]
+        })
+        if(retards.length!=0){
+            res.send(retards)
+        }
+        else{
+            res.status(404).send({
+                error: 'not_found',
+                message: 'No content',
+                status: 404,
+            });
+        }
+    } 
+    catch (err) {
+        res.status(500).send({
+            error: err.message || 'Some error occured while getting retards'
+        });
+    }
+}
 
 export default {
     createReservation,//locataire
@@ -778,6 +795,6 @@ export default {
     getReservationAnnulee,
     getHistoriqueReservationsLocataire,//locataire
     getHistoriqueReservationsAllLocataire,//locataire
-
+    getReservationsAvecRetard,
 }
 //npm run start-test-windows
