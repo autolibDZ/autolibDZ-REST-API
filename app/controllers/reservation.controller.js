@@ -626,7 +626,7 @@ const getHistoriqueReservationsAllLocataire = async(req, res) => {
 }
 
 const getHistoriqueReservationsLocataire = async(req, res) => {
-    const authHeader = req.headers['authorization']
+   /* const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
 
 
@@ -668,7 +668,7 @@ const getHistoriqueReservationsLocataire = async(req, res) => {
 
     }
 
-
+*/
 
     const reservations = await Reservation.findAll({ where: { idLocataire: req.params.id} })
 
