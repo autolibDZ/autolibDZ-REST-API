@@ -11,13 +11,13 @@ identiteRouter.get("/",identiteController.getAllIdentite);
 identiteRouter.get("/:numeroPermis/operateur",identiteController.getOperatorOfIdentity)
 
 //Get information of the locataire
-//identiteRouter.get("/:numeroPermis/locataire",identiteController.getLocataireOfIdentity)
+identiteRouter.get("/:id/locataire",identiteController.getLocataireOfIdentity)
 
 //Validate identity
-identiteRouter.put("/:numeroPermis/valider",identiteController.valider)
+identiteRouter.put("/:id/valider",identiteController.valider)
 
 //invalidate identity
-identiteRouter.put("/:numeroPermis/invalider",identiteController.invalider)
+identiteRouter.put("/:id/invalider",identiteController.invalider)
 
 // GET All Identities for a certain operator
 //identiteRouter.get('/operateur/:id',identiteController.selectIdentitiesOfAGivenOperateur);
