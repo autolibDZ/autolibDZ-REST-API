@@ -12,7 +12,7 @@ module.exports = function (sequelize, Sequelize) {
         latitude: {
             type: Sequelize.FLOAT
         },
-        longtitude: {
+        longitude: {
             type: Sequelize.FLOAT
         },
         idVehicule: {
@@ -21,6 +21,10 @@ module.exports = function (sequelize, Sequelize) {
         etat: {
             type: Sequelize.BOOLEAN,
             defaultValue: true
+        },
+        idAgentMaintenance: {
+            type: Sequelize.INTEGER
+
         }
 
     }, {
