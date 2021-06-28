@@ -1,6 +1,7 @@
 const db = require('../models');
 var bcrypt = require('bcryptjs');
 var jwt = require("jsonwebtoken");
+var sequelize = require("sequelize")
 
 const Reservation = db.reservation;
 const Borne = db.borne;

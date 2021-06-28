@@ -3,6 +3,8 @@ const router = express.Router();
 
 import dirigeantControleur from "../controllers/dirigeant.controller";
 
+router.get('/sumAvgSalaries', dirigeantControleur.getSumAvgSalaries);
+
 router.get('/', dirigeantControleur.getAllDirigeants);
 router.get('/:id', dirigeantControleur.getDirigeant);
 router.post('/',dirigeantControleur.createDirigeant);
