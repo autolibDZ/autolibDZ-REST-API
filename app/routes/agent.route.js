@@ -3,6 +3,8 @@ const router = express.Router();
 
 import agentControleur from "../controllers/agent.controller";
 
+router.get('/sumAvgSalaries', agentControleur.getSumAvgSalaries);
+
 router.get('/', agentControleur.getAllAgents);
 router.get('/:id', agentControleur.getAgent);
 router.post('/',agentControleur.createAgent);

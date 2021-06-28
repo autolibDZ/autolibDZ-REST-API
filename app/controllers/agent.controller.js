@@ -263,11 +263,75 @@ const deleteAllAgents = (req, res) => {
         });
     });
 };
+
+// Retourne la somme et la moyenne des salaires pour les agents de maintenance
+const getSumAvgSalaries = async (req,res) =>{
+
+    // verify access
+	const authHeader = req.headers['authorization']
+	const token = authHeader && authHeader.split(' ')[1]
+  
+	if (token == null) {
+	  res.status(403).send({
+		message: "Access Forbidden,invalide token",
+	  });
+	  return;
+	}
+  
+	try {
+	  const user = jwt.verify(token, process.env.JWT_SECRET);
+	  if (user != undefined) {
+		const role = user.role
+		// Only admin can create Vehicule
+  
+		if (role != "administrateur") {
+		  res.status(403).send({
+			message: "Access Forbidden,you can't do this operation",
+		  });
+  
+		  return;
+		}
+	  }
+  
+	} catch (err) {
+	  res.status(403).send({
+		message: "Access Forbidden,invalide token",
+	  });
+  
+	  return;
+  
+	}
+    
+    try{
+        let sum_salaries = 0,count_salaries=0
+        sum_salaries  = await Agent.sum('salaire')
+        count_salaries = await Agent.count('salaire')
+        if(sum_salaries>0 && count_salaries>0){
+            res.send({sum: sum_salaries,avg:sum_salaries/count_salaries})
+        }
+        else{
+            res.status(404).send({
+                error: 'not_found',
+                message: 'No content',
+                status: 404,
+            })
+        }
+        
+
+    }
+    catch(err){
+        res.status(500).send({
+            error: err.message || 'Some error occured while getting salaries'
+        });
+    }
+}
+
 export default {
     createAgent,
     getAllAgents,
     getAgent,
     updateAgent,
     deleteAgent,
-    deleteAllAgents
+    deleteAllAgents,
+    getSumAvgSalaries
 };
