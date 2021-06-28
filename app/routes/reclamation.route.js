@@ -9,7 +9,7 @@ reclamationRouter.get("/getYears", reclamationController.getYears);
 reclamationRouter.get("/countByMonth/:year", reclamationController.countBugsByMonth);
 
 // POST to create a claim
-reclamationRouter.post('/', reclamationController.createReclamation);
+reclamationRouter.post('/:idLocataire', reclamationController.createReclamation);
 
 // DELETE to delete a claim with  a specific ID 
 reclamationRouter.delete('/:id', reclamationController.deleteReclamation);
