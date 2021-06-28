@@ -6,7 +6,8 @@ const environment = process.env.NODE_ENV;
 console.log(process.env.NODE_ENV);
 var toExport;
 console.log("---------_>"+environment)
-if(environment != "test"){
+if (environment == "development"){
+//if(environment != "test"){
   console.log("***** DEV Environment *****")
   toExport = {
     HOST: process.env.DB_HOST,
