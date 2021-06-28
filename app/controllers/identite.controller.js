@@ -129,14 +129,14 @@ const createIdentite = async (req, res) => {
  * @param {*} res la reponse
  */
   const valider= async (req, res) => {
-    const numeroPermis = req.params.numeroPermis;
+    const id = req.params.id;
   
     req.body = {
         valide: 1
     }
 
     Identite.update(req.body, {
-      where: { numeroPermis: numeroPermis }
+      where: { id: id }
     })
       .then(num => {
         if (num == 1) {
@@ -145,13 +145,13 @@ const createIdentite = async (req, res) => {
           });
         } else {
           res.send({
-            message: `Cannot validate identity with numPermis=${numeroPermis}. Maybe Identity was not found!`
+            message: `Cannot validate identity with numPermis=${id}. Maybe Identity was not found!`
           });
         }
       })
       .catch(err => {
         res.status(500).send({
-          message: "Error validating identity with numPermis=" + numeroPermis
+          message: "Error validating identity with numPermis=" + id
         });
       });
   };
@@ -161,14 +161,14 @@ const createIdentite = async (req, res) => {
  * @param {*} res la reponse
  */
   const invalider= async (req, res) => {
-    const numeroPermis = req.params.numeroPermis;
+    const id = req.params.id;
   
     req.body = {
         valide: 0
     }
 
     Identite.update(req.body, {
-      where: { numeroPermis: numeroPermis }
+      where: { id: id }
     })
       .then(num => {
         if (num == 1) {
@@ -177,13 +177,13 @@ const createIdentite = async (req, res) => {
           });
         } else {
           res.send({
-            message: `Cannot invalidate identity with numPermis=${numeroPermis}. Maybe Identity was not found!`
+            message: `Cannot invalidate identity with numPermis=${id}. Maybe Identity was not found!`
           });
         }
       })
       .catch(err => {
         res.status(500).send({
-          message: "Error invalidating identity with numPermis=" + numeroPermis
+          message: "Error invalidating identity with numPermis=" + id
         });
       });
   };
@@ -221,13 +221,14 @@ const getOperatorOfIdentity = async (req, res) =>{
  * @param {*} req la requete
  * @param {*} res la reponse
  */
-/*
+
 const getLocataireOfIdentity = async (req, res) =>{
   //Récupérer le numéro de permis validé
   const id = req.params.id;
   Identite.findByPk(id)
   .then(data => {
     const idLocataire = data.dataValues.idLocataire;
+    console.log(idLocataire);
     Locataire.findByPk(idLocataire)
     .then(data => {
        res.send(data);
@@ -244,7 +245,7 @@ const getLocataireOfIdentity = async (req, res) =>{
     });
   });
 }
-*/
+
 
 
 
@@ -320,7 +321,7 @@ export default {
     getAllIdentite,
     getOneIdentite,
     getOperatorOfIdentity,
-    //getLocataireOfIdentity,
+    getLocataireOfIdentity,
     valider,
     invalider,
     selectIdentitieOfAGivenLocataire
