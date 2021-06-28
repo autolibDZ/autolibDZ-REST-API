@@ -64,7 +64,7 @@ const createTrajet = async(req, res) => {
     }
 */
 
-        if (!req.body.dateDebut  || !req.body.tempsEstime  || !req.body.idReservation) {
+        if (!req.body.dateDebut || !req.body.idReservation) {
             res.status(400).send({
                 message: "Content can not be empty!"
             });

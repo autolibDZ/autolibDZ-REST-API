@@ -17,10 +17,13 @@ const Trajet = db.trajet;
  * @returns {object} The reservation that created
  */
 
-
+// La creation d'une reservation et la modification du valeur nbVehicules dans la borne choisie
 const createReservation = async(req, res) => {
     // verify access
+    //Quand le locataire est connecter on lui genere un session (jwt)
+    //On lit la valeur de l'authorization header qui est sous le format Bearer + Token
    const authHeader = req.headers['authorization']
+    //On recupere le token
     const token = authHeader && authHeader.split(' ')[1]
 
 
@@ -33,11 +36,11 @@ const createReservation = async(req, res) => {
     }
 
     try {
-
+// La verification de l'identité
       const user = jwt.verify(token, process.env.JWT_SECRET);
 
       if (user != undefined) {
-
+//on recupere le role du user
         const role = user.role
 
 
@@ -63,14 +66,14 @@ const createReservation = async(req, res) => {
     }
 
 
-
+//On verifie que les valeurs de la requete ne sont pas a null
     if (!req.body.etat || !req.body.idVehicule || !req.body.idLocataire || !req.body.idBorneDepart || !req.body.idBorneDestination) {
         res.status(400).send({
             message: "Content can not be empty!"
         });
         return;
     }
-
+// la genereation d'un code pin hashé
     var pin = Math.floor(Math.random() * 9000) + 1000;
     var salt = bcrypt.genSaltSync(10);
     var hash = bcrypt.hashSync(pin.toString(), salt);
@@ -87,7 +90,7 @@ const createReservation = async(req, res) => {
         prixEstime: req.body.prixEstime,
     };
     try {
-
+//La creation d'une reservation
         let data;
         data = await Reservation.create(reservation)
         res.status(200).send({
@@ -95,12 +98,13 @@ const createReservation = async(req, res) => {
             id: data.idReservation
 
         })
-
+//On recupere la borne de depart
         const bornes = await Borne.findAll({ where: { idBorne: req.body.idBorneDepart} })
 
 
 
         if (bornes != null) {
+            //le nombre de vehicules dans la borne -1
             for (const born of bornes) {
                 let nb=born.nbVehicules
                 nb= nb-1
@@ -132,7 +136,11 @@ const createReservation = async(req, res) => {
  * @param {*} res The response
  * @returns {*} A list of reservations
  */
+
 const listAllReservations = (req, res) => {
+    // verify access
+    //Quand le locataire est connecter on lui genere un session (jwt)
+    //On lit la valeur de l'authorization header qui est sous le format Bearer + Token
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
 
@@ -268,7 +276,7 @@ const findReservationById = async(req, res) => {
         return;
 
     }
-
+//On recupere la reservation qui a l'id
     try {
         const reservation = await Reservation.findAll({
             where: {
@@ -291,6 +299,7 @@ const findReservationById = async(req, res) => {
  * @param {*} res The response
  * @returns {*} a message
  */
+
 const updateReservationById = async(req, res) => {
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
@@ -333,9 +342,13 @@ const updateReservationById = async(req, res) => {
         return;
 
     }
+    // On recupere l'id de la reservation
     const id = req.params.id;
+    //On cherche le reservation qui ce id
     const reservations = await Reservation.findOne({ where: { idReservation: id} })
+    //On chereche la borne se depart de la reservation
     const bornes = await Borne.findAll({ where: { idBorne: req.body.idBorneDepart} })
+    //On modifie la valeur de la reservatioon
     Reservation.update(req.body, {
             where: { idReservation: id }
         })
@@ -344,6 +357,7 @@ const updateReservationById = async(req, res) => {
                 res.send({
                     message: "Reservation was updated successfully."
                 });
+                //Si la reservation est annulée on doit modifie la valeur de nbVehicules dans la borne
              if (reservations.etat ="Annulée")
              {
                  if (bornes != null) {
@@ -456,6 +470,7 @@ const selectReservationOfAGivenUser = async(req, res) => {
         return;
 
     }
+    // on recupere la liste des reservations d'un locataire
     try {
         const reservations = await Reservation.findAll({
             where: {
@@ -540,6 +555,7 @@ const verifyCodePin = async(req, res) => {
  * @param {*} res The response
  * @returns {*} A list of reservations
  */
+//On recupere la liste des reservations d'un locataire avec les details des reservation
 const getHistoriqueReservationsAllLocataire = async(req, res) => {
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
@@ -582,15 +598,15 @@ const getHistoriqueReservationsAllLocataire = async(req, res) => {
         return;
 
     }
-
+//On recupere la liste des reservation d'un locataire
     const reservations = await Reservation.findAll({ where: { idLocataire: req.params.id } })
-
+//on cree une variable historiqueReser pour stocker les reservations
     let historiqueReser = []
 
 
     if (reservations != null) {
         for (const reservation of reservations) {
-
+//on cree une variable reservationFinale pour stocker les details de chaque reservation
             let reservationFinale = {
                 idReservation: 0,
                 etat: "",
@@ -624,6 +640,7 @@ const getHistoriqueReservationsAllLocataire = async(req, res) => {
                 reservationFinale.marqueVehicule = vehiculeInfo.marque
             }
             if (reservation.etat == "Terminée") {
+                //Recuperation des infos du trajet
                 const trajetInfo = await Trajet.findOne({ where: { idReservation: reservation.idReservation } })
                 if (trajetInfo != null) {
                     reservationFinale.dateReservation = trajetInfo.dateDebut
@@ -632,6 +649,7 @@ const getHistoriqueReservationsAllLocataire = async(req, res) => {
 
                 }
             }
+            //On stock les reservations dans historiqueReser
             historiqueReser.push(reservationFinale)
 
 
@@ -761,3 +779,4 @@ export default {
     getHistoriqueReservationsAllLocataire,//locataire
 
 }
+//npm run start-test-windows
