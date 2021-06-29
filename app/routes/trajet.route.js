@@ -10,7 +10,7 @@ trajetRouter.post('/createDebutTrajet', trajetController.createDebutTrajet);
 trajetRouter.put('/updateFinTrajet', trajetController.updateFinTrajet);
 
 trajetRouter.get('/', trajetController.listAllTrajets);
-trajetRouter.post('/getTrajetByReservation', trajetController.getTrajetByResrvation);
+trajetRouter.get('/getTrajetByReservation/:id', trajetController.getTrajetByResrvation);
 
 trajetRouter.get('/:id', trajetController.findTrajetById);
 trajetRouter.put('/:id', trajetController.updateTrajetById);
