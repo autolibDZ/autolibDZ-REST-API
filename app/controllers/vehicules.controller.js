@@ -19,7 +19,7 @@ let sequelize = require("sequelize");
  */
 // Create and Save a new Vehicule
 
-const createVehicule = async(req, res) => {
+const createVehicule = async (req, res) => {
 
     // verify access
     const authHeader = req.headers['authorization']
@@ -38,7 +38,7 @@ const createVehicule = async(req, res) => {
         const user = jwt.verify(token, process.env.JWT_SECRET);
         if (user != undefined) {
             const role = user.role
-                // Only admin can create Vehicule
+            // Only admin can create Vehicule
 
             if (role != "administrateur") {
                 res.status(403).send({
@@ -84,7 +84,9 @@ const createVehicule = async(req, res) => {
         idBorne: req.body.idBorne,
         idAgentMaintenance: req.body.idAgentMaintenance,
         idCloudinary: req.body.idCloudinary,
-        secureUrl: req.body.secureUrl
+        secureUrl: req.body.secureUrl,
+        longitude: "",
+        latitude: ""
     };
 
     // Ajout d'un véhicule à la base de données
@@ -100,7 +102,16 @@ const createVehicule = async(req, res) => {
             });
         } else {
             const borne = await Borne.findOne({ where: { idBorne: req.body.idBorne } })
-                // update borne params 
+            vehicule.longitude = borne.longitude;
+            vehicule.latitude = borne.latitude;
+
+            if (borne.nbPlaces == 0) {
+                res.status(400).send({
+                    message: "You can't add to this borne, no places available ",
+                });
+                return;
+            }
+            // update borne params 
             const update = await Borne.update({ nbPlaces: borne.nbPlaces - 1 }, { where: { idBorne: req.body.idBorne } })
 
             let data;
@@ -122,12 +133,12 @@ const createVehicule = async(req, res) => {
  */
 //Delete vehicule with numChassis = id
 
-const deleteVehicule = async(req, res) => {
+const deleteVehicule = async (req, res) => {
     const id = req.params.id;
 
     Vehicule.destroy({
-            where: { numChassis: id },
-        })
+        where: { numChassis: id },
+    })
         .then((num) => {
             if (num == 1) {
                 res.send({
@@ -154,116 +165,116 @@ const deleteVehicule = async(req, res) => {
 //Update vehicule with numChassis = id
 const updateVehicule = async (req, res) => {
 
-	// verify access
-	const authHeader = req.headers['authorization']
-	const token = authHeader && authHeader.split(' ')[1]
-  
-  
-	if (token == null) {
-  
-	  res.status(403).send({
-		message: "Access Forbidden,invalide token",
-	  });
-	  return;
-	}
-  
-	try {
-  
-	  const user = jwt.verify(token, process.env.JWT_SECRET);
-  
-	  if (user != undefined) {
-  
-		const role = user.role
-  
-		// Only admin can update Vehicule
-  
-		if (role != "administrateur") {
-  
-		  res.status(403).send({
-			message: "Access Forbidden,you can't do this operation",
-		  });
-  
-		  return;
-		}
-	  }
-  
-	} catch (err) {
-  
-	  res.status(403).send({
-		message: "Access Forbidden,invalide token",
-	  });
-  
-	  return;
-  
-	} 
-	try {
-		if (parseInt(req.params.id, 10)) {
-			const vehicule = await Vehicule.findOne({
-			  where: {
-				numChassis: req.params.id
-			  }
-			});
-			if (vehicule) {    // Check if record exists in db
-			  let idAnienneBorne= vehicule.idBorne
-			  let updatedVehicule = await vehicule.update(req.body)
-			  if (updatedVehicule) {
-				  if(req.body.etat=="supprime"){
-						const borne = await Borne.findOne({ where: { idBorne: req.body.idBorne } })
-						// Incrémenter le nombre de places libres dans la borne 
-						const update = await Borne.update(
-							{ nbPlaces: borne.nbPlaces+1},
-							{ where: { idBorne: req.body.idBorne } }
-						)
-				  }
-				  // Si on affecte le véhicule à une nouvelle borne
-				  if(idAnienneBorne != req.body.idBorne) {
-					  // Incrémneter le nombre de places libres dans l'ancinne borne
-					    console.log("ID Ancienne borne")
-						console.log(idAnienneBorne)
-					  const ancienneBorne = await Borne.findOne({ where: { idBorne: idAnienneBorne} })
-						let updateAncienneBorne = await Borne.update(
-							{ nbPlaces: ancienneBorne.nbPlaces+1},
-							{ where: { idBorne: idAnienneBorne} }
-						)
+    // verify access
+    const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(' ')[1]
 
-						// Décremneter le nombre de places libres dans la nouvelle borne 
-						console.log("ID Nouvelle borne ")
-						console.log(req.body.idBorne)
-						const nouvelleBorne = await Borne.findOne({ where: { idBorne: req.body.idBorne } })
-						let updateNouvelleBorne = await Borne.update(
-							{ nbPlaces: nouvelleBorne.nbPlaces-1},
-							{ where: { idBorne: req.body.idBorne } }
-						)
 
-				  }
-				res.status(200).send({
-				  data: updatedVehicule,
-				  message: 'Vehicule was updated successfully.',
-				});
-			  } else {
-				res.status(404).send({
-				  message: "Cannot update vehicule with numChassis: " + id
-				});
-			  }
-			} else {
-			  res.status(404).send({
-				error: "not_found",
-				message: "Vehicule not found"
-			  });
-			}
-		}
-		else{
-			err.message="ID has to be an integer";
-		}
-		  } catch (err) {
-			res.status(500).send({
-			  message: err.message || "Some error occured while updating vehicule with numChassis: " + req.params.id
-			});
-		  }
+    if (token == null) {
+
+        res.status(403).send({
+            message: "Access Forbidden,invalide token",
+        });
+        return;
+    }
+
+    try {
+
+        const user = jwt.verify(token, process.env.JWT_SECRET);
+
+        if (user != undefined) {
+
+            const role = user.role
+
+            // Only admin can update Vehicule
+
+            if (role != "administrateur") {
+
+                res.status(403).send({
+                    message: "Access Forbidden,you can't do this operation",
+                });
+
+                return;
+            }
+        }
+
+    } catch (err) {
+
+        res.status(403).send({
+            message: "Access Forbidden,invalide token",
+        });
+
+        return;
+
+    }
+    try {
+        if (parseInt(req.params.id, 10)) {
+            const vehicule = await Vehicule.findOne({
+                where: {
+                    numChassis: req.params.id
+                }
+            });
+            if (vehicule) {    // Check if record exists in db
+                let idAnienneBorne = vehicule.idBorne
+                let updatedVehicule = await vehicule.update(req.body)
+                if (updatedVehicule) {
+                    if (req.body.etat == "supprime") {
+                        const borne = await Borne.findOne({ where: { idBorne: req.body.idBorne } })
+                        // Incrémenter le nombre de places libres dans la borne 
+                        const update = await Borne.update(
+                            { nbPlaces: borne.nbPlaces + 1 },
+                            { where: { idBorne: req.body.idBorne } }
+                        )
+                    }
+                    // Si on affecte le véhicule à une nouvelle borne
+                    if (idAnienneBorne != req.body.idBorne) {
+                        // Incrémneter le nombre de places libres dans l'ancinne borne
+                        console.log("ID Ancienne borne")
+                        console.log(idAnienneBorne)
+                        const ancienneBorne = await Borne.findOne({ where: { idBorne: idAnienneBorne } })
+                        let updateAncienneBorne = await Borne.update(
+                            { nbPlaces: ancienneBorne.nbPlaces + 1 },
+                            { where: { idBorne: idAnienneBorne } }
+                        )
+
+                        // Décremneter le nombre de places libres dans la nouvelle borne 
+                        console.log("ID Nouvelle borne ")
+                        console.log(req.body.idBorne)
+                        const nouvelleBorne = await Borne.findOne({ where: { idBorne: req.body.idBorne } })
+                        let updateNouvelleBorne = await Borne.update(
+                            { nbPlaces: nouvelleBorne.nbPlaces - 1 },
+                            { where: { idBorne: req.body.idBorne } }
+                        )
+
+                    }
+                    res.status(200).send({
+                        data: updatedVehicule,
+                        message: 'Vehicule was updated successfully.',
+                    });
+                } else {
+                    res.status(404).send({
+                        message: "Cannot update vehicule with numChassis: " + id
+                    });
+                }
+            } else {
+                res.status(404).send({
+                    error: "not_found",
+                    message: "Vehicule not found"
+                });
+            }
+        }
+        else {
+            err.message = "ID has to be an integer";
+        }
+    } catch (err) {
+        res.status(500).send({
+            message: err.message || "Some error occured while updating vehicule with numChassis: " + req.params.id
+        });
+    }
 
 };
 
-const updateEtatVehicule = async(req, res) => {
+const updateEtatVehicule = async (req, res) => {
 
 
     if (!req.body.pressionHuileMoteur || !req.body.chargeBatterie || !req.body.pressionPneus) {
@@ -297,7 +308,7 @@ const updateEtatVehicule = async(req, res) => {
  * @param {*} res response
  */
 
-const getAllVehicule = async(req, res) => {
+const getAllVehicule = async (req, res) => {
 
     // verify access
     const authHeader = req.headers['authorization']
@@ -342,12 +353,12 @@ const getAllVehicule = async(req, res) => {
 
     }
     Vehicule.findAll({
-            where: {
-                etat: {
-                    [Op.ne]: "supprime", // Tous les véhicules sauf ceux qui sont supprimés
-                },
+        where: {
+            etat: {
+                [Op.ne]: "supprime", // Tous les véhicules sauf ceux qui sont supprimés
             },
-        })
+        },
+    })
         .then((data) => {
             res.send(data);
         })
@@ -368,7 +379,7 @@ const getAllVehicule = async(req, res) => {
  * @param {*} next Used to move on to the next middleware
  */
 
-const getVehiculeDetails = async(req, res, next) => {
+const getVehiculeDetails = async (req, res, next) => {
     // verify access
 
     const authHeader = req.headers['authorization']
@@ -437,7 +448,7 @@ const getVehiculeDetails = async(req, res, next) => {
         });
     }
 };
-const getVehiculeDetailsOrdi = async(req, res, next) => {
+const getVehiculeDetailsOrdi = async (req, res, next) => {
 
     try {
         if (parseInt(req.params.id, 10)) {
@@ -472,7 +483,7 @@ const getVehiculeDetailsOrdi = async(req, res, next) => {
  * @param {*} req The request
  * @param {*} res The response
  */
-const getVehiculeReservations = async(req, res, next) => {
+const getVehiculeReservations = async (req, res, next) => {
 
     // verify access
     const authHeader = req.headers['authorization']
@@ -619,7 +630,7 @@ const getVehiculeReservations = async(req, res, next) => {
     }
 };
 
-const getBornesofVehicule = async(req, res) => {
+const getBornesofVehicule = async (req, res) => {
 
 
     // verify access
@@ -724,7 +735,7 @@ const getBornesofVehicule = async(req, res) => {
 
 };
 
-const selectVehicuesOfAGivenAgent = async(req, res) => {
+const selectVehicuesOfAGivenAgent = async (req, res) => {
     try {
         if (parseInt(req.params.id, 10)) {
             const vehicules = await Vehicule.findAll({
@@ -762,7 +773,7 @@ const selectVehicuesOfAGivenAgent = async(req, res) => {
  * @param {*} req The client requeest
  * @param {*} res The server response
  */
-const setEtatVehicule = async(req, res) => {
+const setEtatVehicule = async (req, res) => {
     try {
         let state = req.body.etat;
         if (state) {
@@ -783,7 +794,7 @@ const setEtatVehicule = async(req, res) => {
                     res.status(404).send({
                         error: 'not_found',
                         message: `No vehicule with such numero chassis: ${+req.params
-							.numChassis}`,
+                            .numChassis}`,
                         status: 404,
                     });
                 } else {
@@ -819,7 +830,7 @@ const setEtatVehicule = async(req, res) => {
  * @param {*} res The server response
  */
 
-const getVehiculesEnServiceOfAGivenAgent = async(req, res) => {
+const getVehiculesEnServiceOfAGivenAgent = async (req, res) => {
     try {
         const vehiculesEnService = await Vehicule.findAll({
             where: {
@@ -854,7 +865,7 @@ const getVehiculesEnServiceOfAGivenAgent = async(req, res) => {
  * @param {*} res The server response
  */
 
-const getVehiculesHorsServiceOfAGivenAgent = async(req, res) => {
+const getVehiculesHorsServiceOfAGivenAgent = async (req, res) => {
     try {
         const vehiculesHorsService = await Vehicule.findAll({
             where: {
@@ -881,7 +892,7 @@ const getVehiculesHorsServiceOfAGivenAgent = async(req, res) => {
 };
 
 // Count vehicles (en-service) and count vehicles (hors-service)
-const countVehicles = async(req, res) => {
+const countVehicles = async (req, res) => {
     try {
         const countAll = await Vehicule.findAll({
             attributes: [
