@@ -5,7 +5,7 @@ const db = require('../models');
 var bcrypt = require('bcryptjs');
 var jwt = require("jsonwebtoken");
 const Trajet = db.trajet;
-const Vehicule = db.vehicule
+const Vehicule = db.vehicules;
 var sequelize = require("sequelize");
 
 const createTrajet = async(req, res) => {
@@ -137,25 +137,46 @@ const createDebutTrajet = async(req, res) => {
 
 const updateFinTrajet = async(req, res) => {
 
-    if (!req.body.dateFin || !req.body.idTrajet || !req.body.kmParcourue || !req.body.prixAPayer) {
+    if (!req.body.dateFin || !req.body.idTrajet || !req.body.prixEstime) {
         res.status(400).send({
             message: "Content can not be empty!"
         });
         return;
     }
     try {
+
         await Vehicule.update({
             latitude: req.body.latitude,
             longitude: req.body.longitude
         }, {
             where: {
-                idVehicule: req.body.idVehicule
+                numChassis: req.body.idVehicule
             }
         })
+
+        const debut = Date.parse(req.body.dateDebut);
+        const fin = Date.parse(req.body.dateFin);
+        var tmp = fin - debut;
+
+
+
+
+        tmp = Math.floor(tmp / 1000); // Nombre de secondes entre les 2 dates
+        var sec = tmp % 60; // Extraction du nombre de secondes
+        tmp = Math.floor((tmp - sec) / 60); // Nombre de minutes (partie entière)
+        var min = tmp % 60; // Extraction du nombre de minutes
+        var plusPrix
+        if (min > req.body.tempsEstime) {
+            plusPrix = (min - req.body.tempsEstime)
+
+        } else {
+            plusPrix = 0
+        }
+
         await Trajet.update({
             dateFin: req.body.dateFin,
-            tempsEstime: req.body.reservation.tempsEstime,
-            prixAPayer: (req.body.prixEstime + (req.body.temps * 30 / 60))
+            tempsEstime: min,
+            prixAPayer: (req.body.prixEstime + (plusPrix * 80 / 60))
         }, {
             where: {
                 idTrajet: req.body.idTrajet
