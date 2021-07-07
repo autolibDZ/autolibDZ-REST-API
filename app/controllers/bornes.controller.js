@@ -700,6 +700,7 @@ const getVehiclesInABorne = async (req, res) => {
     const vehicules = await Vehicule.findAll({
       where: {
         idBorne: req.params.id,
+        etat: "en service"
       }
     });
     if (vehicules.length <= 0) {
