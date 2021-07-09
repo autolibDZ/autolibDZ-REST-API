@@ -22,7 +22,7 @@ const createReservation = async(req, res) => {
     // verify access
     //Quand le locataire est connecter on lui genere un session (jwt)
     //On lit la valeur de l'authorization header qui est sous le format Bearer + Token
-    const authHeader = req.headers['authorization']
+   const authHeader = req.headers['authorization']
     //On recupere le token
     const token = authHeader && authHeader.split(' ')[1]
 
@@ -66,6 +66,7 @@ const createReservation = async(req, res) => {
     }
 
 
+
 //On verifie que les valeurs de la requete ne sont pas a null
     if (!req.body.etat || !req.body.idVehicule || !req.body.idLocataire || !req.body.idBorneDepart || !req.body.idBorneDestination) {
         res.status(400).send({
@@ -100,7 +101,7 @@ const createReservation = async(req, res) => {
         })
 //On recupere la borne de depart
         const bornes = await Borne.findAll({ where: { idBorne: req.body.idBorneDepart} })
-
+        const vehicules = await Vehicule.findAll({ where: { numChassis: req.body.idVehicule} })
 
 
         if (bornes != null) {
@@ -108,6 +109,8 @@ const createReservation = async(req, res) => {
             for (const born of bornes) {
                 let nb=born.nbVehicules
                 nb= nb-1
+                let nbp=born.nbPlaces
+                nbp= nbp+1
 
                 Borne.update(
                     { nbVehicules: nb },
@@ -116,6 +119,36 @@ const createReservation = async(req, res) => {
                         where: {
                             idBorne: req.body.idBorneDepart
                         },
+
+
+                    } )
+                Borne.update(
+                    { nbPlaces: nbp },
+                    {
+                        returning: true,
+                        where: {
+                            idBorne: req.body.idBorneDepart
+                        },
+
+
+                    } )
+
+            }
+        }
+        if (vehicules != null) {
+            //le nombre de vehicules dans la borne -1
+            for (const vehicule of vehicules) {
+                let state="reserve"
+
+
+                Vehicule.update(
+                    { etat: state },
+                    {
+                        returning: true,
+                        where: {
+                            numChassis: req.body.idVehicule
+                        },
+
 
                     } )
 
@@ -324,6 +357,8 @@ const updateReservationById = async(req, res) => {
                         for (const born of bornes) {
                             let nb=born.nbVehicules
                             nb= nb+1
+                            let nbp=born.nbPlaces
+                            nbp= nbp-1
 
                             Borne.update(
                                 { nbVehicules: nb },
@@ -333,7 +368,19 @@ const updateReservationById = async(req, res) => {
                                         idBorne: req.body.idBorneDepart
                                     },
 
+
                                 } )
+                            Borne.update(
+                                { nbPlaces: nbp },
+                                {
+                                    returning: true,
+                                    where: {
+                                        idBorne: req.body.idBorneDepart
+                                    },
+
+
+                                } )
+
 
                         }
                     }
