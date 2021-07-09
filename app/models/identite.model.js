@@ -5,7 +5,7 @@ module.exports = function(sequelize, Sequelize) {
         },
         valide: {
             type : Sequelize.INTEGER,
-            defaultValue: 0 
+            defaultValue: NULL
         },
         idCloudinary:{
             type: Sequelize.STRING(128)
