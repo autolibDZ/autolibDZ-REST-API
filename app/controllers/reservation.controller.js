@@ -22,7 +22,7 @@ const createReservation = async(req, res) => {
     // verify access
     //Quand le locataire est connecter on lui genere un session (jwt)
     //On lit la valeur de l'authorization header qui est sous le format Bearer + Token
-   /*const authHeader = req.headers['authorization']
+   const authHeader = req.headers['authorization']
     //On recupere le token
     const token = authHeader && authHeader.split(' ')[1]
 
@@ -65,7 +65,7 @@ const createReservation = async(req, res) => {
 
     }
 
-*/
+
 
 //On verifie que les valeurs de la requete ne sont pas a null
     if (!req.body.etat || !req.body.idVehicule || !req.body.idLocataire || !req.body.idBorneDepart || !req.body.idBorneDestination) {
