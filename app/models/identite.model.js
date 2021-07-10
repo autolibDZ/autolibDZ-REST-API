@@ -4,12 +4,12 @@ module.exports = function(sequelize, Sequelize) {
             type: Sequelize.INTEGER
         },
         valide: {
-            type : Sequelize.INTEGER,
-            defaultValue: null
+            type: Sequelize.INTEGER,
+            defaultValue: 2
         },
-        idCloudinary:{
+        idCloudinary: {
             type: Sequelize.STRING(128)
-        } , 
+        },
         secureUrl: {
             type: Sequelize.STRING(128)
         },
@@ -28,13 +28,13 @@ module.exports = function(sequelize, Sequelize) {
 
     // Déclaration des clès étrangères
     Identite.associate = (models) => {
-       /* Identite.belongsTo(models.Operateur, {
-       foreignKey: 'idOperateur',
-        });*/
-    
-   Identite.belongsTo(models.Locataire, {
-          foreignKey: 'idLocataire',
+        /* Identite.belongsTo(models.Operateur, {
+        foreignKey: 'idOperateur',
+         });*/
+
+        Identite.belongsTo(models.Locataire, {
+            foreignKey: 'idLocataire',
         });
-   }
+    }
     return Identite;
 };
