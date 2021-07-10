@@ -196,7 +196,7 @@ const getTrajetByResrvation = async(req, res) => {
     try {
         const trajet = await Trajet.findOne({
             where: {
-                idReservation: req.body.idReservation,
+                idReservation: req.params.id,
             },
         });
         res.status(200).send(trajet);

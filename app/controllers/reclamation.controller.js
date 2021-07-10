@@ -1,4 +1,6 @@
 const db = require("../models");
+const Locataire = db.locataire;
+
 const Reclamation = db.reclamation;
 var jwt = require("jsonwebtoken");
 let sequelize = require("sequelize");
@@ -193,7 +195,7 @@ const getReclamationDetails = async (req, res) => {
  */
 const getAllReclamations = async (req, res) => {
 
-  /* // verify access
+   // verify access
 	const authHeader = req.headers['authorization']
 	const token = authHeader && authHeader.split(' ')[1]
   
@@ -206,7 +208,7 @@ const getAllReclamations = async (req, res) => {
 	}
   
 	try {
-  
+   
 	  const user = jwt.verify(token, process.env.JWT_SECRET);
   
 	  if (user != undefined) {
@@ -233,14 +235,25 @@ const getAllReclamations = async (req, res) => {
   
 	  return;
   
-	}*/ 
+	}
 
   try {
-
+    let result = []
     const data = await Reclamation.findAll()
     if (data != null && data.length != 0) {
-
-      res.send(data);
+      for (const reclamation of data) {
+        const locataire = await Locataire.findByPk(reclamation.idLocataire);
+        result.push({
+          idReclamation: reclamation.idReclamation,
+          description : reclamation.description,
+          idLocataire : reclamation.idLocataire,
+          type: reclamation.type,
+          date : reclamation.date,
+          nomLocataire : locataire != null ? locataire.nom : 'Aucune locataire' ,
+          prenomlocataire : locataire != null ? locataire.prenom : 'Aucune locataire' ,
+        })
+      }
+      res.send(result);
       return;
 
     } else {

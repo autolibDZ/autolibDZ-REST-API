@@ -23,7 +23,7 @@ const createReservation = async(req, res) => {
     // verify access
     //Quand le locataire est connecter on lui genere un session (jwt)
     //On lit la valeur de l'authorization header qui est sous le format Bearer + Token
-    const authHeader = req.headers['authorization']
+   const authHeader = req.headers['authorization']
     //On recupere le token
     const token = authHeader && authHeader.split(' ')[1]
 
@@ -67,6 +67,7 @@ const createReservation = async(req, res) => {
     }
 
 
+
 //On verifie que les valeurs de la requete ne sont pas a null
     if (!req.body.etat || !req.body.idVehicule || !req.body.idLocataire || !req.body.idBorneDepart || !req.body.idBorneDestination) {
         res.status(400).send({
@@ -100,28 +101,35 @@ const createReservation = async(req, res) => {
 
         })
 //On recupere la borne de depart
-        const bornes = await Borne.findAll({ where: { idBorne: req.body.idBorneDepart} })
-
-
-
-        if (bornes != null) {
-            //le nombre de vehicules dans la borne -1
-            for (const born of bornes) {
-                let nb=born.nbVehicules
-                nb= nb-1
+        const born = await Borne.findByPk(req.body.idBorneDepart)
+                let nbp=born.nbPlaces
+                nbp= nbp+1
 
                 Borne.update(
-                    { nbVehicules: nb },
+                    { nbPlaces: nbp },
                     {
                         returning: true,
                         where: {
                             idBorne: req.body.idBorneDepart
                         },
 
+
                     } )
 
-            }
-        }
+                let state="reserve"
+
+
+                Vehicule.update(
+                    { etat: state },
+                    {
+                        returning: true,
+                        where: {
+                            numChassis: req.body.idVehicule
+                        },
+
+
+                    } )
+
 
     } catch (err) {
         res.status(500).send({
@@ -308,7 +316,7 @@ const updateReservationById = async(req, res) => {
     //On cherche le reservation qui ce id
     const reservations = await Reservation.findOne({ where: { idReservation: id} })
     //On chereche la borne se depart de la reservation
-    const bornes = await Borne.findAll({ where: { idBorne: req.body.idBorneDepart} })
+    const born = await Borne.findByPk(req.body.idBorneDepart)
     //On modifie la valeur de la reservatioon
     Reservation.update(req.body, {
         where: { idReservation: id }
@@ -321,25 +329,37 @@ const updateReservationById = async(req, res) => {
                 //Si la reservation est annulée on doit modifie la valeur de nbVehicules dans la borne
                 if (reservations.etat ="Annulée")
                 {
-                    if (bornes != null) {
-                        for (const born of bornes) {
-                            let nb=born.nbVehicules
-                            nb= nb+1
+                            let nbp=born.nbPlaces
+                            nbp= nbp-1
 
                             Borne.update(
-                                { nbVehicules: nb },
+                                { nbPlaces: nbp },
                                 {
                                     returning: true,
                                     where: {
                                         idBorne: req.body.idBorneDepart
                                     },
 
+
                                 } )
+                    let state="en service"
+
+
+                    Vehicule.update(
+                        { etat: state },
+                        {
+                            returning: true,
+                            where: {
+                                numChassis: req.body.idVehicule
+                            },
+
+
+                        } )
+
 
                         }
                     }
-                }
-            } else {
+                else {
                 res.send({
                     message: `Cannot update Reservation with id=${id}. Maybe Reservation was not found or req.body is empty!`
                 });
