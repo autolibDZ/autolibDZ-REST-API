@@ -4,5 +4,7 @@ import pannesNotificationsController from "../controllers/pannes_notifications.c
 
 router.post('/signalerPanne', pannesNotificationsController.signalerPanne)
 router.post('/subscribe', pannesNotificationsController.subscribe)
+router.post('/unsubscribe', pannesNotificationsController.unSubscribe)
+router.post('/notify', pannesNotificationsController.notify)
 
 export default router
