@@ -117,6 +117,7 @@ const createLocataire = async(req, res) => {
                     //Création reussite
                     res.status(200).send({
                         message: 'Création réussite',
+                        id : data.idLocataire
                     });
                 })
                 .catch((err) => {
