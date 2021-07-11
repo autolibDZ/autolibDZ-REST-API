@@ -6,6 +6,10 @@ var bcrypt = require('bcryptjs');
 var jwt = require("jsonwebtoken");
 const Trajet = db.trajet;
 const Vehicule = db.vehicules;
+const Reservation = db.reservation;
+const Borne = db.borne;
+
+
 var sequelize = require("sequelize");
 
 const createTrajet = async(req, res) => {
@@ -145,12 +149,35 @@ const updateFinTrajet = async(req, res) => {
     }
     try {
 
+        const trajet = await Trajet.findOne({
+            where: {
+                idTrajet: req.body.idTrajet
+            },
+        });
+
+        const resv = await Reservation.findOne({
+            where: {
+                idReservation: trajet.idReservation
+            },
+        });
+
         await Vehicule.update({
             latitude: req.body.latitude,
-            longitude: req.body.longitude
+            longitude: req.body.longitude,
+            idBorne: resv.idBorneDestination
+
         }, {
             where: {
                 numChassis: req.body.idVehicule
+            }
+        })
+
+        await Borne.decrement({
+            nbPlaces: 1
+
+        }, {
+            where: {
+                idBorne: resv.idBorneDestination
             }
         })
 
